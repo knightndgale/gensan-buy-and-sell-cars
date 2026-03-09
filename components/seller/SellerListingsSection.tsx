@@ -53,47 +53,48 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
+      <div className="hidden  flex-col gap-4 sm:flex-row sm:items-center sm:justify-end lg:flex">
         <Button asChild className="bg-primary shrink-0">
           <Link href="/seller/listings/new">+ Add New Listing</Link>
         </Button>
       </div>
+      <section className="bg-white rounded-md p-4 ">
+        <div className="flex flex-row justify-between items-center gap-2 mb-4">
+          <h2 className="text-xl font-bold">My Listings</h2>
+          <p className="text-sm text-muted-foreground">
+            {filtered.length} listing{filtered.length !== 1 ? "s" : ""}
+          </p>
+        </div>
 
-      <div className="flex flex-row justify-between items-center gap-2">
-        <h2 className="text-xl font-bold">My Listings</h2>
-        <p className="text-sm text-muted-foreground">
-          {filtered.length} listing{filtered.length !== 1 ? "s" : ""}
-        </p>
-      </div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-2 p-1">
+            {TABS.map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setTab(t.value)}
+                className={cn(
+                  " px-3 py-1 text-sm font-medium transition-colors rounded-[60px]",
+                  tab === t.value ? "bg-primary text-white border-0" : "  border border-muted-foreground text-muted-foreground hover:text-foreground]",
+                )}>
+                {t.label} ({counts[t.value]})
+              </button>
+            ))}
+          </div>
+          <div className="relative w-full sm:w-96">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input type="search" placeholder="Search your listings..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 py-6 border" />
+          </div>
+        </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2 p-1">
-          {TABS.map((t) => (
-            <button
-              key={t.value}
-              type="button"
-              onClick={() => setTab(t.value)}
-              className={cn(
-                " px-3 py-1 text-sm font-medium transition-colors rounded-[60px]",
-                tab === t.value ? "bg-primary text-white border-0" : "  border border-muted-foreground text-muted-foreground hover:text-foreground]",
-              )}>
-              {t.label} ({counts[t.value]})
-            </button>
+        <div className="flex flex-col gap-4">
+          {filtered.map((listing) => (
+            <SellerListingCard key={listing.id} car={listing} />
           ))}
         </div>
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input type="search" placeholder="Search your listings..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 py-6" />
-        </div>
-      </div>
 
-      <div className="flex flex-col gap-4">
-        {filtered.map((listing) => (
-          <SellerListingCard key={listing.id} car={listing} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && <p className="py-12 text-center text-muted-foreground">{listings.length === 0 ? "No listings yet. Add your first one!" : "No listings match your filters."}</p>}
+        {filtered.length === 0 && <p className="py-12 text-center text-muted-foreground">{listings.length === 0 ? "No listings yet. Add your first one!" : "No listings match your filters."}</p>}
+      </section>
     </div>
   );
 }

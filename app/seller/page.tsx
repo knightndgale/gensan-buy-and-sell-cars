@@ -1,11 +1,11 @@
-import { headers } from "next/headers";
+import { SellerDashboardSidebar } from "@/components/seller/SellerDashboardSidebar";
+import { SellerListingsSection, type ListingForSection } from "@/components/seller/SellerListingsSection";
 import { getSessionToken } from "@/lib/auth";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getDealerByUserId } from "@/lib/firestore/dealers";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListingsByDealer } from "@/lib/firestore/listings";
-import { SellerDashboardSidebar } from "@/components/seller/SellerDashboardSidebar";
-import { SellerListingsSection, type ListingForSection } from "@/components/seller/SellerListingsSection";
+import { headers } from "next/headers";
 
 export default async function SellerDashboardPage() {
   const headersList = await headers();
@@ -23,9 +23,7 @@ export default async function SellerDashboardPage() {
       const images = await getListingImages(listing.id);
       const primary = images.find((i) => i.isPrimary) ?? images[0];
       const model = modelMap.get(listing.modelId);
-      const derivedTitle = [makeMap.get(model?.makeId ?? 0), model?.name, listing.year]
-        .filter(Boolean)
-        .join(" ");
+      const derivedTitle = [makeMap.get(model?.makeId ?? 0), model?.name, listing.year].filter(Boolean).join(" ");
       const title = listing.title?.trim() || derivedTitle;
       return {
         id: listing.id,
@@ -49,13 +47,10 @@ export default async function SellerDashboardPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 ">
       <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
         <aside className="space-y-6">
-          <SellerDashboardSidebar
-            dealerName={dealer?.dealershipName ?? "Seller"}
-            counts={counts}
-          />
+          <SellerDashboardSidebar dealerName={dealer?.dealershipName ?? "Seller"} counts={counts} />
         </aside>
         <main>
           <SellerListingsSection listings={resolved} />
