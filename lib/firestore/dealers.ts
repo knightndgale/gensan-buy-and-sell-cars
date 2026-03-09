@@ -15,6 +15,10 @@ function toDealer(id: string, data: Record<string, unknown>): Dealer {
     location: data.location as string,
     ghlLocationId: data.ghlLocationId as string | undefined,
     ghlFormEmbedUrl: data.ghlFormEmbedUrl as string | undefined,
+    phone: (data.phone as string) || undefined,
+    viberUrl: (data.viberUrl as string) || undefined,
+    whatsappUrl: (data.whatsappUrl as string) || undefined,
+    messengerUrl: (data.messengerUrl as string) || undefined,
     createdAt: ts(data.createdAt),
     updatedAt: ts(data.updatedAt),
   };

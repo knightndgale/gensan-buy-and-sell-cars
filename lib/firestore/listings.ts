@@ -11,6 +11,11 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
       : typeof v === "string"
         ? v
         : undefined;
+  const featuresRaw = data.features;
+  const features = Array.isArray(featuresRaw)
+    ? (featuresRaw as unknown[]).filter((v): v is string => typeof v === "string")
+    : undefined;
+
   return {
     id,
     dealerId: data.dealerId as string,
@@ -24,6 +29,10 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
     description: data.description as string,
     status: data.status as Listing["status"],
     isFeatured: (data.isFeatured as boolean) ?? false,
+    bodyType: (data.bodyType as string) || undefined,
+    engine: (data.engine as string) || undefined,
+    color: (data.color as string) || undefined,
+    features: features?.length ? features : undefined,
     createdAt: ts(data.createdAt),
     updatedAt: ts(data.updatedAt),
   };

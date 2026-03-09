@@ -57,9 +57,15 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
       description: "",
       status: "active",
       isFeatured: false,
+      bodyType: "",
+      engine: "",
+      color: "",
       ...initialData,
+      features: Array.isArray(initialData?.features) ? initialData.features : [],
     },
   });
+
+  const [featureInput, setFeatureInput] = useState("");
 
   const { data: makes = [] } = useQuery({
     queryKey: ["carMakes"],
@@ -303,6 +309,130 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
             )}
           />
         </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="bodyType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Body Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select body type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="">—</SelectItem>
+                    <SelectItem value="Sedan">Sedan</SelectItem>
+                    <SelectItem value="SUV">SUV</SelectItem>
+                    <SelectItem value="Hatchback">Hatchback</SelectItem>
+                    <SelectItem value="Pickup">Pickup</SelectItem>
+                    <SelectItem value="MPV">MPV</SelectItem>
+                    <SelectItem value="Van">Van</SelectItem>
+                    <SelectItem value="Coupe">Coupe</SelectItem>
+                    <SelectItem value="Wagon">Wagon</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="engine"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Engine (e.g. 1.8L)</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="1.8L" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="color"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Color</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Blue" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="features"
+          render={({ field }) => {
+            const features = field.value ?? [];
+            return (
+            <FormItem>
+              <FormLabel>Features</FormLabel>
+              <div className="flex flex-wrap gap-2">
+                {features.map((f, index) => (
+                  <span
+                    key={`${f}-${index}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm"
+                  >
+                    {f}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = [...features];
+                        next.splice(index, 1);
+                        field.onChange(next);
+                      }}
+                      className="ml-1 rounded-full hover:bg-primary/20"
+                      aria-label={`Remove ${f}`}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                <div className="flex gap-1">
+                  <Input
+                    placeholder="Add feature (e.g. Sunroof)"
+                    value={featureInput}
+                    onChange={(e) => setFeatureInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const val = featureInput.trim();
+                        if (val) {
+                          field.onChange([...features, val]);
+                          setFeatureInput("");
+                        }
+                      }
+                    }}
+                    className="w-48"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const val = featureInput.trim();
+                      if (val) {
+                        field.onChange([...features, val]);
+                        setFeatureInput("");
+                      }
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </div>
+              <FormMessage />
+            </FormItem>
+            );
+          }}
+        />
         <FormField
           control={form.control}
           name="location"

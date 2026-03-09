@@ -35,6 +35,10 @@ export const DealerSchema = z.object({
   location: z.string(),
   ghlLocationId: z.string().optional(),
   ghlFormEmbedUrl: z.string().url().optional(),
+  phone: z.string().optional(),
+  viberUrl: z.string().optional(),
+  whatsappUrl: z.string().optional(),
+  messengerUrl: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
@@ -69,6 +73,10 @@ export const ListingSchema = z.object({
   description: z.string(),
   status: ListingStatusSchema,
   isFeatured: z.boolean().optional(),
+  bodyType: z.string().optional(),
+  engine: z.string().optional(),
+  color: z.string().optional(),
+  features: z.array(z.string()).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });

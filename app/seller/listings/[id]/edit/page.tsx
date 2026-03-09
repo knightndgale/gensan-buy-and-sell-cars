@@ -33,6 +33,10 @@ export default async function EditListingPage({ params }: PageProps) {
           description: listing.description,
           status: listing.status,
           isFeatured: listing.isFeatured,
+          bodyType: listing.bodyType ?? "",
+          engine: listing.engine ?? "",
+          color: listing.color ?? "",
+          features: listing.features ?? [],
         }}
         listingId={id}
       />
