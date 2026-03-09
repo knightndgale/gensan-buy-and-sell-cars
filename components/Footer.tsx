@@ -1,79 +1,100 @@
-import Link from "next/link";
+import { FooterPopularMakes } from "@/components/FooterPopularMakes";
 import { getCarMakes } from "@/lib/firestore/cars";
+import { Facebook, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Browse Cars", href: "/cars" },
-  { label: "Seller Login", href: "/seller/login" },
-  { label: "Verified Sellers", href: "/verify" },
-  { label: "Car Buying Tips", href: "/tips" },
-  { label: "Financing Options", href: "/financing" },
+  { label: "About Us", href: "/about" },
+  { label: "Sellers Portal", href: "/seller" },
 ];
+
+const FACEBOOK_URL = "https://facebook.com";
 
 export async function Footer() {
   const makes = await getCarMakes();
 
   return (
-    <footer className="mt-auto border-t bg-muted/50">
-      <div className="container mx-auto max-w-7xl px-3 py-10 sm:px-4">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand section */}
-          <div className="space-y-3">
-            <Link
-              href="/"
-              className="text-base font-bold sm:text-xl hover:text-primary"
-            >
-              Gensan Car Buy & Sell
-            </Link>
-            <p className="text-sm text-muted-foreground">
-              General Santos City&apos;s trusted platform for buying and selling
-              cars, verified sellers, no scams.
-            </p>
-          </div>
+    <footer className="mt-auto border-t">
+      {/* Main content area */}
+      <div className="bg-muted">
+        <div className="container mx-auto max-w-7xl px-3 py-10 sm:px-4">
+          <div className="grid gap-8 sm:grid-cols-4 lg:grid-cols-4">
+            {/* Brand section */}
+            <div className="space-y-3">
+              <div className="flex justify-start">
+                <Link href="/" className="block">
+                  <Image src="/images/logo-upscale.png" alt="Gensan Buy and Sell Cars" width={340} height={130} className="w-auto object-contain" />
+                </Link>
+              </div>
+              <p>General Santos City&apos;s trusted platform for buying and selling cars, verified sellers, no scams.</p>
+            </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="mb-3 text-sm font-semibold">Quick Links</h3>
-            <ul className="space-y-2">
-              {NAV_LINKS.map(({ label, href }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-sm text-muted-foreground hover:text-primary hover:underline"
-                  >
-                    {label}
-                  </Link>
+            {/* Quick Links + Popular Makes: 2 columns on mobile, separate columns on sm+ */}
+            <div className="grid grid-cols-2 gap-8 sm:contents">
+              <div>
+                <h3 className="mb-3 font-semibold uppercase text-foreground">Quick Links</h3>
+                <ul className="space-y-3">
+                  {NAV_LINKS.map(({ label, href }) => (
+                    <li key={href}>
+                      <Link href={href} className=" hover:text-primary hover:underline">
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <FooterPopularMakes makes={makes} />
+            </div>
+
+            {/* Contact Us */}
+            <div>
+              <h3 className="mb-3 font-semibold uppercase text-foreground">Contact Us</h3>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-2">
+                  <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <span>General Santos City, South Cotabato, Philippines</span>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Browse by Make */}
-          <div>
-            <h3 className="mb-3 text-sm font-semibold">Browse by Make</h3>
-            <ul className="flex flex-wrap gap-x-3 gap-y-2">
-              {makes.map((make) => (
-                <li key={make.id}>
-                  <Link
-                    href={`/cars?make=${make.id}`}
-                    className="text-sm text-muted-foreground hover:text-primary hover:underline"
-                  >
-                    {make.name}
-                  </Link>
+                <li className="flex items-start gap-2">
+                  <Phone className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <a href="tel:+63835550123" className="   hover:text-primary hover:underline">
+                    (083) 555-0123
+                  </a>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Us */}
-          <div>
-            <h3 className="mb-3 text-sm font-semibold">Contact Us</h3>
-            <p className="text-sm text-muted-foreground">
-              Have questions? Reach us at contact@gensancar.com or call (083)
-              123-4567.
-            </p>
+                <li className="flex items-start gap-2">
+                  <Mail className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <a href="mailto:hello@gbsc.ph" className=" hover:text-primary hover:underline">
+                    hello@gbsc.ph
+                  </a>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Facebook className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">
+                    GBSC Official
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Copyright bar */}
+      <div className="bg-primary py-4 text-center text-sm text-primary-foreground">
+        <p>
+          © 2026 GCBNS. <span className="font-bold">All rights reserved.</span>
+        </p>
+        <p className="mt-2">
+          <Link href="/privacy" className="hover:underline">
+            Privacy Policy
+          </Link>
+          <span className="mx-4">|</span>
+          <Link href="/terms" className="hover:underline">
+            Terms of Service
+          </Link>
+        </p>
       </div>
     </footer>
   );
