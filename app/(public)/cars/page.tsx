@@ -1,15 +1,12 @@
-import { getListings } from "@/lib/firestore/listings";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { ListingCard, type ListingWithDetails } from "@/components/ListingCard";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getListingImages } from "@/lib/firestore/listing-images";
-import { ListingCard, type ListingWithDetails } from "@/components/ListingCard";
+import { getListings } from "@/lib/firestore/listings";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-export default async function CarsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function CarsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
   const make = typeof params.make === "string" ? params.make : undefined;
   const model = typeof params.model === "string" ? params.model : undefined;
@@ -43,20 +40,23 @@ export default async function CarsPage({
         modelName: modelInfo?.name,
         primaryImageUrl: primary?.imageUrl,
       };
-    })
+    }),
   );
 
   return (
-    <main className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
-      <h1 className="mb-8 text-2xl font-bold">All Listings</h1>
-      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {resolved.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
-      </div>
-      {resolved.length === 0 && (
-        <p className="text-muted-foreground">No listings match your filters.</p>
-      )}
+    <main>
+      <section className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
+        <h1 className="mb-8 text-2xl font-bold">All Listings</h1>
+        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {resolved.map((listing) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+        </div>
+        {resolved.length === 0 && <p className="text-muted-foreground">No listings match your filters.</p>}
+      </section>{" "}
+      <section className="bg-[#F5F5F7] py-12">
+        <HowItWorks />
+      </section>
     </main>
   );
 }

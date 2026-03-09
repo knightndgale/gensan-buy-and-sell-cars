@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -229,76 +230,81 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const isCreate = !listingId;
 
   const photosSection = (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <FormLabel className="text-base font-medium">Photos*</FormLabel>
-        <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
-      </div>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        multiple
-        className="hidden"
-        onChange={(e) => {
-          addFiles(e.target.files);
-          e.target.value = "";
-        }}
-      />
-      {imageItems.length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-3">
-          {imageItems.map((item, index) => (
-            <div
-              key={index}
-              className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-muted"
-            >
-              {item.type === "new" ? (
-                <img src={item.preview} alt="" className="h-full w-full object-cover" />
-              ) : (
-                <Image
-                  src={item.image.imageUrl}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              )}
-              <span
-                className={`absolute bottom-0 left-0 right-0 px-1 py-0.5 text-center text-xs font-medium ${
-                  primaryIndex === index
-                    ? "bg-primary text-primary-foreground"
-                    : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
-                }`}
-                onClick={() => setAsPrimary(index)}
-              >
-                {primaryIndex === index ? "Main" : "Set main"}
-              </span>
-              <button
-                type="button"
-                onClick={() => removeItem(index)}
-                className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
-                aria-label="Remove photo"
-              >
-                <X className="size-3" />
-              </button>
-            </div>
-          ))}
+    <Card>
+      <CardContent className="space-y-4 pt-6">
+        <div className="flex items-center justify-between">
+          <FormLabel className="text-base font-medium">Photos*</FormLabel>
+          <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
         </div>
-      )}
-      {imageItems.length < 6 && (
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50"
-        >
-          <Camera className="size-8 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
-        </button>
-      )}
-      <p className="text-xs text-muted-foreground">
-        First photo will be the main listing photo. Include front, rear, side and interior shots.
-      </p>
-    </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.target.value = "";
+          }}
+        />
+        {imageItems.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            {imageItems.map((item, index) => (
+              <div
+                key={index}
+                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-muted"
+              >
+                {item.type === "new" ? (
+                  <img src={item.preview} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <Image
+                    src={item.image.imageUrl}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="80px"
+                  />
+                )}
+                <span
+                  className={`absolute bottom-0 left-0 right-0 px-1 py-0.5 text-center text-xs font-medium ${
+                    primaryIndex === index
+                      ? "bg-primary text-primary-foreground"
+                      : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
+                  }`}
+                  onClick={() => setAsPrimary(index)}
+                >
+                  {primaryIndex === index ? "Main" : "Set main"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
+                  aria-label="Remove photo"
+                >
+                  <X className="size-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {imageItems.length < 6 && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex mx-auto w-40 h-40 flex-col items-center justify-center gap-2 rounded-lg border border-primary/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50"
+          >
+            <span className="rounded-full bg-primary/10 p-2">
+              <Camera className="size-6 text-primary" />
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
+          </button>
+        )}
+        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Info className="size-3.5 shrink-0 text-muted-foreground" />
+          First photo will be the main listing photo. Include front, rear, side and interior shots.
+        </p>
+      </CardContent>
+    </Card>
   );
 
   const listingPreview = isCreate && (
