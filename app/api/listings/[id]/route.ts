@@ -71,7 +71,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: parsed.error.message }, { status: 400 });
     }
 
-    await updateListing(id, parsed.data);
+    const updateData = { ...parsed.data };
+    if (updateData.status === "sold") {
+      updateData.soldAt = new Date().toISOString();
+    }
+
+    await updateListing(id, updateData);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Update listing error:", error);

@@ -37,6 +37,7 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
     features: features?.length ? features : undefined,
     createdAt: ts(data.createdAt),
     updatedAt: ts(data.updatedAt),
+    soldAt: ts(data.soldAt) ?? null,
   };
 }
 

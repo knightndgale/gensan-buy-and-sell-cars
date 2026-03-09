@@ -58,7 +58,7 @@ const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i)
 type ListingFormProps = {
   initialData?: Partial<ListingFormInput> & { makeId?: number };
   listingId?: string;
-  listingStatus?: "active" | "sold" | "archived";
+  listingStatus?: "active" | "sold" | "archived" | "pending";
 };
 
 type ImageItem =
@@ -329,7 +329,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
           ? "bg-green-50 dark:bg-green-950/30"
           : listingStatus === "sold"
             ? "bg-amber-50 dark:bg-amber-950/30"
-            : "bg-muted"
+            : listingStatus === "pending"
+              ? "bg-orange-50 dark:bg-orange-950/30"
+              : "bg-muted"
       }`}
     >
       <div className="flex gap-3">
@@ -340,7 +342,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
             className={`size-5 shrink-0 ${
               listingStatus === "sold"
                 ? "text-amber-600 dark:text-amber-400"
-                : "text-muted-foreground"
+                : listingStatus === "pending"
+                  ? "text-orange-600 dark:text-orange-400"
+                  : "text-muted-foreground"
             }`}
           />
         )}
@@ -348,6 +352,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
           <p className="text-sm font-medium">
             {listingStatus === "active" && "This listing is currently active and visible to buyers."}
             {listingStatus === "sold" && "This listing has been marked as sold."}
+            {listingStatus === "pending" && "This listing is awaiting admin approval. It will go live once approved."}
             {listingStatus === "archived" && "This listing is archived and not visible to buyers."}
           </p>
         </div>

@@ -4,7 +4,7 @@ import { z } from "zod";
 export const UserRoleSchema = z.enum(["customer", "seller", "admin"]);
 export type UserRole = z.infer<typeof UserRoleSchema>;
 
-export const ListingStatusSchema = z.enum(["active", "sold", "archived"]);
+export const ListingStatusSchema = z.enum(["active", "sold", "archived", "pending"]);
 export type ListingStatus = z.infer<typeof ListingStatusSchema>;
 
 export const TransmissionSchema = z.enum(["manual", "automatic", "cvt", "dct"]);
@@ -80,6 +80,7 @@ export const ListingSchema = z.object({
   features: z.array(z.string()).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
+  soldAt: z.string().nullable().optional(),
 });
 export type Listing = z.infer<typeof ListingSchema>;
 
