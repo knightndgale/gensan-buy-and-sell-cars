@@ -73,6 +73,7 @@ export const ListingSchema = z.object({
   description: z.string(),
   status: ListingStatusSchema,
   isFeatured: z.boolean().optional(),
+  title: z.string().optional(),
   bodyType: z.string().optional(),
   engine: z.string().optional(),
   color: z.string().optional(),

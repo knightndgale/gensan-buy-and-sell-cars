@@ -55,7 +55,8 @@ export default async function CarDetailPage({ params }: PageProps) {
   const make = model ? makes.find((m2) => m2.id === model.makeId) : undefined;
   const dealer = await getDealerById(listing.dealerId);
 
-  const title = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
+  const derivedTitle = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
+  const title = listing.title?.trim() || derivedTitle;
 
   const detailsContent = (
     <Card className="h-fit">

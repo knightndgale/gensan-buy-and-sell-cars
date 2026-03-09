@@ -109,17 +109,20 @@ export async function POST(request: NextRequest) {
     const listingsCol = db.collection(LISTINGS_COLLECTION);
     const listingIds: string[] = [];
     const listingData = [
-      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic" as const, fuelType: "gasoline" as const },
-      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt" as const, fuelType: "gasoline" as const },
-      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual" as const, fuelType: "diesel" as const },
-      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic" as const, fuelType: "diesel" as const },
-      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic" as const, fuelType: "gasoline" as const },
-      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic" as const, fuelType: "diesel" as const },
-      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt" as const, fuelType: "gasoline" as const },
+      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic" as const, fuelType: "gasoline" as const, bodyType: "Sedan" as const, engine: "1.3L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "ABS Brakes", "Power Windows"] as const },
+      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt" as const, fuelType: "gasoline" as const, bodyType: "Sedan" as const, engine: "1.5L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Apple CarPlay", "Android Auto", "LED Headlamps"] as const },
+      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual" as const, fuelType: "diesel" as const, bodyType: "Pickup" as const, engine: "3.0L" as const, features: ["Backup Camera", "ABS Brakes", "Parking Sensors", "Bluetooth Audio", "USB Port"] as const },
+      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic" as const, fuelType: "diesel" as const, bodyType: "Pickup" as const, engine: "2.0L" as const, features: ["Backup Camera", "Cruise Control", "Push Start", "Leather Seats"] as const },
+      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic" as const, fuelType: "gasoline" as const, bodyType: "MPV" as const, engine: "1.5L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "Power Windows"] as const },
+      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic" as const, fuelType: "diesel" as const, bodyType: "SUV" as const, engine: "2.8L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Sunroof", "Leather Seats", "Navigation System"] as const },
+      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt" as const, fuelType: "gasoline" as const, bodyType: "SUV" as const, engine: "2.0L" as const, features: ["Backup Camera", "Cruise Control", "Push Start", "Airbags"] as const },
     ];
     for (let i = 0; i < listingData.length; i++) {
       const dealerId = dealerIds[i % dealerIds.length];
       const data = listingData[i];
+      const model = CAR_MODELS.find((m) => m.id === data.modelId);
+      const make = model ? CAR_MAKES.find((m) => m.id === model.makeId) : undefined;
+      const title = make && model ? `${data.year} ${make.name} ${model.name}` : undefined;
       const ref = await listingsCol.add({
         dealerId,
         modelId: data.modelId,
@@ -132,6 +135,10 @@ export async function POST(request: NextRequest) {
         description: `Well-maintained ${data.year} vehicle. Low mileage, good condition.`,
         status: "active",
         isFeatured: i < 2,
+        ...(title && { title }),
+        bodyType: data.bodyType,
+        engine: data.engine,
+        features: [...data.features],
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });

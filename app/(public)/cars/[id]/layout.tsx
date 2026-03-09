@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ]);
     const model = models.find((m) => m.id === listing.modelId);
     const make = model ? makes.find((m) => m.id === model.makeId) : undefined;
-    const title = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
+    const derivedTitle = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
+    const title = listing.title?.trim() || derivedTitle;
     return {
       title: `${title} | Gensan Car Buy & Sell`,
       description: listing.description?.slice(0, 160) ?? `Car for sale in ${listing.location}`,

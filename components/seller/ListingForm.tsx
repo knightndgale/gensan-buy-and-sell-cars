@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,23 +27,50 @@ import {
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import type { CarMake, CarModel } from "@/schema";
-import { formatPrice } from "@/lib/format";
+import { Camera, Plus, Save, FileText, Info, Check, X } from "lucide-react";
+
+const PREDEFINED_FEATURES = [
+  "Touchscreen Infotainment",
+  "Backup Camera",
+  "Keyless Entry",
+  "ABS Brakes",
+  "Push Start",
+  "Leather Seats",
+  "Navigation System",
+  "Sunroof",
+  "Cruise Control",
+  "Apple CarPlay",
+  "Android Auto",
+  "LED Headlamps",
+  "Parking Sensors",
+  "Bluetooth Audio",
+  "USB Port",
+  "Power Windows",
+  "Hill Start Assist",
+  "Airbags",
+  "Dashcam",
+  "Tinted Windows",
+] as const;
+
+const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
 
 type ListingFormProps = {
-  initialData?: Partial<ListingFormInput>;
+  initialData?: Partial<ListingFormInput> & { makeId?: number };
   listingId?: string;
+  listingStatus?: "active" | "sold" | "archived";
 };
 
 type ImageItem =
   | { type: "new"; file: File; preview: string }
   | { type: "existing"; image: ListingImage };
 
-export function ListingForm({ initialData, listingId }: ListingFormProps) {
+export function ListingForm({ initialData, listingId, listingStatus }: ListingFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageItems, setImageItems] = useState<ImageItem[]>([]);
   const [primaryIndex, setPrimaryIndex] = useState(0);
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([]);
+  const [makeId, setMakeId] = useState<number>(initialData?.makeId ?? 0);
 
   const form = useForm<ListingFormInput>({
     resolver: zodResolver(ListingFormInputSchema),
@@ -60,12 +88,11 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
       bodyType: "",
       engine: "",
       color: "",
+      title: "",
       ...initialData,
       features: Array.isArray(initialData?.features) ? initialData.features : [],
     },
   });
-
-  const [featureInput, setFeatureInput] = useState("");
 
   const { data: makes = [] } = useQuery({
     queryKey: ["carMakes"],
@@ -76,12 +103,29 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
   });
 
   const { data: models = [] } = useQuery({
-    queryKey: ["carModels"],
+    queryKey: ["carModels", makeId],
+    queryFn: async () => {
+      const url = makeId ? `/api/cars/models?makeId=${makeId}` : "/api/cars/models";
+      const res = await fetch(url);
+      return res.json() as Promise<CarModel[]>;
+    },
+  });
+
+  const { data: allModels = [] } = useQuery({
+    queryKey: ["carModelsAll"],
     queryFn: async () => {
       const res = await fetch("/api/cars/models");
       return res.json() as Promise<CarModel[]>;
     },
+    enabled: !!initialData?.modelId && !makeId,
   });
+
+  useEffect(() => {
+    if (initialData?.modelId && !makeId && allModels.length > 0) {
+      const model = allModels.find((m) => m.id === initialData.modelId);
+      if (model) setMakeId(model.makeId);
+    }
+  }, [initialData?.modelId, makeId, allModels]);
 
   const { data: existingImages = [] } = useQuery({
     queryKey: ["listingImages", listingId],
@@ -113,6 +157,7 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (!file.type.startsWith("image/")) continue;
+      if (newItems.length >= 6) break;
       const preview = URL.createObjectURL(file);
       newItems.push({ type: "new", file, preview });
     }
@@ -137,6 +182,10 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
   }
 
   async function onSubmit(data: ListingFormInput) {
+    if (!listingId && imageItems.length === 0) {
+      form.setError("root", { message: "Please add at least one photo" });
+      return;
+    }
     const url = listingId ? `/api/listings/${listingId}` : "/api/listings";
     const method = listingId ? "PATCH" : "POST";
 
@@ -177,402 +226,513 @@ export function ListingForm({ initialData, listingId }: ListingFormProps) {
     router.refresh();
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="modelId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Model</FormLabel>
-              <Select
-                onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
-                value={field.value ? String(field.value) : "0"}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="0">Select model</SelectItem>
-                  {models.map((m) => {
-                    const make = makes.find((mk) => mk.id === m.makeId);
-                    return (
-                      <SelectItem key={m.id} value={String(m.id)}>
-                        {make?.name} {m.name}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="year"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Year</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price (PHP)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="0"
-                    value={field.value ? formatPrice(field.value) : ""}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/\D/g, "");
-                      field.onChange(raw ? parseInt(raw, 10) : 0);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="mileage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mileage (km)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="transmission"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Transmission</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="manual">Manual</SelectItem>
-                    <SelectItem value="automatic">Automatic</SelectItem>
-                    <SelectItem value="cvt">CVT</SelectItem>
-                    <SelectItem value="dct">DCT</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="fuelType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fuel Type</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="gasoline">Gasoline</SelectItem>
-                    <SelectItem value="diesel">Diesel</SelectItem>
-                    <SelectItem value="hybrid">Hybrid</SelectItem>
-                    <SelectItem value="electric">Electric</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="bodyType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Body Type</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select body type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="">—</SelectItem>
-                    <SelectItem value="Sedan">Sedan</SelectItem>
-                    <SelectItem value="SUV">SUV</SelectItem>
-                    <SelectItem value="Hatchback">Hatchback</SelectItem>
-                    <SelectItem value="Pickup">Pickup</SelectItem>
-                    <SelectItem value="MPV">MPV</SelectItem>
-                    <SelectItem value="Van">Van</SelectItem>
-                    <SelectItem value="Coupe">Coupe</SelectItem>
-                    <SelectItem value="Wagon">Wagon</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="engine"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Engine (e.g. 1.8L)</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="1.8L" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Color</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Blue" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="features"
-          render={({ field }) => {
-            const features = field.value ?? [];
-            return (
-            <FormItem>
-              <FormLabel>Features</FormLabel>
-              <div className="flex flex-wrap gap-2">
-                {features.map((f, index) => (
-                  <span
-                    key={`${f}-${index}`}
-                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm"
-                  >
-                    {f}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const next = [...features];
-                        next.splice(index, 1);
-                        field.onChange(next);
-                      }}
-                      className="ml-1 rounded-full hover:bg-primary/20"
-                      aria-label={`Remove ${f}`}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-                <div className="flex gap-1">
-                  <Input
-                    placeholder="Add feature (e.g. Sunroof)"
-                    value={featureInput}
-                    onChange={(e) => setFeatureInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const val = featureInput.trim();
-                        if (val) {
-                          field.onChange([...features, val]);
-                          setFeatureInput("");
-                        }
-                      }
-                    }}
-                    className="w-48"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const val = featureInput.trim();
-                      if (val) {
-                        field.onChange([...features, val]);
-                        setFeatureInput("");
-                      }
-                    }}
-                  >
-                    Add
-                  </Button>
-                </div>
-              </div>
-              <FormMessage />
-            </FormItem>
-            );
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={4} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="space-y-2">
-          <FormLabel>Images</FormLabel>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              addFiles(e.target.files);
-              e.target.value = "";
-            }}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            Add images
-          </Button>
-          {imageItems.length > 0 && (
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {imageItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="relative aspect-video overflow-hidden rounded-lg border bg-muted"
-                >
-                  {item.type === "new" ? (
-                    <img
-                      src={item.preview}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <Image
-                      src={item.image.imageUrl}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 50vw, 33vw"
-                    />
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 flex justify-between gap-1 bg-black/60 p-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant={primaryIndex === index ? "default" : "secondary"}
-                      className="text-xs"
-                      onClick={() => setAsPrimary(index)}
-                    >
-                      {primaryIndex === index ? "Feature" : "Set feature"}
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="destructive"
-                      className="text-xs"
-                      onClick={() => removeItem(index)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="sold">Sold</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="isFeatured"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormControl>
-                <input
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
+  const isCreate = !listingId;
+
+  const photosSection = (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <FormLabel className="text-base font-medium">Photos*</FormLabel>
+        <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
+      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          addFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+      {imageItems.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-3">
+          {imageItems.map((item, index) => (
+            <div
+              key={index}
+              className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-muted"
+            >
+              {item.type === "new" ? (
+                <img src={item.preview} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <Image
+                  src={item.image.imageUrl}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="80px"
                 />
-              </FormControl>
-              <FormLabel className="mt-0!">Featured</FormLabel>
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Saving..." : "Save"}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => router.back()}>
-            Cancel
-          </Button>
+              )}
+              <span
+                className={`absolute bottom-0 left-0 right-0 px-1 py-0.5 text-center text-xs font-medium ${
+                  primaryIndex === index
+                    ? "bg-primary text-primary-foreground"
+                    : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
+                }`}
+                onClick={() => setAsPrimary(index)}
+              >
+                {primaryIndex === index ? "Main" : "Set main"}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeItem(index)}
+                className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
+                aria-label="Remove photo"
+              >
+                <X className="size-3" />
+              </button>
+            </div>
+          ))}
         </div>
-      </form>
-    </Form>
+      )}
+      {imageItems.length < 6 && (
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50"
+        >
+          <Camera className="size-8 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
+        </button>
+      )}
+      <p className="text-xs text-muted-foreground">
+        First photo will be the main listing photo. Include front, rear, side and interior shots.
+      </p>
+    </div>
+  );
+
+  const listingPreview = isCreate && (
+    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/30">
+      <div className="flex gap-3">
+        <FileText className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+        <div>
+          <h3 className="font-medium text-blue-900 dark:text-blue-100">Listing Preview</h3>
+          <p className="mt-1 text-sm text-blue-800 dark:text-blue-200">
+            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer
+            reached out, we will inform you immediately.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const listingStatusBanner = !isCreate && listingStatus && (
+    <div
+      className={`rounded-lg p-4 ${
+        listingStatus === "active"
+          ? "bg-green-50 dark:bg-green-950/30"
+          : listingStatus === "sold"
+            ? "bg-amber-50 dark:bg-amber-950/30"
+            : "bg-muted"
+      }`}
+    >
+      <div className="flex gap-3">
+        {listingStatus === "active" ? (
+          <Check className="size-5 shrink-0 text-green-600 dark:text-green-400" />
+        ) : (
+          <Info
+            className={`size-5 shrink-0 ${
+              listingStatus === "sold"
+                ? "text-amber-600 dark:text-amber-400"
+                : "text-muted-foreground"
+            }`}
+          />
+        )}
+        <div>
+          <p className="text-sm font-medium">
+            {listingStatus === "active" && "This listing is currently active and visible to buyers."}
+            {listingStatus === "sold" && "This listing has been marked as sold."}
+            {listingStatus === "archived" && "This listing is archived and not visible to buyers."}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="container mx-auto max-w-6xl px-4 py-8">
+      <Link
+        href="/seller"
+        className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+      >
+        ← Back to Dashboard
+      </Link>
+      <h1 className="text-2xl font-bold">
+        {isCreate ? "Add New Listing" : "Edit Listing"}
+      </h1>
+      <p className="mt-1 text-muted-foreground">
+        {isCreate
+          ? "Fill in the details below to list your car for sale"
+          : "Update the details of your car listing"}
+      </p>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
+          {form.formState.errors.root?.message && (
+            <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>
+          )}
+          <div className="lg:grid lg:grid-cols-[1fr_1.5fr] lg:gap-8">
+            <div className="space-y-6 lg:order-1">
+              {photosSection}
+              {listingPreview}
+              {listingStatusBanner}
+            </div>
+
+            <div className="mt-8 space-y-6 lg:order-2 lg:mt-0">
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Basic Information</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <FormLabel>Make*</FormLabel>
+                    <Select
+                      value={makeId ? String(makeId) : "0"}
+                      onValueChange={(v) => {
+                        const id = parseInt(v, 10) || 0;
+                        setMakeId(id);
+                        form.setValue("modelId", 0);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Make" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">Select a Make</SelectItem>
+                        {makes.map((m) => (
+                          <SelectItem key={m.id} value={String(m.id)}>
+                            {m.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="modelId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Model*</FormLabel>
+                        <Select
+                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
+                          value={field.value ? String(field.value) : "0"}
+                          disabled={!makeId}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">Select a Model</SelectItem>
+                            {models.map((m) => (
+                              <SelectItem key={m.id} value={String(m.id)}>
+                                {m.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="year"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Year*</FormLabel>
+                        <Select
+                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
+                          value={field.value ? String(field.value) : ""}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a Year" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {YEARS.map((y) => (
+                              <SelectItem key={y} value={String(y)}>
+                                {y}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Listing Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT"
+                            value={field.value ?? ""}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Pricing & Condition</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price*</FormLabel>
+                        <FormControl>
+                          <div className="flex">
+                            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+                              ₱
+                            </span>
+                            <Input
+                              type="text"
+                              inputMode="numeric"
+                              placeholder="e.g. 620000"
+                              className="rounded-l-none"
+                              value={field.value ? field.value.toLocaleString() : ""}
+                              onChange={(e) => {
+                                const raw = e.target.value.replace(/\D/g, "");
+                                field.onChange(raw ? parseInt(raw, 10) : 0);
+                              }}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="mileage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mileage*</FormLabel>
+                        <FormControl>
+                          <div className="flex">
+                            <Input
+                              type="text"
+                              inputMode="numeric"
+                              placeholder="e.g. 35000"
+                              className="rounded-r-none"
+                              value={field.value ? field.value : ""}
+                              onChange={(e) => {
+                                const raw = e.target.value.replace(/\D/g, "");
+                                field.onChange(raw ? parseInt(raw, 10) : 0);
+                              }}
+                            />
+                            <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+                              km
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Specifications</h2>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="transmission"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Transmission*</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="manual">Manual</SelectItem>
+                            <SelectItem value="automatic">Automatic</SelectItem>
+                            <SelectItem value="cvt">CVT</SelectItem>
+                            <SelectItem value="dct">DCT</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="bodyType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Body Type*</FormLabel>
+                        <Select
+                          onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
+                          value={field.value || "__none__"}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="__none__">—</SelectItem>
+                            <SelectItem value="Sedan">Sedan</SelectItem>
+                            <SelectItem value="SUV">SUV</SelectItem>
+                            <SelectItem value="Hatchback">Hatchback</SelectItem>
+                            <SelectItem value="Pickup">Pickup</SelectItem>
+                            <SelectItem value="MPV">MPV</SelectItem>
+                            <SelectItem value="Van">Van</SelectItem>
+                            <SelectItem value="Coupe">Coupe</SelectItem>
+                            <SelectItem value="Wagon">Wagon</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="engine"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Engine Size</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="fuelType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fuel Type*</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="gasoline">Gasoline</SelectItem>
+                            <SelectItem value="diesel">Diesel</SelectItem>
+                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                            <SelectItem value="electric">Electric</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Description</h2>
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tell buyers about your car</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc."
+                          value={field.value ?? ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Features</h2>
+                <p className="text-sm text-muted-foreground">
+                  Select all features that apply to your car
+                </p>
+                <FormField
+                  control={form.control}
+                  name="features"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex flex-wrap gap-2">
+                          {PREDEFINED_FEATURES.map((feature) => {
+                            const selected = (field.value ?? []).includes(feature);
+                            return (
+                              <button
+                                key={feature}
+                                type="button"
+                                onClick={() => {
+                                  const current = field.value ?? [];
+                                  if (selected) {
+                                    field.onChange(current.filter((f) => f !== feature));
+                                  } else {
+                                    field.onChange([...current, feature]);
+                                  }
+                                }}
+                                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                                  selected
+                                    ? "bg-primary text-primary-foreground"
+                                    : "border border-input bg-background hover:bg-accent"
+                                }`}
+                              >
+                                {selected && <Check className="size-4" />}
+                                {feature}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </section>
+
+              <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
+                <Button type="button" variant="outline" onClick={() => router.back()}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? (
+                    "Saving..."
+                  ) : isCreate ? (
+                    <>
+                      <Plus className="size-4" />
+                      Submit Listing for Approval
+                    </>
+                  ) : (
+                    <>
+                      <Save className="size-4" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }

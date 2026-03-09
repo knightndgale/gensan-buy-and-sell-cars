@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { getSessionToken } from "@/lib/auth";
 import { getDealerByUserId } from "@/lib/firestore/dealers";
+import { getCarModelById } from "@/lib/firestore/cars";
 import { getListingById } from "@/lib/firestore/listings";
 import { ListingForm } from "@/components/seller/ListingForm";
 
@@ -18,28 +19,31 @@ export default async function EditListingPage({ params }: PageProps) {
     notFound();
   }
 
+  const model = await getCarModelById(listing.modelId);
+  const makeId = model?.makeId ?? 0;
+
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-8 text-2xl font-bold">Edit Listing</h1>
-      <ListingForm
-        initialData={{
-          modelId: listing.modelId,
-          year: listing.year,
-          price: listing.price,
-          mileage: listing.mileage,
-          transmission: listing.transmission,
-          fuelType: listing.fuelType,
-          location: listing.location,
-          description: listing.description,
-          status: listing.status,
-          isFeatured: listing.isFeatured,
-          bodyType: listing.bodyType ?? "",
-          engine: listing.engine ?? "",
-          color: listing.color ?? "",
-          features: listing.features ?? [],
-        }}
-        listingId={id}
-      />
-    </div>
+    <ListingForm
+      initialData={{
+        modelId: listing.modelId,
+        makeId,
+        year: listing.year,
+        price: listing.price,
+        mileage: listing.mileage,
+        transmission: listing.transmission,
+        fuelType: listing.fuelType,
+        location: listing.location,
+        description: listing.description,
+        status: listing.status,
+        isFeatured: listing.isFeatured,
+        title: listing.title ?? "",
+        bodyType: listing.bodyType ?? "",
+        engine: listing.engine ?? "",
+        color: listing.color ?? "",
+        features: listing.features ?? [],
+      }}
+      listingId={id}
+      listingStatus={listing.status}
+    />
   );
 }

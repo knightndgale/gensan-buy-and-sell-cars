@@ -23,7 +23,8 @@ export default async function SellerListingsPage() {
       const images = await getListingImages(listing.id);
       const primary = images.find((i) => i.isPrimary) ?? images[0];
       const model = modelMap.get(listing.modelId);
-      const title = [makeMap.get(model?.makeId ?? 0), model?.name, listing.year].filter(Boolean).join(" ");
+      const derivedTitle = [makeMap.get(model?.makeId ?? 0), model?.name, listing.year].filter(Boolean).join(" ");
+      const title = listing.title?.trim() || derivedTitle;
       return {
         ...listing,
         title,

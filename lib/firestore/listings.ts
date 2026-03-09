@@ -29,6 +29,7 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
     description: data.description as string,
     status: data.status as Listing["status"],
     isFeatured: (data.isFeatured as boolean) ?? false,
+    title: (data.title as string) || undefined,
     bodyType: (data.bodyType as string) || undefined,
     engine: (data.engine as string) || undefined,
     color: (data.color as string) || undefined,
