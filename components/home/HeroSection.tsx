@@ -2,12 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import type { CarMake, CarModel } from "@/schema";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Search, Tag } from "lucide-react";
-import Link from "next/link";
+import { Search } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+
+type HeroSlide = {
+  tag: string;
+  imageSrc: string;
+};
+
+const HERO_SLIDES: HeroSlide[] = [
+  {
+    tag: "Family Pick",
+    imageSrc: "/images/slider/slider-1.png",
+  },
+  {
+    tag: "Budget Pick",
+    imageSrc: "/images/slider/slider-2.png",
+  },
+];
 
 const PRICE_RANGES = [
   { label: "Any", min: undefined, max: undefined },
@@ -25,6 +42,7 @@ export function HeroSection() {
   const [modelId, setModelId] = useState<string>("");
   const [year, setYear] = useState<string>("");
   const [priceRange, setPriceRange] = useState<string>("");
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { data: makes = [] } = useQuery({
     queryKey: ["carMakes"],
@@ -56,13 +74,13 @@ export function HeroSection() {
   }, [router, makeId, modelId, year, priceRange]);
 
   return (
-    <section className="relative overflow-hidden bg-primary py-12 md:py-16 lg:py-20">
+    <section className="relative overflow-hidden bg-primary pt-0 pb-12 md:py-16 lg:py-20">
       <div className="container mx-auto max-w-7xl px-3 sm:px-4">
         <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left column: copy + search */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 sm:order-first order-last ">
             <div>
-              <h1 className="mb-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">Buy & Sell Cars in General Santos</h1>
+              <h2 className="mb-4 text-4xl font-bold text-white sm:text-3xl lg:text-3xl">Buy & Sell Cars in General Santos</h2>
               <p className="max-w-xl text-base text-white/90 sm:text-lg">
                 We connect you with verified local buyers in General Santos City, so you can find, view, and buy a car without scammers or endless Facebook haggling.
               </p>
@@ -135,20 +153,25 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right column: featured offer card */}
-          <div className="relative overflow-hidden rounded-xl bg-white p-6 shadow-lg lg:p-8">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white">
-              <Tag className="size-4" />
-              <span>Family Pick</span>
-            </span>
-            <h2 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">Family-Friendly Rides Under P500K</h2>
-            <p className="mb-6 text-muted-foreground">Fuel-efficient options & SUVs perfect for families. Get pre-approved!</p>
-            <Link href="/cars?maxPrice=500000">
-              <Button variant="outline" className="mb-6 rounded">
-                <span>Find Your Ride</span>
-                <ArrowRight className="size-4" />
-              </Button>
-            </Link>
+          {/* Right column: featured offer carousel */}
+          <div className="relative order-first aspect-16/10 overflow-hidden rounded-none shadow-lg sm:order-last sm:mx-0 sm:rounded-xl lg:aspect-video -mx-3">
+            {HERO_SLIDES.map((slide, index) => (
+              <div key={index} className={cn("absolute inset-0 transition-opacity duration-300", index === activeIndex ? "z-10 opacity-100" : "z-0 opacity-0")}>
+                <Image src={slide.imageSrc} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" priority={index === 0} />
+              </div>
+            ))}
+            {/* Pagination - visible on lg+ only, hidden on mobile */}
+            <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2 lg:bottom-8">
+              {HERO_SLIDES.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={cn("rounded-full transition-colors", i === activeIndex ? "h-2 w-8 bg-white" : "size-2 bg-white/40 hover:bg-white/60")}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
