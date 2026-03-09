@@ -1,34 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import type { CarMake, CarModel } from "@/schema";
+import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { Camera, Check, FileText, Info, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import type { CarMake, CarModel } from "@/schema";
-import { Camera, Plus, Save, FileText, Info, Check, X } from "lucide-react";
 
 const PREDEFINED_FEATURES = [
   "Touchscreen Infotainment",
@@ -61,9 +48,7 @@ type ListingFormProps = {
   listingStatus?: "active" | "sold" | "archived" | "pending";
 };
 
-type ImageItem =
-  | { type: "new"; file: File; preview: string }
-  | { type: "existing"; image: ListingImage };
+type ImageItem = { type: "new"; file: File; preview: string } | { type: "existing"; image: ListingImage };
 
 export function ListingForm({ initialData, listingId, listingStatus }: ListingFormProps) {
   const router = useRouter();
@@ -207,7 +192,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     }
 
     if (listingId) {
-      const primaryImageId = primaryItem?.type === "existing" ? primaryItem.image.id ?? "" : "";
+      const primaryImageId = primaryItem?.type === "existing" ? (primaryItem.image.id ?? "") : "";
       formData.append("primaryImageId", primaryImageId);
       formData.append("removedImageIds", JSON.stringify(removedImageIds));
     } else {
@@ -231,7 +216,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
   const photosSection = (
     <Card>
-      <CardContent className="space-y-4 pt-6">
+      <CardContent className="space-y-4 ">
         <div className="flex items-center justify-between">
           <FormLabel className="text-base font-medium">Photos*</FormLabel>
           <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
@@ -247,59 +232,37 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
             e.target.value = "";
           }}
         />
-        {imageItems.length > 0 && (
-          <div className="flex flex-wrap gap-3">
-            {imageItems.map((item, index) => (
-              <div
-                key={index}
-                className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-muted"
-              >
-                {item.type === "new" ? (
-                  <img src={item.preview} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <Image
-                    src={item.image.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="80px"
-                  />
-                )}
-                <span
-                  className={`absolute bottom-0 left-0 right-0 px-1 py-0.5 text-center text-xs font-medium ${
-                    primaryIndex === index
-                      ? "bg-primary text-primary-foreground"
-                      : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
-                  }`}
-                  onClick={() => setAsPrimary(index)}
-                >
-                  {primaryIndex === index ? "Main" : "Set main"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => removeItem(index)}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
-                  aria-label="Remove photo"
-                >
-                  <X className="size-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {imageItems.length < 6 && (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="flex mx-auto w-40 h-40 flex-col items-center justify-center gap-2 rounded-lg border border-primary/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50"
-          >
-            <span className="rounded-full bg-primary/10 p-2">
-              <Camera className="size-6 text-primary" />
-            </span>
-            <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
-          </button>
-        )}
-        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+
+        <div className="flex flex-wrap gap-3">
+          {imageItems.map((item, index) => (
+            <div key={index} className="relative h-30 w-30 shrink-0 overflow-hidden rounded-lg border bg-muted">
+              {item.type === "new" ? <img src={item.preview} alt="" className="h-full w-full object-cover" /> : <Image src={item.image.imageUrl} alt="" fill className="object-cover" sizes="80px" />}
+              <span
+                className={`absolute bottom-1 left-1 rounded-full px-2 py-0.5 text-xs font-medium shadow-sm ${
+                  primaryIndex === index ? "bg-primary text-primary-foreground" : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
+                }`}
+                onClick={() => setAsPrimary(index)}>
+                {primaryIndex === index ? "Main" : "Set main"}
+              </span>
+              <button type="button" onClick={() => removeItem(index)} className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80" aria-label="Remove photo">
+                <X className="size-3" />
+              </button>
+            </div>
+          ))}
+          {imageItems.length < 6 && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex w-30 h-30 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50">
+              <span className="rounded-full bg-primary/10 p-2">
+                <Camera className="size-6 text-primary" />
+              </span>
+              <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
+            </button>
+          )}
+        </div>
+
+        <p className="flex items-start gap-2 text-xs text-muted-foreground ">
           <Info className="size-3.5 shrink-0 text-muted-foreground" />
           First photo will be the main listing photo. Include front, rear, side and interior shots.
         </p>
@@ -314,8 +277,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
         <div>
           <h3 className="font-medium text-blue-900 dark:text-blue-100">Listing Preview</h3>
           <p className="mt-1 text-sm text-blue-800 dark:text-blue-200">
-            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer
-            reached out, we will inform you immediately.
+            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer reached out, we will inform you immediately.
           </p>
         </div>
       </div>
@@ -332,19 +294,14 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
             : listingStatus === "pending"
               ? "bg-orange-50 dark:bg-orange-950/30"
               : "bg-muted"
-      }`}
-    >
+      }`}>
       <div className="flex gap-3">
         {listingStatus === "active" ? (
           <Check className="size-5 shrink-0 text-green-600 dark:text-green-400" />
         ) : (
           <Info
             className={`size-5 shrink-0 ${
-              listingStatus === "sold"
-                ? "text-amber-600 dark:text-amber-400"
-                : listingStatus === "pending"
-                  ? "text-orange-600 dark:text-orange-400"
-                  : "text-muted-foreground"
+              listingStatus === "sold" ? "text-amber-600 dark:text-amber-400" : listingStatus === "pending" ? "text-orange-600 dark:text-orange-400" : "text-muted-foreground"
             }`}
           />
         )}
@@ -362,26 +319,15 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
-      <Link
-        href="/seller"
-        className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
-      >
+      <Link href="/seller" className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
         ← Back to Dashboard
       </Link>
-      <h1 className="text-2xl font-bold">
-        {isCreate ? "Add New Listing" : "Edit Listing"}
-      </h1>
-      <p className="mt-1 text-muted-foreground">
-        {isCreate
-          ? "Fill in the details below to list your car for sale"
-          : "Update the details of your car listing"}
-      </p>
+      <h1 className="text-2xl font-bold">{isCreate ? "Add New Listing" : "Edit Listing"}</h1>
+      <p className="mt-1 text-muted-foreground">{isCreate ? "Fill in the details below to list your car for sale" : "Update the details of your car listing"}</p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
-          {form.formState.errors.root?.message && (
-            <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>
-          )}
+          {form.formState.errors.root?.message && <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>}
           <div className="lg:grid lg:grid-cols-[1fr_1.5fr] lg:gap-8">
             <div className="space-y-6 lg:order-1">
               {photosSection}
@@ -401,8 +347,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         const id = parseInt(v, 10) || 0;
                         setMakeId(id);
                         form.setValue("modelId", 0);
-                      }}
-                    >
+                      }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
@@ -422,11 +367,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Model*</FormLabel>
-                        <Select
-                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
-                          value={field.value ? String(field.value) : "0"}
-                          disabled={!makeId}
-                        >
+                        <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : "0"} disabled={!makeId}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
@@ -453,10 +394,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Year*</FormLabel>
-                        <Select
-                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
-                          value={field.value ? String(field.value) : ""}
-                        >
+                        <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : ""}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select a Year" />
@@ -481,11 +419,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT"
-                            value={field.value ?? ""}
-                          />
+                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -505,9 +439,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Price*</FormLabel>
                         <FormControl>
                           <div className="flex">
-                            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
-                              ₱
-                            </span>
+                            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">₱</span>
                             <Input
                               type="text"
                               inputMode="numeric"
@@ -544,9 +476,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                                 field.onChange(raw ? parseInt(raw, 10) : 0);
                               }}
                             />
-                            <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">
-                              km
-                            </span>
+                            <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">km</span>
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -588,10 +518,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Body Type*</FormLabel>
-                        <Select
-                          onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
-                          value={field.value || "__none__"}
-                        >
+                        <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select" />
@@ -662,12 +589,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     <FormItem>
                       <FormLabel>Tell buyers about your car</FormLabel>
                       <FormControl>
-                        <Textarea
-                          {...field}
-                          rows={4}
-                          placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc."
-                          value={field.value ?? ""}
-                        />
+                        <Textarea {...field} rows={4} placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc." value={field.value ?? ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -677,9 +599,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Features</h2>
-                <p className="text-sm text-muted-foreground">
-                  Select all features that apply to your car
-                </p>
+                <p className="text-sm text-muted-foreground">Select all features that apply to your car</p>
                 <FormField
                   control={form.control}
                   name="features"
@@ -702,11 +622,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                                   }
                                 }}
                                 className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                                  selected
-                                    ? "bg-primary text-primary-foreground"
-                                    : "border border-input bg-background hover:bg-accent"
-                                }`}
-                              >
+                                  selected ? "bg-primary text-primary-foreground" : "border border-input bg-background hover:bg-accent"
+                                }`}>
                                 {selected && <Check className="size-4" />}
                                 {feature}
                               </button>
