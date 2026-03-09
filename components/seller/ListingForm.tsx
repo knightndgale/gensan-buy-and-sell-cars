@@ -2,43 +2,22 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { CarFeature } from "@/lib/firestore/features";
 import type { CarMake, CarModel } from "@/schema";
 import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, Check, FileText, Info, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-
-const PREDEFINED_FEATURES = [
-  "Touchscreen Infotainment",
-  "Backup Camera",
-  "Keyless Entry",
-  "ABS Brakes",
-  "Push Start",
-  "Leather Seats",
-  "Navigation System",
-  "Sunroof",
-  "Cruise Control",
-  "Apple CarPlay",
-  "Android Auto",
-  "LED Headlamps",
-  "Parking Sensors",
-  "Bluetooth Audio",
-  "USB Port",
-  "Power Windows",
-  "Hill Start Assist",
-  "Airbags",
-  "Dashcam",
-  "Tinted Windows",
-] as const;
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
 
@@ -52,11 +31,15 @@ type ImageItem = { type: "new"; file: File; preview: string } | { type: "existin
 
 export function ListingForm({ initialData, listingId, listingStatus }: ListingFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageItems, setImageItems] = useState<ImageItem[]>([]);
   const [primaryIndex, setPrimaryIndex] = useState(0);
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([]);
   const [makeId, setMakeId] = useState<number>(initialData?.makeId ?? 0);
+  const [addFeatureOpen, setAddFeatureOpen] = useState(false);
+  const [newFeatureName, setNewFeatureName] = useState("");
+  const [addFeatureError, setAddFeatureError] = useState<string | null>(null);
 
   const form = useForm<ListingFormInput>({
     resolver: zodResolver(ListingFormInputSchema),
@@ -123,6 +106,52 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     },
     enabled: !!listingId,
   });
+
+  const { data: features = [] } = useQuery({
+    queryKey: ["carFeatures"],
+    queryFn: async () => {
+      const res = await fetch("/api/features");
+      return res.json() as Promise<CarFeature[]>;
+    },
+  });
+
+  const addFeatureMutation = useMutation({
+    mutationFn: async (name: string) => {
+      const res = await fetch("/api/features", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim() }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to add feature");
+      }
+      return res.json() as Promise<CarFeature>;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["carFeatures"] });
+      const current = form.getValues("features") ?? [];
+      if (!current.includes(data.name)) {
+        form.setValue("features", [...current, data.name]);
+      }
+      setNewFeatureName("");
+      setAddFeatureError(null);
+      setAddFeatureOpen(false);
+    },
+    onError: (err) => {
+      setAddFeatureError(err instanceof Error ? err.message : "Failed to add feature");
+    },
+  });
+
+  function handleAddFeature() {
+    const trimmed = newFeatureName.trim();
+    if (!trimmed) {
+      setAddFeatureError("Feature name is required");
+      return;
+    }
+    setAddFeatureError(null);
+    addFeatureMutation.mutate(trimmed);
+  }
 
   const hasInitializedRef = useRef<string | null>(null);
   useEffect(() => {
@@ -335,8 +364,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               {listingStatusBanner}
             </div>
 
-            <div className="mt-8 space-y-6 lg:order-2 lg:mt-0">
-              <section className="space-y-4">
+            <div className="mt-8 space-y-6 lg:order-2 lg:mt-0 bg-transparent p-6 sm:bg-white rounded-md border-0 sm:border sm:shadow">
+              <section className="space-y-4 rounded ">
                 <h2 className="text-lg font-semibold">Basic Information</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -348,7 +377,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         setMakeId(id);
                         form.setValue("modelId", 0);
                       }}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
                       <SelectContent>
@@ -369,7 +398,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Model*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : "0"} disabled={!makeId}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
                             </SelectTrigger>
                           </FormControl>
@@ -396,7 +425,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Year*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : ""}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select a Year" />
                             </SelectTrigger>
                           </FormControl>
@@ -419,7 +448,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} />
+                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className="w-full" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -438,7 +467,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Price*</FormLabel>
                         <FormControl>
-                          <div className="flex">
+                          <div className="flex w-full">
                             <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">₱</span>
                             <Input
                               type="text"
@@ -464,7 +493,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Mileage*</FormLabel>
                         <FormControl>
-                          <div className="flex">
+                          <div className="flex w-full">
                             <Input
                               type="text"
                               inputMode="numeric"
@@ -497,7 +526,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Transmission*</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -520,7 +549,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Body Type*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -548,7 +577,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Engine Size</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} />
+                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className="w-full" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -562,7 +591,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Fuel Type*</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -589,7 +618,13 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     <FormItem>
                       <FormLabel>Tell buyers about your car</FormLabel>
                       <FormControl>
-                        <Textarea {...field} rows={4} placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc." value={field.value ?? ""} />
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc."
+                          value={field.value ?? ""}
+                          className="w-full"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -607,16 +642,17 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     <FormItem>
                       <FormControl>
                         <div className="flex flex-wrap gap-2">
-                          {PREDEFINED_FEATURES.map((feature) => {
+                          {features.map((f) => {
+                            const feature = f.name;
                             const selected = (field.value ?? []).includes(feature);
                             return (
                               <button
-                                key={feature}
+                                key={f.id}
                                 type="button"
                                 onClick={() => {
                                   const current = field.value ?? [];
                                   if (selected) {
-                                    field.onChange(current.filter((f) => f !== feature));
+                                    field.onChange(current.filter((x) => x !== feature));
                                   } else {
                                     field.onChange([...current, feature]);
                                   }
@@ -629,6 +665,17 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               </button>
                             );
                           })}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAddFeatureError(null);
+                              setNewFeatureName("");
+                              setAddFeatureOpen(true);
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-input bg-muted/30 px-4 py-2 text-sm font-medium transition-colors hover:border-primary/50 hover:bg-muted/50">
+                            <Plus className="size-4" />
+                            Add Feature
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -636,6 +683,41 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                   )}
                 />
               </section>
+
+              <Dialog open={addFeatureOpen} onOpenChange={setAddFeatureOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Feature</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <label htmlFor="new-feature-name" className="text-sm font-medium">
+                        Feature name
+                      </label>
+                      <Input
+                        id="new-feature-name"
+                        value={newFeatureName}
+                        onChange={(e) => {
+                          setNewFeatureName(e.target.value);
+                          setAddFeatureError(null);
+                        }}
+                        placeholder="e.g. Heated Seats"
+                        className="w-full"
+                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddFeature())}
+                      />
+                      {addFeatureError && <p className="text-sm text-destructive">{addFeatureError}</p>}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setAddFeatureOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="button" onClick={handleAddFeature} disabled={addFeatureMutation.isPending}>
+                      {addFeatureMutation.isPending ? "Adding..." : "Add Feature"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
 
               <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
                 <Button type="button" variant="outline" onClick={() => router.back()}>
