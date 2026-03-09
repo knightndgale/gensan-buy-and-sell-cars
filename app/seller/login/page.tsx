@@ -38,14 +38,6 @@ function LoginForm() {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted">
-      {/* Header */}
-      <header className="flex items-center justify-start bg-card py-3 shadow-sm">
-        <Link href="/" className="shrink-0">
-          <Image src="/images/logo-full.png" alt="Gensan Buy and Sell Cars" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
-        </Link>
-        <span className="rounded-full bg-muted px-3 py-1 text-sm font-medium text-primary">Seller</span>
-      </header>
-
       {/* Main content */}
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         <div className="mb-6 text-center">
