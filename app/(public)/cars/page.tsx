@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { getListings } from "@/lib/firestore/listings";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getListingImages } from "@/lib/firestore/listing-images";
@@ -48,19 +47,16 @@ export default async function CarsPage({
   );
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
-        <h1 className="mb-8 text-2xl font-bold">All Listings</h1>
-        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {resolved.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-        {resolved.length === 0 && (
-          <p className="text-muted-foreground">No listings match your filters.</p>
-        )}
-      </main>
-    </div>
+    <main className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
+      <h1 className="mb-8 text-2xl font-bold">All Listings</h1>
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {resolved.map((listing) => (
+          <ListingCard key={listing.id} listing={listing} />
+        ))}
+      </div>
+      {resolved.length === 0 && (
+        <p className="text-muted-foreground">No listings match your filters.</p>
+      )}
+    </main>
   );
 }
