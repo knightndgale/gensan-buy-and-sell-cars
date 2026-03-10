@@ -9,6 +9,20 @@ const DEALERS_COLLECTION = "dealers";
 const LISTINGS_COLLECTION = "listings";
 const IMAGES_COLLECTION = "listingImages";
 
+async function deleteAllInCollection(
+  db: Awaited<ReturnType<typeof getAdminDb>>,
+  collectionName: string
+): Promise<void> {
+  const col = db.collection(collectionName);
+  while (true) {
+    const snapshot = await col.limit(500).get();
+    if (snapshot.empty) break;
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  }
+}
+
 export async function GET() {
   return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
@@ -19,17 +33,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Password auth
-  const password = await (async () => {
-    const header = request.headers.get("X-Seed-Password");
-    if (header) return header;
-    try {
-      const body = await request.json();
-      return (body as { password?: string })?.password ?? null;
-    } catch {
-      return null;
-    }
-  })();
+  // Parse body once for password and tearDown
+  let body: { password?: string; tearDown?: boolean } = {};
+  try {
+    body = await request.json();
+  } catch {
+    // Body may be empty or invalid
+  }
+
+  const password =
+    request.headers.get("X-Seed-Password") ?? body.password ?? null;
+  const tearDown =
+    body.tearDown === true ||
+    request.nextUrl.searchParams.get("tearDown") === "true";
 
   const expectedPassword = process.env.SEED_PASSWORD;
   if (!expectedPassword || password !== expectedPassword) {
@@ -49,6 +65,14 @@ export async function POST(request: NextRequest) {
   const auth = getAdminAuth();
 
   try {
+    if (tearDown) {
+      await deleteAllInCollection(db, IMAGES_COLLECTION);
+      await deleteAllInCollection(db, LISTINGS_COLLECTION);
+      await deleteAllInCollection(db, DEALERS_COLLECTION);
+      await deleteAllInCollection(db, MODELS_COLLECTION);
+      await deleteAllInCollection(db, MAKES_COLLECTION);
+    }
+
     // 1. carMakes
     const makesCol = db.collection(MAKES_COLLECTION);
     for (const make of CAR_MAKES) {
@@ -108,21 +132,36 @@ export async function POST(request: NextRequest) {
     // 5. listings
     const listingsCol = db.collection(LISTINGS_COLLECTION);
     const listingIds: string[] = [];
-    const listingData = [
-      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic" as const, fuelType: "gasoline" as const, bodyType: "Sedan" as const, engine: "1.3L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "ABS Brakes", "Power Windows"] as const },
-      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt" as const, fuelType: "gasoline" as const, bodyType: "Sedan" as const, engine: "1.5L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Apple CarPlay", "Android Auto", "LED Headlamps"] as const },
-      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual" as const, fuelType: "diesel" as const, bodyType: "Pickup" as const, engine: "3.0L" as const, features: ["Backup Camera", "ABS Brakes", "Parking Sensors", "Bluetooth Audio", "USB Port"] as const },
-      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic" as const, fuelType: "diesel" as const, bodyType: "Pickup" as const, engine: "2.0L" as const, features: ["Backup Camera", "Cruise Control", "Push Start", "Leather Seats"] as const },
-      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic" as const, fuelType: "gasoline" as const, bodyType: "MPV" as const, engine: "1.5L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "Power Windows"] as const },
-      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic" as const, fuelType: "diesel" as const, bodyType: "SUV" as const, engine: "2.8L" as const, features: ["Touchscreen Infotainment", "Backup Camera", "Sunroof", "Leather Seats", "Navigation System"] as const },
-      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt" as const, fuelType: "gasoline" as const, bodyType: "SUV" as const, engine: "2.0L" as const, features: ["Backup Camera", "Cruise Control", "Push Start", "Airbags"] as const },
+    const listingData: Array<{
+      modelId: number;
+      year: number;
+      price: number;
+      mileage: number;
+      transmission: "manual" | "automatic" | "cvt" | "dct";
+      fuelType: "gasoline" | "diesel" | "hybrid" | "electric";
+      bodyType: string;
+      engine: string;
+      color: string;
+      features: readonly string[];
+      status: "active" | "pending" | "sold";
+    }> = [
+      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic", fuelType: "gasoline", bodyType: "Sedan", engine: "1.3L", color: "White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "ABS Brakes", "Power Windows"], status: "active" },
+      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt", fuelType: "gasoline", bodyType: "Sedan", engine: "1.5L", color: "Silver", features: ["Touchscreen Infotainment", "Backup Camera", "Apple CarPlay", "Android Auto", "LED Headlamps"], status: "active" },
+      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual", fuelType: "diesel", bodyType: "Pickup", engine: "3.0L", color: "Black", features: ["Backup Camera", "ABS Brakes", "Parking Sensors", "Bluetooth Audio", "USB Port"], status: "active" },
+      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic", fuelType: "diesel", bodyType: "Pickup", engine: "2.0L", color: "Gray", features: ["Backup Camera", "Cruise Control", "Push Start", "Leather Seats"], status: "pending" },
+      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic", fuelType: "gasoline", bodyType: "MPV", engine: "1.5L", color: "Pearl White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "Power Windows"], status: "active" },
+      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic", fuelType: "diesel", bodyType: "SUV", engine: "2.8L", color: "Navy Blue", features: ["Touchscreen Infotainment", "Backup Camera", "Sunroof", "Leather Seats", "Navigation System"], status: "sold" },
+      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt", fuelType: "gasoline", bodyType: "SUV", engine: "2.0L", color: "Red", features: ["Backup Camera", "Cruise Control", "Push Start", "Airbags"], status: "active" },
     ];
+    let featuredActiveCount = 0;
     for (let i = 0; i < listingData.length; i++) {
       const dealerId = dealerIds[i % dealerIds.length];
       const data = listingData[i];
       const model = CAR_MODELS.find((m) => m.id === data.modelId);
       const make = model ? CAR_MAKES.find((m) => m.id === model.makeId) : undefined;
       const title = make && model ? `${data.year} ${make.name} ${model.name}` : undefined;
+      const isFeatured = data.status === "active" && featuredActiveCount < 2;
+      if (data.status === "active") featuredActiveCount++;
       const ref = await listingsCol.add({
         dealerId,
         modelId: data.modelId,
@@ -133,12 +172,15 @@ export async function POST(request: NextRequest) {
         fuelType: data.fuelType,
         location: "General Santos City",
         description: `Well-maintained ${data.year} vehicle. Low mileage, good condition.`,
-        status: "active",
-        isFeatured: i < 2,
+        status: data.status,
+        isFeatured,
         ...(title && { title }),
         bodyType: data.bodyType,
         engine: data.engine,
+        color: data.color,
         features: [...data.features],
+        views: 0,
+        ...(data.status === "sold" && { soldAt: FieldValue.serverTimestamp() }),
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });

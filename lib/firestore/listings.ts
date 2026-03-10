@@ -35,6 +35,7 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
     engine: (data.engine as string) || undefined,
     color: (data.color as string) || undefined,
     features: features?.length ? features : undefined,
+    views: (data.views as number) ?? 0,
     createdAt: ts(data.createdAt),
     updatedAt: ts(data.updatedAt),
     soldAt: ts(data.soldAt) ?? null,

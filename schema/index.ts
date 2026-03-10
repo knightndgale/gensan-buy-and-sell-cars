@@ -78,6 +78,7 @@ export const ListingSchema = z.object({
   engine: z.string().optional(),
   color: z.string().optional(),
   features: z.array(z.string()).optional(),
+  views: z.number().min(0).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
   soldAt: z.string().nullable().optional(),

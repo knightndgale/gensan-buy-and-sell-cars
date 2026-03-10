@@ -34,7 +34,7 @@ export default async function SellerDashboardPage() {
         createdAt: listing.createdAt,
         updatedAt: listing.updatedAt,
         soldAt: listing.soldAt ?? undefined,
-        views: 0,
+        views: listing.views ?? 0,
       };
     }),
   );
