@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type HeroSlide = {
   tag: string;
@@ -18,11 +18,11 @@ type HeroSlide = {
 const HERO_SLIDES: HeroSlide[] = [
   {
     tag: "Family Pick",
-    imageSrc: "/images/slider/slider-1.png",
+    imageSrc: "/images/slider/slider-1.webp",
   },
   {
     tag: "Budget Pick",
-    imageSrc: "/images/slider/slider-2.png",
+    imageSrc: "/images/slider/slider-2.webp",
   },
 ];
 
@@ -43,6 +43,14 @@ export function HeroSection() {
   const [year, setYear] = useState<string>("");
   const [priceRange, setPriceRange] = useState<string>("");
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (HERO_SLIDES.length <= 1) return;
+    const id = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % HERO_SLIDES.length);
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, []);
 
   const { data: makes = [] } = useQuery({
     queryKey: ["carMakes"],
@@ -76,26 +84,26 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-primary pt-0 pb-12 md:py-16 lg:py-20">
       <div className="container mx-auto max-w-7xl px-3 sm:px-4">
-        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left column: copy + search */}
-          <div className="flex flex-col gap-6 sm:order-first order-last ">
-            <div>
-              <h2 className="mb-4 text-4xl font-bold text-white sm:text-3xl lg:text-3xl">Buy & Sell Cars in General Santos</h2>
-              <p className="max-w-xl text-base text-white/90 sm:text-lg">
-                We connect you with verified local buyers in General Santos City, so you can find, view, and buy a car without scammers or endless Facebook haggling.
+          <div className="flex h-full flex-col gap-6 sm:order-first order-last justify-start">
+            <div className="shrink-0 pt-0 sm:pt-6 md:pt-2 lg:pt-0">
+              <h2 className="mb-4 text-5xl font-bold text-white sm:text-3xl sm:font-extrabold lg:text-4xl">Buy & Sell Cars in General Santos</h2>
+              <p className="w-full text-base text-white/90 sm:text-lg leading-5">
+                We connect you with verified local owners in General Santos City, so you can find, view, and buy a car without scams or endless Facebook haggling.
               </p>
             </div>
 
-            <div className="rounded-xl bg-white p-6 shadow-lg">
-              <h2 className="mb-4 text-lg font-semibold text-foreground">What car are you looking for?</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="min-h-0 flex-1 rounded-xl bg-white p-6 shadow-lg">
+              <h2 className="mb-4 text-lg  text-foreground">What car are you looking for?</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Select
                   value={makeId || "all"}
                   onValueChange={(v) => {
                     setMakeId(v === "all" ? "" : v);
                     setModelId("");
                   }}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full px-4 py-[14px]">
                     <SelectValue placeholder="Select a Make" />
                   </SelectTrigger>
                   <SelectContent>
@@ -108,7 +116,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={modelId || "all"} onValueChange={(v) => setModelId(v === "all" ? "" : v)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full px-4 py-[14px]">
                     <SelectValue placeholder="Select a Model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -121,7 +129,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={year || "all"} onValueChange={(v) => setYear(v === "all" ? "" : v)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full px-4 py-[14px]">
                     <SelectValue placeholder="Select a Year" />
                   </SelectTrigger>
                   <SelectContent>
@@ -134,7 +142,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={priceRange || "any"} onValueChange={(v) => setPriceRange(v === "any" ? "" : v)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full px-4 py-[14px]">
                     <SelectValue placeholder="Enter your Maximum Budget" />
                   </SelectTrigger>
                   <SelectContent>
@@ -146,18 +154,18 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={handleSearch} className="mt-4 w-full" size="lg">
+              <Button onClick={handleSearch} className="mt-4 w-full text-base" size="lg">
                 <Search className="size-5" />
                 Search Cars
               </Button>
             </div>
           </div>
 
-          {/* Right column: featured offer carousel */}
-          <div className="relative order-first aspect-16/10 overflow-hidden rounded-none shadow-lg sm:order-last sm:mx-0 sm:rounded-xl lg:aspect-video -mx-3">
+          {/* Right column: featured offer carousel — matches left column height */}
+          <div className="relative order-first h-full min-h-[280px] overflow-hidden rounded-none shadow-lg sm:order-last sm:mx-0 sm:rounded-xl -mx-3">
             {HERO_SLIDES.map((slide, index) => (
               <div key={index} className={cn("absolute inset-0 transition-opacity duration-300", index === activeIndex ? "z-10 opacity-100" : "z-0 opacity-0")}>
-                <Image src={slide.imageSrc} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" priority={index === 0} />
+                <Image onClick={() => router.push("/cars")} src={slide.imageSrc} alt="" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" priority={index === 0} />
               </div>
             ))}
             {/* Pagination - visible on lg+ only, hidden on mobile */}
