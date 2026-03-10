@@ -71,7 +71,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
       <section className="bg-transparent lg:bg-white rounded-md p-4 ">
         <div className="flex flex-row justify-between items-center gap-2 mb-4">
           <h2 className="text-xl font-bold">My Listings</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground hidden sm:block">
             {filtered.length} listing{filtered.length !== 1 ? "s" : ""}
           </p>
         </div>
