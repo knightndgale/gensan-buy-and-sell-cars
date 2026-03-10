@@ -14,7 +14,7 @@ export async function FeaturedListings() {
 
   const resolved: ListingWithDetails[] = await Promise.all(
     listings.map(async (l) => {
-      const model = modelMap.get(l.modelId);
+      const model = typeof l.modelId === "number" ? modelMap.get(l.modelId) : undefined;
       const images = await getListingImages(l.id);
       const primary = images.find((i) => i.isPrimary) ?? images[0];
       return {

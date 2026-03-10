@@ -51,23 +51,27 @@ export default async function CarDetailPage({ params }: PageProps) {
     getCarMakes(),
   ]);
 
-  const model = models.find((m) => m.id === listing.modelId);
+  const model = typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
   const make = model ? makes.find((m2) => m2.id === model.makeId) : undefined;
-  const dealer = await getDealerById(listing.dealerId);
+  const dealer = listing.dealerId ? await getDealerById(listing.dealerId) : null;
 
   const derivedTitle = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
   const title = listing.title?.trim() || derivedTitle;
+  const locationLabel = listing.location?.trim() || "N/A";
+  const priceLabel = typeof listing.price === "number" ? formatPrice(listing.price) : "N/A";
+  const mileageLabel = typeof listing.mileage === "number" ? formatMileage(listing.mileage) : "N/A";
+  const yearLabel = typeof listing.year === "number" ? String(listing.year) : "—";
 
   const detailsContent = (
     <Card className="h-fit">
       <CardContent className="pt-6">
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="mt-2 text-2xl font-bold text-primary">
-          {formatPrice(listing.price)}
+          {priceLabel}
         </p>
         <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
           <MapPin className="size-4 shrink-0" />
-          {listing.location}
+          {locationLabel}
         </div>
 
         <Separator className="my-4" />
@@ -76,22 +80,22 @@ export default async function CarDetailPage({ params }: PageProps) {
           <div className="flex flex-col items-center gap-1 text-center">
             <Gauge className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Mileage</span>
-            <span className="text-sm font-medium">{formatMileage(listing.mileage)}</span>
+            <span className="text-sm font-medium">{mileageLabel}</span>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">
             <Fuel className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Fuel</span>
-            <span className="text-sm font-medium">{formatFuelType(listing.fuelType)}</span>
+            <span className="text-sm font-medium">{listing.fuelType ? formatFuelType(listing.fuelType) : "—"}</span>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">
             <Settings className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Transmission</span>
-            <span className="text-sm font-medium">{formatTransmission(listing.transmission)}</span>
+            <span className="text-sm font-medium">{listing.transmission ? formatTransmission(listing.transmission) : "—"}</span>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">
             <Calendar className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Year</span>
-            <span className="text-sm font-medium">{listing.year}</span>
+            <span className="text-sm font-medium">{yearLabel}</span>
           </div>
         </div>
 
@@ -99,7 +103,7 @@ export default async function CarDetailPage({ params }: PageProps) {
 
         <section>
           <h2 className="font-semibold">Description</h2>
-          <p className="mt-2 text-muted-foreground">{listing.description}</p>
+          <p className="mt-2 text-muted-foreground">{listing.description?.trim() || "—"}</p>
         </section>
 
         <Separator className="my-4" />
@@ -132,7 +136,7 @@ export default async function CarDetailPage({ params }: PageProps) {
               <Fuel className="size-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0">
                 <span className="block text-xs text-muted-foreground">Fuel Type</span>
-                <span className="text-sm font-medium">{formatFuelType(listing.fuelType)}</span>
+                <span className="text-sm font-medium">{listing.fuelType ? formatFuelType(listing.fuelType) : "—"}</span>
               </div>
             </div>
           </div>

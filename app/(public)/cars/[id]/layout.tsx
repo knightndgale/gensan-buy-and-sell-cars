@@ -13,13 +13,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       import("@/lib/firestore/cars").then((m) => m.getCarModels()),
       import("@/lib/firestore/cars").then((m) => m.getCarMakes()),
     ]);
-    const model = models.find((m) => m.id === listing.modelId);
+    const model = typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
     const make = model ? makes.find((m) => m.id === model.makeId) : undefined;
     const derivedTitle = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
     const title = listing.title?.trim() || derivedTitle;
     return {
       title: `${title} | Gensan Car Buy & Sell`,
-      description: listing.description?.slice(0, 160) ?? `Car for sale in ${listing.location}`,
+      description:
+        listing.description?.slice(0, 160) ??
+        (listing.location ? `Car for sale in ${listing.location}` : undefined),
     };
   } catch {
     return {};

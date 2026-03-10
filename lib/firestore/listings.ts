@@ -1,11 +1,11 @@
 import { FieldValue, type Query } from "firebase-admin/firestore";
-import type { Listing, ListingInput } from "@/schema";
+import type { Listing, ListingInput, ListingRecord } from "@/schema";
 import { getAdminDbSafe } from "@/lib/firebase/admin";
 import { getCarModels } from "@/lib/firestore/cars";
 
 const LISTINGS_COLLECTION = "listings";
 
-function toListing(id: string, data: Record<string, unknown>): Listing {
+function toListing(id: string, data: Record<string, unknown>): ListingRecord {
   const ts = (v: unknown) =>
     typeof v === "object" && v !== null && "toDate" in v && typeof (v as { toDate: () => Date }).toDate === "function"
       ? (v as { toDate: () => Date }).toDate().toISOString()
@@ -19,16 +19,16 @@ function toListing(id: string, data: Record<string, unknown>): Listing {
 
   return {
     id,
-    dealerId: data.dealerId as string,
-    modelId: data.modelId as number,
-    year: data.year as number,
-    price: data.price as number,
-    mileage: data.mileage as number,
-    transmission: data.transmission as Listing["transmission"],
-    fuelType: data.fuelType as Listing["fuelType"],
-    location: data.location as string,
-    description: data.description as string,
-    status: data.status as Listing["status"],
+    dealerId: typeof data.dealerId === "string" ? data.dealerId : undefined,
+    modelId: typeof data.modelId === "number" ? data.modelId : undefined,
+    year: typeof data.year === "number" ? data.year : undefined,
+    price: typeof data.price === "number" ? data.price : undefined,
+    mileage: typeof data.mileage === "number" ? data.mileage : undefined,
+    transmission: (data.transmission as Listing["transmission"] | undefined) ?? undefined,
+    fuelType: (data.fuelType as Listing["fuelType"] | undefined) ?? undefined,
+    location: typeof data.location === "string" ? data.location : undefined,
+    description: typeof data.description === "string" ? data.description : undefined,
+    status: (data.status as Listing["status"] | undefined) ?? undefined,
     isFeatured: (data.isFeatured as boolean) ?? false,
     title: (data.title as string) || undefined,
     bodyType: (data.bodyType as string) || undefined,
@@ -63,7 +63,7 @@ export async function getListings(
     bodyType?: string;
     limitCount?: number;
   } = {}
-): Promise<Listing[]> {
+): Promise<ListingRecord[]> {
   const db = getAdminDbSafe();
   if (!db) return [];
 
@@ -76,7 +76,7 @@ export async function getListings(
     if (modelIds.length === 0) return [];
   }
 
-  const runQuery = async (ids: number[]): Promise<Listing[]> => {
+  const runQuery = async (ids: number[]): Promise<ListingRecord[]> => {
     let q: Query = db.collection(LISTINGS_COLLECTION) as Query;
     if (filters.status) q = q.where("status", "==", filters.status);
     if (ids.length === 1) {
@@ -114,7 +114,7 @@ export async function getListings(
   }
 
   const seen = new Set<string>();
-  const results: Listing[] = [];
+  const results: ListingRecord[] = [];
   for (let i = 0; i < modelIds.length; i += FIRESTORE_IN_LIMIT) {
     const chunk = modelIds.slice(i, i + FIRESTORE_IN_LIMIT);
     const chunkResults = await runQuery(chunk);
@@ -133,7 +133,7 @@ export async function getListings(
   return results.slice(0, filters.limitCount ?? 50);
 }
 
-export async function getListingById(id: string): Promise<Listing | null> {
+export async function getListingById(id: string): Promise<ListingRecord | null> {
   const db = getAdminDbSafe();
   if (!db) return null;
   const ref = db.collection(LISTINGS_COLLECTION).doc(id);
@@ -142,7 +142,7 @@ export async function getListingById(id: string): Promise<Listing | null> {
   return toListing(snap.id, snap.data() ?? {});
 }
 
-export async function getListingsByDealer(dealerId: string): Promise<Listing[]> {
+export async function getListingsByDealer(dealerId: string): Promise<ListingRecord[]> {
   const db = getAdminDbSafe();
   if (!db) return [];
   const snapshot = await db
@@ -153,7 +153,7 @@ export async function getListingsByDealer(dealerId: string): Promise<Listing[]> 
   return snapshot.docs.map((d) => toListing(d.id, d.data()));
 }
 
-export async function getFeaturedListings(limitCount = 6): Promise<Listing[]> {
+export async function getFeaturedListings(limitCount = 6): Promise<ListingRecord[]> {
   const db = getAdminDbSafe();
   if (!db) return [];
   const snapshot = await db

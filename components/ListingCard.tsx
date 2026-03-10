@@ -3,13 +3,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { formatMileage, formatPrice } from "@/lib/format";
-import type { Listing } from "@/schema";
+import type { ListingRecord } from "@/schema";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Car, Clock, Fuel, Gauge, MapPin, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-export type ListingWithDetails = Listing & {
+dayjs.extend(relativeTime);
+
+export type ListingWithDetails = ListingRecord & {
   makeName?: string;
   modelName?: string;
   primaryImageUrl?: string;
@@ -23,17 +27,8 @@ export type ListingWithDetails = Listing & {
 
 function formatTimeAgo(createdAt?: string): string {
   if (!createdAt) return "N/A";
-  try {
-    const date = new Date(createdAt);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "1 day ago";
-    return `${diffDays} days ago`;
-  } catch {
-    return "N/A";
-  }
+  const date = dayjs(createdAt);
+  return date.isValid() ? date.fromNow() : "N/A";
 }
 
 function SpecItem({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
@@ -49,9 +44,13 @@ export function ListingCard({ listing }: { listing: ListingWithDetails }) {
   const [imageError, setImageError] = useState(false);
   const titleParts = [listing.year, listing.makeName, listing.modelName, listing.trim].filter(Boolean);
   const title = titleParts.length > 0 ? titleParts.join(" ") : "Car";
-  const transmissionLabel = ["cvt", "dct"].includes(listing.transmission.toLowerCase())
-    ? listing.transmission.toUpperCase()
-    : listing.transmission.charAt(0).toUpperCase() + listing.transmission.slice(1);
+  const transmissionLabel = listing.transmission
+    ? ["cvt", "dct"].includes(listing.transmission.toLowerCase())
+      ? listing.transmission.toUpperCase()
+      : listing.transmission.charAt(0).toUpperCase() + listing.transmission.slice(1)
+    : "N/A";
+  const priceLabel = typeof listing.price === "number" ? formatPrice(listing.price) : "N/A";
+  const mileageLabel = typeof listing.mileage === "number" ? formatMileage(listing.mileage) : "N/A";
 
   return (
     <Link href={`/cars/${listing.id}`} className="block">
@@ -71,14 +70,14 @@ export function ListingCard({ listing }: { listing: ListingWithDetails }) {
         </div>
         <CardContent className="space-y-2 pb-5">
           <h3 className="font-semibold">{title}</h3>
-          <p className="text-xl font-bold text-primary">{formatPrice(listing.price)}</p>
+          <p className="text-xl font-bold text-primary">{priceLabel}</p>
           <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-            <SpecItem icon={Gauge} label={formatMileage(listing.mileage)} />
-            <SpecItem icon={Fuel} label={listing.fuelEfficiency ? `${listing.fuelEfficiency} km/L` : "N/A"} />
+            <SpecItem icon={Gauge} label={mileageLabel} />
+            <SpecItem icon={Fuel} label={listing.fuelType ? listing.fuelType.charAt(0).toUpperCase() + listing.fuelType.slice(1) : "N/A"} />
             <SpecItem icon={Settings} label={transmissionLabel} />
-            <SpecItem icon={Car} label={listing.engineDisplacement ? `${listing.engineDisplacement}L` : "N/A"} />
+            <SpecItem icon={Car} label={listing.engine ? `${listing.engine}` : "N/A"} />
           </div>
-          <SpecItem icon={MapPin} label={listing.location || "N/A"} />
+          <SpecItem icon={MapPin} label={listing.location?.trim() || "N/A"} />
         </CardContent>
       </Card>
     </Link>

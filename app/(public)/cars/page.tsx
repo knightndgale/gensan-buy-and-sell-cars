@@ -57,7 +57,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
   const resolved: ListingWithDetails[] = await Promise.all(
     listings.map(async (l) => {
-      const modelInfo = modelMap.get(l.modelId);
+      const modelInfo = typeof l.modelId === "number" ? modelMap.get(l.modelId) : undefined;
       const images = await getListingImages(l.id);
       const primary = images.find((i) => i.isPrimary) ?? images[0];
       return {
@@ -72,16 +72,21 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
   let filtered = resolved;
 
   if (minMileage !== undefined && !isNaN(minMileage)) {
-    filtered = filtered.filter((l) => l.mileage >= minMileage);
+    filtered = filtered.filter((l) => typeof l.mileage === "number" && l.mileage >= minMileage);
   }
   if (maxMileage !== undefined && !isNaN(maxMileage)) {
-    filtered = filtered.filter((l) => l.mileage <= maxMileage);
+    filtered = filtered.filter((l) => typeof l.mileage === "number" && l.mileage <= maxMileage);
   }
   if (q) {
     filtered = filtered.filter((l) => matchesKeyword(l, q));
   }
 
-  const sorted = sort === "price_asc" ? [...filtered].sort((a, b) => a.price - b.price) : sort === "price_desc" ? [...filtered].sort((a, b) => b.price - a.price) : filtered;
+  const sorted =
+    sort === "price_asc"
+      ? [...filtered].sort((a, b) => (a.price ?? Number.POSITIVE_INFINITY) - (b.price ?? Number.POSITIVE_INFINITY))
+      : sort === "price_desc"
+        ? [...filtered].sort((a, b) => (b.price ?? Number.NEGATIVE_INFINITY) - (a.price ?? Number.NEGATIVE_INFINITY))
+        : filtered;
 
   const totalCount = sorted.length;
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);

@@ -85,6 +85,22 @@ export const ListingSchema = z.object({
 });
 export type Listing = z.infer<typeof ListingSchema>;
 
+// Listing record as read from Firestore.
+// Some legacy/incomplete documents may be missing fields that are required on create/update.
+export const ListingRecordSchema = ListingSchema.partial({
+  dealerId: true,
+  modelId: true,
+  year: true,
+  price: true,
+  mileage: true,
+  transmission: true,
+  fuelType: true,
+  location: true,
+  description: true,
+  status: true,
+});
+export type ListingRecord = z.infer<typeof ListingRecordSchema>;
+
 // Listing Image
 export const ListingImageSchema = z.object({
   id: z.string().optional(),

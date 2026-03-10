@@ -19,22 +19,22 @@ export default async function EditListingPage({ params }: PageProps) {
     notFound();
   }
 
-  const model = await getCarModelById(listing.modelId);
+  const model = typeof listing.modelId === "number" ? await getCarModelById(listing.modelId) : null;
   const makeId = model?.makeId ?? 0;
 
   return (
     <ListingForm
       initialData={{
-        modelId: listing.modelId,
+        modelId: listing.modelId ?? 0,
         makeId,
-        year: listing.year,
-        price: listing.price,
-        mileage: listing.mileage,
-        transmission: listing.transmission,
-        fuelType: listing.fuelType,
-        location: listing.location,
-        description: listing.description,
-        status: listing.status,
+        year: listing.year ?? new Date().getFullYear(),
+        price: listing.price ?? 0,
+        mileage: listing.mileage ?? 0,
+        transmission: listing.transmission ?? "automatic",
+        fuelType: listing.fuelType ?? "gasoline",
+        location: listing.location ?? "",
+        description: listing.description ?? "",
+        status: listing.status ?? "pending",
         isFeatured: listing.isFeatured,
         title: listing.title ?? "",
         bodyType: listing.bodyType ?? "",
@@ -43,7 +43,7 @@ export default async function EditListingPage({ params }: PageProps) {
         features: listing.features ?? [],
       }}
       listingId={id}
-      listingStatus={listing.status}
+      listingStatus={listing.status ?? "pending"}
     />
   );
 }
