@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log("🚀 ~ proxy ~ pathname:", pathname);
 
   // Protect seller routes - redirect to login if not authenticated
   if (pathname.startsWith("/seller") && !pathname.startsWith("/seller/login")) {
@@ -28,5 +27,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/seller/((?!login).*)", "/admin/:path*"],
+  matcher: ["/seller", "/seller/((?!login).*)", "/admin/:path*"],
 };
