@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -244,63 +243,61 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const isCreate = !listingId;
 
   const photosSection = (
-    <Card>
-      <CardContent className="space-y-4 ">
-        <div className="flex items-center justify-between">
-          <FormLabel className="text-base font-medium">Photos*</FormLabel>
-          <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          multiple
-          className="hidden"
-          onChange={(e) => {
-            addFiles(e.target.files);
-            e.target.value = "";
-          }}
-        />
+    <section className="space-y-6  sm:p-4 sm:bg-white rounded-lg sm:border sm:shadow">
+      <div className="flex items-center justify-between">
+        <FormLabel className="text-base font-medium">Photos*</FormLabel>
+        <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
+      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          addFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
 
-        <div className="flex flex-wrap gap-3">
-          {imageItems.map((item, index) => (
-            <div key={index} className="relative h-30 w-30 shrink-0 overflow-hidden rounded-lg border bg-muted">
-              {item.type === "new" ? <img src={item.preview} alt="" className="h-full w-full object-cover" /> : <Image src={item.image.imageUrl} alt="" fill className="object-cover" sizes="80px" />}
-              <span
-                className={`absolute bottom-1 left-1 rounded-full px-2 py-0.5 text-xs font-medium shadow-sm ${
-                  primaryIndex === index ? "bg-primary text-primary-foreground" : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
-                }`}
-                onClick={() => setAsPrimary(index)}>
-                {primaryIndex === index ? "Main" : "Set main"}
-              </span>
-              <button type="button" onClick={() => removeItem(index)} className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80" aria-label="Remove photo">
-                <X className="size-3" />
-              </button>
-            </div>
-          ))}
-          {imageItems.length < 6 && (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex w-30 h-30 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-muted/30 transition-colors hover:border-primary/50 hover:bg-muted/50">
-              <span className="rounded-full bg-primary/10 p-2">
-                <Camera className="size-6 text-primary" />
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
+      <div className="flex flex-wrap gap-3">
+        {imageItems.map((item, index) => (
+          <div key={index} className="relative h-30 w-30 shrink-0 overflow-hidden rounded-lg border bg-muted">
+            {item.type === "new" ? <img src={item.preview} alt="" className="h-full w-full object-cover" /> : <Image src={item.image.imageUrl} alt="" fill className="object-cover" sizes="80px" />}
+            <span
+              className={`absolute bottom-1 left-1 rounded-full px-2 py-0.5 text-xs font-medium shadow-sm ${
+                primaryIndex === index ? "bg-primary text-primary-foreground" : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
+              }`}
+              onClick={() => setAsPrimary(index)}>
+              {primaryIndex === index ? "Main" : "Set main"}
+            </span>
+            <button type="button" onClick={() => removeItem(index)} className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80" aria-label="Remove photo">
+              <X className="size-3" />
             </button>
-          )}
-        </div>
+          </div>
+        ))}
+        {imageItems.length < 6 && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex w-30 h-30 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-white transition-colors hover:border-primary/50 hover:bg-muted/50 sm:bg-muted/30">
+            <span className="rounded-full bg-primary/10 p-2">
+              <Camera className="size-6 text-primary" />
+            </span>
+            <span className="text-sm font-medium text-muted-foreground">Add Photo</span>
+          </button>
+        )}
+      </div>
 
-        <p className="flex items-start gap-2 text-xs text-muted-foreground ">
-          <Info className="size-3.5 shrink-0 text-muted-foreground" />
-          First photo will be the main listing photo. Include front, rear, side and interior shots.
-        </p>
-      </CardContent>
-    </Card>
+      <p className="flex items-start gap-2 text-xs text-muted-foreground ">
+        <Info className="size-3.5 shrink-0 text-muted-foreground" />
+        First photo will be the main listing photo. Include front, rear, side and interior shots.
+      </p>
+    </section>
   );
 
   const listingPreview = isCreate && (
-    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/30">
+    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/30 hidden md:block">
       <div className="flex gap-3">
         <FileText className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
         <div>
@@ -364,7 +361,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               {listingStatusBanner}
             </div>
 
-            <div className="mt-8 space-y-6 lg:order-2 lg:mt-0 bg-transparent p-6 sm:bg-white rounded-md border-0 sm:border sm:shadow">
+            <div className="mt-8 space-y-8 lg:order-2 lg:mt-0 bg-transparent sm:p-6 sm:bg-white rounded-md border-0 sm:border sm:shadow">
               <section className="space-y-4 rounded ">
                 <h2 className="text-lg font-semibold">Basic Information</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -377,7 +374,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         setMakeId(id);
                         form.setValue("modelId", 0);
                       }}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white">
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
                       <SelectContent>
@@ -398,7 +395,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Model*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : "0"} disabled={!makeId}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
                             </SelectTrigger>
                           </FormControl>
@@ -425,7 +422,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Year*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : ""}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select a Year" />
                             </SelectTrigger>
                           </FormControl>
@@ -448,7 +445,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className="w-full" />
+                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className="w-full bg-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -473,7 +470,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               type="text"
                               inputMode="numeric"
                               placeholder="e.g. 620000"
-                              className="rounded-l-none"
+                              className="rounded-l-none bg-white"
                               value={field.value ? field.value.toLocaleString() : ""}
                               onChange={(e) => {
                                 const raw = e.target.value.replace(/\D/g, "");
@@ -498,7 +495,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               type="text"
                               inputMode="numeric"
                               placeholder="e.g. 35000"
-                              className="rounded-r-none"
+                              className="rounded-r-none bg-white"
                               value={field.value ? field.value : ""}
                               onChange={(e) => {
                                 const raw = e.target.value.replace(/\D/g, "");
@@ -526,7 +523,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Transmission*</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -549,7 +546,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Body Type*</FormLabel>
                         <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -577,7 +574,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Engine Size</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className="w-full" />
+                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className="w-full bg-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -591,7 +588,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Fuel Type*</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -623,7 +620,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           rows={4}
                           placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc."
                           value={field.value ?? ""}
-                          className="w-full"
+                          className="w-full bg-white"
                         />
                       </FormControl>
                       <FormMessage />
@@ -702,7 +699,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           setAddFeatureError(null);
                         }}
                         placeholder="e.g. Heated Seats"
-                        className="w-full"
+                        className="w-full bg-white"
                         onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddFeature())}
                       />
                       {addFeatureError && <p className="text-sm text-destructive">{addFeatureError}</p>}
