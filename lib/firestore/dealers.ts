@@ -1,5 +1,6 @@
+import { FieldValue } from "firebase-admin/firestore";
 import type { Dealer } from "@/schema";
-import { getAdminDbSafe } from "@/lib/firebase/admin";
+import { getAdminDb, getAdminDbSafe } from "@/lib/firebase/admin";
 
 const DEALERS_COLLECTION = "dealers";
 
@@ -40,4 +41,20 @@ export async function getDealerById(id: string): Promise<Dealer | null> {
   const snap = await ref.get();
   if (!snap.exists) return null;
   return toDealer(snap.id, snap.data() ?? {});
+}
+
+export async function createDealer(
+  userId: string,
+  dealershipName = "New Dealer",
+  location = "General Santos City"
+): Promise<string> {
+  const db = getAdminDb();
+  const ref = await db.collection(DEALERS_COLLECTION).add({
+    userId,
+    dealershipName,
+    location,
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+  return ref.id;
 }
