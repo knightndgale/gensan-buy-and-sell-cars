@@ -144,14 +144,15 @@ export async function POST(request: NextRequest) {
       color: string;
       features: readonly string[];
       status: "active" | "pending" | "sold";
+      location: string;
     }> = [
-      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic", fuelType: "gasoline", bodyType: "Sedan", engine: "1.3L", color: "White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "ABS Brakes", "Power Windows"], status: "active" },
-      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt", fuelType: "gasoline", bodyType: "Sedan", engine: "1.5L", color: "Silver", features: ["Touchscreen Infotainment", "Backup Camera", "Apple CarPlay", "Android Auto", "LED Headlamps"], status: "active" },
-      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual", fuelType: "diesel", bodyType: "Pickup", engine: "3.0L", color: "Black", features: ["Backup Camera", "ABS Brakes", "Parking Sensors", "Bluetooth Audio", "USB Port"], status: "active" },
-      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic", fuelType: "diesel", bodyType: "Pickup", engine: "2.0L", color: "Gray", features: ["Backup Camera", "Cruise Control", "Push Start", "Leather Seats"], status: "pending" },
-      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic", fuelType: "gasoline", bodyType: "MPV", engine: "1.5L", color: "Pearl White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "Power Windows"], status: "active" },
-      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic", fuelType: "diesel", bodyType: "SUV", engine: "2.8L", color: "Navy Blue", features: ["Touchscreen Infotainment", "Backup Camera", "Sunroof", "Leather Seats", "Navigation System"], status: "sold" },
-      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt", fuelType: "gasoline", bodyType: "SUV", engine: "2.0L", color: "Red", features: ["Backup Camera", "Cruise Control", "Push Start", "Airbags"], status: "active" },
+      { modelId: 1, year: 2022, price: 850_000, mileage: 15_000, transmission: "automatic", fuelType: "gasoline", bodyType: "Sedan", engine: "1.3L", color: "White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "ABS Brakes", "Power Windows"], status: "active", location: "Brgy. Fatima, General Santos City" },
+      { modelId: 6, year: 2021, price: 1_200_000, mileage: 25_000, transmission: "cvt", fuelType: "gasoline", bodyType: "Sedan", engine: "1.5L", color: "Silver", features: ["Touchscreen Infotainment", "Backup Camera", "Apple CarPlay", "Android Auto", "LED Headlamps"], status: "active", location: "Brgy. Lagao, General Santos City" },
+      { modelId: 17, year: 2023, price: 1_450_000, mileage: 8_000, transmission: "manual", fuelType: "diesel", bodyType: "Pickup", engine: "3.0L", color: "Black", features: ["Backup Camera", "ABS Brakes", "Parking Sensors", "Bluetooth Audio", "USB Port"], status: "active", location: "General Santos City" },
+      { modelId: 19, year: 2022, price: 1_350_000, mileage: 20_000, transmission: "automatic", fuelType: "diesel", bodyType: "Pickup", engine: "2.0L", color: "Gray", features: ["Backup Camera", "Cruise Control", "Push Start", "Leather Seats"], status: "pending", location: "Brgy. Calumpang, General Santos City" },
+      { modelId: 13, year: 2024, price: 1_150_000, mileage: 5_000, transmission: "automatic", fuelType: "gasoline", bodyType: "MPV", engine: "1.5L", color: "Pearl White", features: ["Touchscreen Infotainment", "Backup Camera", "Keyless Entry", "Power Windows"], status: "active", location: "Brgy. Dadiangas South, General Santos City" },
+      { modelId: 4, year: 2021, price: 1_800_000, mileage: 30_000, transmission: "automatic", fuelType: "diesel", bodyType: "SUV", engine: "2.8L", color: "Navy Blue", features: ["Touchscreen Infotainment", "Backup Camera", "Sunroof", "Leather Seats", "Navigation System"], status: "sold", location: "Brgy. Apopong, General Santos City" },
+      { modelId: 9, year: 2023, price: 1_550_000, mileage: 12_000, transmission: "cvt", fuelType: "gasoline", bodyType: "SUV", engine: "2.0L", color: "Red", features: ["Backup Camera", "Cruise Control", "Push Start", "Airbags"], status: "active", location: "Brgy. Bula, General Santos City" },
     ];
     let featuredActiveCount = 0;
     for (let i = 0; i < listingData.length; i++) {
@@ -170,7 +171,7 @@ export async function POST(request: NextRequest) {
         mileage: data.mileage,
         transmission: data.transmission,
         fuelType: data.fuelType,
-        location: "General Santos City",
+        location: data.location,
         description: `Well-maintained ${data.year} vehicle. Low mileage, good condition.`,
         status: data.status,
         isFeatured,

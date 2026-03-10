@@ -630,6 +630,28 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               </section>
 
               <section className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Where is it located? *</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="e.g. Brgy. Fatima, General Santos City"
+                          value={field.value ?? ""}
+                          className="w-full bg-white"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </section>
+
+              <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Features</h2>
                 <p className="text-sm text-muted-foreground">Select all features that apply to your car</p>
                 <FormField
