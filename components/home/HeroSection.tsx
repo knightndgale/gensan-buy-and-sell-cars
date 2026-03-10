@@ -27,7 +27,7 @@ const HERO_SLIDES: HeroSlide[] = [
 ];
 
 const PRICE_RANGES = [
-  { label: "Any", min: undefined, max: undefined },
+  { label: "Select a Max Budget", min: undefined, max: undefined },
   { label: "Under P500k", min: 0, max: 500_000 },
   { label: "P500k - P1M", min: 500_000, max: 1_000_000 },
   { label: "P1M - P2M", min: 1_000_000, max: 2_000_000 },
@@ -141,13 +141,13 @@ export function HeroSection() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={priceRange || "any"} onValueChange={(v) => setPriceRange(v === "any" ? "" : v)}>
+                <Select value={priceRange || "Select a Max Budget"} onValueChange={(v) => setPriceRange(v === "Select a Max Budget" ? "" : v)}>
                   <SelectTrigger className="w-full px-4 py-[14px]">
-                    <SelectValue placeholder="Enter your Maximum Budget" />
+                    <SelectValue placeholder="Select a Max Budget" />
                   </SelectTrigger>
                   <SelectContent>
                     {PRICE_RANGES.map((r) => (
-                      <SelectItem key={r.label} value={r.label === "Any" ? "any" : r.label}>
+                      <SelectItem key={r.label} value={r.label === "Select a Max Budget" ? "Select a Max Budget" : r.label}>
                         {r.label}
                       </SelectItem>
                     ))}
