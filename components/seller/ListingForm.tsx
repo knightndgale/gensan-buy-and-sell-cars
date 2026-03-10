@@ -236,7 +236,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       const err = await res.json();
       throw new Error(err.error ?? "Failed to save");
     }
-    router.push("/seller/listings");
+    router.push("/seller");
     router.refresh();
   }
 
