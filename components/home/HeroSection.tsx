@@ -96,7 +96,7 @@ export function HeroSection() {
 
             <div className="min-h-0 flex-1 rounded-xl bg-white p-6 shadow-lg">
               <h2 className="mb-4 text-lg  text-foreground">What car are you looking for?</h2>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Select
                   value={makeId || "all"}
                   onValueChange={(v) => {
