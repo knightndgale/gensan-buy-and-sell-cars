@@ -29,12 +29,14 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
   const updateUrl = useCallback(
     (updates: { make?: string; q?: string }) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (updates.make !== undefined) {
-        if (updates.make) params.set("make", updates.make);
+      if ("make" in updates) {
+        const value = updates.make?.trim() ?? "";
+        if (value) params.set("make", value);
         else params.delete("make");
       }
-      if (updates.q !== undefined) {
-        if (updates.q.trim()) params.set("q", updates.q.trim());
+      if ("q" in updates) {
+        const value = updates.q?.trim() ?? "";
+        if (value) params.set("q", value);
         else params.delete("q");
       }
       const qs = params.toString();
