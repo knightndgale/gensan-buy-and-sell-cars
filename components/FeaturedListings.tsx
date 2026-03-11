@@ -29,7 +29,7 @@ export async function FeaturedListings() {
   if (resolved.length === 0) {
     return (
       <section className="py-12">
-        <h2 className="mb-6 text-2xl font-bold">Top 20 Featured Cars</h2>
+        <h2 className="mb-6 text-2xl font-bold">Featured Cars</h2>
         <p className="text-muted-foreground">No featured listings at the moment.</p>
       </section>
     );
@@ -37,7 +37,7 @@ export async function FeaturedListings() {
 
   return (
     <section className="py-12">
-      <h2 className="mb-6 text-2xl font-bold">Top 20 Featured Cars</h2>
+      <h2 className="mb-6 text-2xl font-bold">Featured Cars</h2>
       <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {resolved.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />

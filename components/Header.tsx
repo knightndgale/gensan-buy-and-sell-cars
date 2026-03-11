@@ -19,7 +19,7 @@ export function Header() {
       </div>
 
       {/* Desktop nav - hidden on mobile */}
-      <nav className="ml-auto  items-center gap-4 flex">
+      <nav className="ml-auto flex items-center gap-6 pr-2 sm:gap-8 sm:pr-6 lg:gap-12 lg:pr-10">
         {publicNavItems.map((item) => (
           <Link
             key={item.href}
