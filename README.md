@@ -78,9 +78,9 @@ Build succeeds without Firebase credentials (returns empty data). Add credential
 
 ### For firebase emulator
 
-- NEXT_PUBLIC_USE_FIREBASE_EMULATOR=
-- FIRESTORE_EMULATOR_HOST=
-- FIREBASE_AUTH_EMULATOR_HOST=
+- NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
+- FIRESTORE_EMULATOR_HOST=localhost:8080
+- FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
 
 ### Firebase Admin (server-only - never expose)
 
