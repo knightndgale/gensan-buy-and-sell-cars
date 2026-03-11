@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { CarMake } from "@/schema";
 import { Car, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type BrowseCarsFilterProps = {
   makes: CarMake[];
@@ -21,8 +21,12 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
   const qParam = searchParams.get("q") ?? "";
 
   const [searchValue, setSearchValue] = useState(qParam);
+  const lastPushedQRef = useRef<string | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (qParam === lastPushedQRef.current) return;
+    lastPushedQRef.current = qParam;
     setSearchValue(qParam);
   }, [qParam]);
 
@@ -45,17 +49,41 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
     [router, searchParams],
   );
 
+  const updateUrlRef = useRef(updateUrl);
+  updateUrlRef.current = updateUrl;
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    debounceTimerRef.current = setTimeout(() => {
       if (searchValue !== qParam) {
-        updateUrl({ q: searchValue });
+        const value = searchValue.trim();
+        lastPushedQRef.current = value || "";
+        updateUrlRef.current({ q: searchValue });
       }
     }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [searchValue, qParam, updateUrl]);
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
+  }, [searchValue, qParam]);
 
   const handleBrandClick = (makeId: string) => {
     updateUrl({ make: makeId || undefined });
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      const value = searchValue.trim();
+      lastPushedQRef.current = value || "";
+      updateUrl({ q: searchValue });
+      (e.target as HTMLInputElement).blur();
+    }
   };
 
   return (
@@ -75,13 +103,14 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
 
         <div className="mt-6 space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary-foreground/60" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary-foreground" />
             <Input
               type="search"
               placeholder="Search by brand, model, or keyword..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
+              onKeyDown={handleSearchKeyDown}
+              className="search-cancel-primary-foreground h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
               aria-label="Search cars"
             />
           </div>

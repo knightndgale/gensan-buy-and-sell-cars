@@ -22,14 +22,15 @@ export default async function SellerDashboardPage() {
     listings.map(async (listing) => {
       const images = await getListingImages(listing.id);
       const primary = images.find((i) => i.isPrimary) ?? images[0];
-      const model = modelMap.get(listing.modelId);
-      const derivedTitle = [makeMap.get(model?.makeId ?? 0), model?.name, listing.year].filter(Boolean).join(" ");
+      const model = modelMap.get(listing.modelId ?? 0);
+      const makeId = model?.makeId ?? 0;
+      const derivedTitle = [makeMap.get(makeId), model?.name, listing.year].filter(Boolean).join(" ");
       const title = listing.title?.trim() || derivedTitle;
       return {
         id: listing.id,
         title,
-        price: listing.price,
-        status: listing.status,
+        price: listing.price ?? 0,
+        status: listing.status ?? "active",
         primaryImageUrl: primary?.imageUrl,
         createdAt: listing.createdAt,
         updatedAt: listing.updatedAt,
