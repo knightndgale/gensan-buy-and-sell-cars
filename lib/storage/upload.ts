@@ -33,6 +33,10 @@ export async function uploadListingImage(
 
   const bucketName = bucket.name;
   const encodedPath = encodeURIComponent(path);
+  const storageEmulatorHost = process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+  if (storageEmulatorHost) {
+    return `http://${storageEmulatorHost}/v0/b/${bucketName}/o/${encodedPath}?alt=media`;
+  }
   return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedPath}?alt=media`;
 }
 

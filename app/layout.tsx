@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
@@ -38,6 +39,15 @@ export default function RootLayout({
             <div className="flex min-h-screen flex-col">{children}</div>
           </AuthProvider>
         </QueryProvider>
+        <Toaster
+          toastOptions={{
+            classNames: {
+              toast: "bg-white text-foreground border border-border shadow-lg",
+              success: "bg-white text-foreground border border-border shadow-lg",
+              error: "bg-white text-foreground border border-border shadow-lg",
+            },
+          }}
+        />
       </body>
     </html>
   );

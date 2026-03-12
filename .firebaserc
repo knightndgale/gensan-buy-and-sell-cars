@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "gensanbuyandsellcars"
-  }
+  },
+  "targets": {
+    "gensanbuyandsellcars": {
+      "storage": {
+        "default": [
+          "gensanbuyandsellcars.firebasestorage.app"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

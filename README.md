@@ -60,12 +60,19 @@ This lets interns run the app locally without ever receiving sensitive Firebase 
   ```
 2. **Configure `.env.local`**
   - Copy from `.env.example` and fill in the public Firebase config (`NEXT_PUBLIC_*`) from Firebase Console.
-  - Add these emulator variables (do **not** add `FIREBASE_ADMIN_`*):
+  - Add these emulator variables (do **not** add `FIREBASE_ADMIN_*`):
+  ```bash
+  NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
+  FIRESTORE_EMULATOR_HOST=localhost:8080
+  FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+  FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199
+  ```
   > **Important:** `FIREBASE_AUTH_EMULATOR_HOST` must be `host:port` only (e.g. `localhost:9099`). Do **not** include `http://`—the SDK adds the protocol. Using `http://localhost:9099` causes `getaddrinfo ENOTFOUND http`.
 3. **Start the emulators**
   ```bash
-   npm run emulator
+  npx firebase emulators:start --only auth,firestore,storage
   ```
+  Or use `npm run emulator` if it runs the same.
 4. **Start the app** (in a separate terminal)
   ```bash
    npm run dev
@@ -75,11 +82,11 @@ This lets interns run the app locally without ever receiving sensitive Firebase 
 
 ### Emulator ports
 
-
 | Emulator    | Port | Purpose                                                     |
 | ----------- | ---- | ----------------------------------------------------------- |
 | Auth        | 9099 | Firebase Authentication                                     |
 | Firestore   | 8080 | Firestore database                                          |
+| Storage     | 9199 | Cloud Storage (listing images)                              |
 | Emulator UI | 4000 | View data at [http://127.0.0.1:4000](http://127.0.0.1:4000) |
 
 
@@ -122,6 +129,7 @@ Build succeeds without Firebase credentials (returns empty data). Add credential
 - NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
 - FIRESTORE_EMULATOR_HOST=localhost:8080
 - FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+- FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199
 
 ### Firebase Admin (server-only - never expose)
 

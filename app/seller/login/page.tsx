@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { toast } from "sonner";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -28,9 +29,12 @@ function LoginForm() {
     setLoading(true);
     try {
       await signIn(email, password);
+      toast.success("Login successful.");
       router.push(redirect);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      const message = err instanceof Error ? err.message : "Login failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

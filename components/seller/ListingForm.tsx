@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
 
@@ -136,9 +137,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       setNewFeatureName("");
       setAddFeatureError(null);
       setAddFeatureOpen(false);
+      toast.success("Feature added.");
     },
     onError: (err) => {
-      setAddFeatureError(err instanceof Error ? err.message : "Failed to add feature");
+      const message = err instanceof Error ? err.message : "Failed to add feature";
+      setAddFeatureError(message);
+      toast.error(message);
     },
   });
 
@@ -227,17 +231,23 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       formData.append("primaryImageIndex", String(primaryIndex));
     }
 
-    const res = await fetch(url, {
-      method,
-      body: formData,
-      credentials: "include",
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error ?? "Failed to save");
+    try {
+      const res = await fetch(url, {
+        method,
+        body: formData,
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to save");
+      }
+      toast.success("Listing saved successfully.");
+      router.push("/seller");
+      router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save listing.");
+      throw err;
     }
-    router.push("/seller");
-    router.refresh();
   }
 
   const isCreate = !listingId;
