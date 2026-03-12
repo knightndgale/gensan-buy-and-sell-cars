@@ -1,8 +1,23 @@
 "use client";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { formatPrice } from "@/lib/format";
 import { useMutation } from "@tanstack/react-query";
@@ -51,7 +66,6 @@ const statusBadgeMap: Record<string, React.ReactNode> = {
       <span className="size-2 rounded-full bg-primary"></span>Sold
     </Badge>
   ),
-
   pending: (
     <Badge className="bg-[#FFEDD4] flex flex-row items-center gap-2 text-orange-500 font-medium">
       <span className="size-2 rounded-full bg-orange-500"></span>For Approval
@@ -127,59 +141,78 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   const displayViews = views > 0 ? views.toLocaleString() : "0";
 
   return (
-    <div className="rounded-lg border  bg-card overflow-hidden">
+    <div className="rounded-lg border bg-card overflow-hidden">
       <div className="flex gap-4 p-4 border-b w-full">
         <div className="relative h-30 w-30 shrink-0 overflow-hidden rounded-t-md rounded-b-none bg-muted">
           {primaryImageUrl && !imageError ? (
-            <Image src={primaryImageUrl} alt={title} fill className="object-cover" sizes="144px" onError={() => setImageError(true)} />
+            <Image
+              src={primaryImageUrl}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="144px"
+              onError={() => setImageError(true)}
+            />
           ) : (
             <ImagePlaceholder fill className="rounded-t-md rounded-b-none border-0" />
           )}
           {status === "sold" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <span className="rounded bg-destructive/90 px-2 py-1 text-xs font-semibold text-white">SOLD</span>
+              <span className="rounded bg-destructive/90 px-2 py-1 text-xs font-semibold text-white">
+                SOLD
+              </span>
             </div>
           )}
           {status === "pending" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <span className="rounded bg-orange-500 px-2 py-1 text-xs font-semibold text-white">PENDING</span>
+              <span className="rounded bg-orange-500 px-2 py-1 text-xs font-semibold text-white">
+                PENDING
+              </span>
             </div>
           )}
         </div>
 
-        <section className=" flex flex-col flex-1 h-auto justify-between">
+        <section className="flex flex-col flex-1 h-auto justify-between">
           <article>
             <section className="flex flex-row items-center gap-4 justify-between w-full">
               <h3 className="font-medium">{title || "Untitled"}</h3>
 
               <div className="flex shrink-0 items-start gap-2">
                 {status === "active" && (
-                  <>
-                    <AlertDialog open={showSoldConfirm} onOpenChange={setShowSoldConfirm}>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Mark this car as sold?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will update the listing status to &quot;sold&quot; and remove it from active listings. You can mark it as active again later if needed.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>Mark as Sold</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </>
+                  <AlertDialog open={showSoldConfirm} onOpenChange={setShowSoldConfirm}>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Mark this car as sold?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will update the listing status to &quot;sold&quot; and remove it from
+                          active listings. You can mark it as active again later if needed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>
+                          Mark as Sold
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
+
                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Archive this listing?</AlertDialogTitle>
-                      <AlertDialogDescription>This will archive the listing and hide it from buyers. You can restore it to active later if needed.</AlertDialogDescription>
+                      <AlertDialogDescription>
+                        This will archive the listing and hide it from buyers. You can restore it to
+                        active later if needed.
+                      </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => archiveMutation.mutate()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      <AlertDialogAction
+                        onClick={() => archiveMutation.mutate()}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
                         Archive
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -200,7 +233,11 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive" disabled={isUpdating} onSelect={() => setShowDeleteConfirm(true)}>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      disabled={isUpdating}
+                      onSelect={() => setShowDeleteConfirm(true)}
+                    >
                       <Trash2 className="size-4" />
                       Delete
                     </DropdownMenuItem>
@@ -208,9 +245,11 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                 </DropdownMenu>
               </div>
             </section>
+
             <p className="text-lg font-semibold text-primary">{formatPrice(price)}</p>
           </article>
-          <article className="flex flex-row items-center gap-4 justify-between w-full  ">
+
+          <article className="flex flex-row items-center gap-4 justify-between w-full">
             <div className="mt-1 flex flex-wrap items-center gap-4">
               {statusBadge}
               <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
@@ -218,16 +257,31 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                 {displayViews} views
               </span>
             </div>
-            <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-              <Clock className="size-4" />
-              {formatListedAt(createdAt)}
-            </span>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
+                <Clock className="size-4" />
+                {formatListedAt(createdAt)}
+              </span>
+            </div>
           </article>
+
           {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </section>
       </div>
-
-      <p className="text-sm text-muted-foreground px-4 py-2"> {timelineText}</p>
+      <div className="flex items-center justify-between px-4 py-2">
+        <p className="text-sm text-muted-foreground flex items-center gap-2">
+          <Clock className="size-4" />
+          {timelineText}
+        </p>
+        <Link
+          href={`/seller/listings/${id}/edit`}
+          className="flex items-center gap-2 text-sm text-primary hover:underline"
+        >
+          <Pencil className="size-4" />
+          Edit
+        </Link>
+      </div>
 
       {status === "pending" && (
         <div className="flex items-center gap-2 border-t bg-orange-50 px-4 py-2 text-sm text-orange-800 dark:bg-orange-950/30 dark:text-orange-200">
