@@ -131,8 +131,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["carFeatures"] });
       const current = form.getValues("features") ?? [];
-      if (!current.includes(data.name)) {
-        form.setValue("features", [...current, data.name]);
+      if (!current.includes(data.id)) {
+        form.setValue("features", [...current, data.id]);
       }
       setNewFeatureName("");
       setAddFeatureError(null);
@@ -672,8 +672,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormControl>
                         <div className="flex flex-wrap gap-2">
                           {features.map((f) => {
-                            const feature = f.name;
-                            const selected = (field.value ?? []).includes(feature);
+                            const selected = (field.value ?? []).includes(f.id);
                             return (
                               <button
                                 key={f.id}
@@ -681,16 +680,16 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                                 onClick={() => {
                                   const current = field.value ?? [];
                                   if (selected) {
-                                    field.onChange(current.filter((x) => x !== feature));
+                                    field.onChange(current.filter((x) => x !== f.id));
                                   } else {
-                                    field.onChange([...current, feature]);
+                                    field.onChange([...current, f.id]);
                                   }
                                 }}
                                 className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                                   selected ? "bg-primary text-primary-foreground" : "border border-input bg-background hover:bg-accent"
                                 }`}>
                                 {selected && <Check className="size-4" />}
-                                {feature}
+                                {f.name}
                               </button>
                             );
                           })}
