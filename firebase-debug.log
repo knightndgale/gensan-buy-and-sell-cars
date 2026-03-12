@@ -1,52 +1,100 @@
-[debug] [2026-03-11T05:37:35.950Z] ----------------------------------------------------------------------
-[debug] [2026-03-11T05:37:35.958Z] Command:       /opt/homebrew/Cellar/node/25.2.1/bin/node /opt/homebrew/bin/firebase init emulators
-[debug] [2026-03-11T05:37:35.958Z] CLI Version:   15.9.1
-[debug] [2026-03-11T05:37:35.958Z] Platform:      darwin
-[debug] [2026-03-11T05:37:35.958Z] Node Version:  v25.2.1
-[debug] [2026-03-11T05:37:35.958Z] Time:          Wed Mar 11 2026 13:37:35 GMT+0800 (Philippine Standard Time)
-[debug] [2026-03-11T05:37:35.958Z] ----------------------------------------------------------------------
+[debug] [2026-03-12T00:36:28.370Z] ----------------------------------------------------------------------
+[debug] [2026-03-12T00:36:28.372Z] Command:       /opt/homebrew/Cellar/node/25.2.1/bin/node /opt/homebrew/bin/firebase emulators:start --only auth,firestore --import=./emulator-data --export-on-exit=./emulator-data
+[debug] [2026-03-12T00:36:28.372Z] CLI Version:   15.9.1
+[debug] [2026-03-12T00:36:28.372Z] Platform:      darwin
+[debug] [2026-03-12T00:36:28.372Z] Node Version:  v25.2.1
+[debug] [2026-03-12T00:36:28.372Z] Time:          Thu Mar 12 2026 08:36:28 GMT+0800 (Philippine Standard Time)
+[debug] [2026-03-12T00:36:28.372Z] ----------------------------------------------------------------------
 [debug] 
-[info] 
-     ######## #### ########  ######## ########     ###     ######  ########
-     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
-     ######    ##  ########  ######   ########  #########  ######  ######
-     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
-     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+[debug] [2026-03-12T00:36:28.979Z] Object "" in "firebase.json" has unknown property: {"additionalProperty":"emulator"}
+[debug] [2026-03-12T00:36:28.982Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-12T00:36:28.982Z] > authorizing via signed-in user (knightndgale@gmail.com)
+[debug] [2026-03-12T00:36:29.103Z] openjdk version "21.0.10" 2026-01-20
 
-You're about to initialize a Firebase project in this directory:
+[debug] [2026-03-12T00:36:29.103Z] OpenJDK Runtime Environment Homebrew (build 21.0.10)
+OpenJDK 64-Bit Server VM Homebrew (build 21.0.10, mixed mode, sharing)
 
-  /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell
+[debug] [2026-03-12T00:36:29.108Z] Parsed Java major version: 21
+[info] i  emulators: Starting emulators: auth, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore"}}
+[debug] [2026-03-12T00:36:29.303Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-12T00:36:29.303Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-12T00:36:29.303Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-12T00:36:29.303Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-12T00:36:29.303Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-03-12T00:36:29.306Z] Write emulator hub locator at /var/folders/gn/6vlcbpt125d1qgddh4dg_w500000gn/T/hub-gensanbuyandsellcars.json
+[info] i  firestore: Importing data from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/firestore_export/firestore_export.overall_export_metadata {"metadata":{"emulator":{"name":"firestore"},"message":"Importing data from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/firestore_export/firestore_export.overall_export_metadata"}}
+[warn] ⚠  firestore: Cloud Firestore Emulator does not support multiple databases yet. {"metadata":{"emulator":{"name":"firestore"},"message":"Cloud Firestore Emulator does not support multiple databases yet."}}
+[warn] ⚠  firestore: Did not find a Cloud Firestore rules file specified in a firebase.json config file. {"metadata":{"emulator":{"name":"firestore"},"message":"Did not find a Cloud Firestore rules file specified in a firebase.json config file."}}
+[warn] ⚠  firestore: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration. {"metadata":{"emulator":{"name":"firestore"},"message":"The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration."}}
+[debug] [2026-03-12T00:36:29.311Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-03-12T00:36:29.311Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2026-03-12T00:36:29.311Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/markdavesoriano/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","gensanbuyandsellcars","--seed_from_export","/Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/firestore_export/firestore_export.overall_export_metadata","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/markdavesoriano/.cache/firebase/emulators/cloud-firestore-emulator-v1.20.2.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"gensanbuyandsellcars\",\"--seed_from_export\",\"/Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/firestore_export/firestore_export.overall_export_metadata\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2026-03-12T00:36:29.937Z] Mar 12, 2026 8:36:29 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://127.0.0.1:9150
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:29 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
+[debug] [2026-03-12T00:36:29.948Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2026-03-12T00:36:29.948Z] 127.0.0.1:8080
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
 
-Before we get started, keep in mind:
+   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
 
-  * You are initializing within an existing Firebase project directory
+If you are running a Firestore in Datastore Mode project, run:
 
+   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
+
+Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"127.0.0.1:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
+[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
+[info] i  auth: Importing config from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/auth_export/config.json {"metadata":{"emulator":{"name":"auth"},"message":"Importing config from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/auth_export/config.json"}}
+[info] i  auth: Importing accounts from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/auth_export/accounts.json {"metadata":{"emulator":{"name":"auth"},"message":"Importing accounts from /Users/markdavesoriano/Work Files/innoendo/gensan-car-buy-and-sell/emulator-data/auth_export/accounts.json"}}
+[debug] [2026-03-12T00:36:33.218Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
 [info] 
-=== Project Setup
-[info] 
-[info] First, let's associate this project directory with a Firebase project.
-[info] You can create multiple project aliases by running firebase use --add, 
-[info] 
-[debug] [2026-03-11T05:37:36.723Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2026-03-11T05:37:36.723Z] > authorizing via signed-in user (knightndgale@gmail.com)
-[debug] [2026-03-11T05:37:36.724Z] Checked if tokens are valid: true, expires at: 1773209861418
-[debug] [2026-03-11T05:37:36.724Z] Checked if tokens are valid: true, expires at: 1773209861418
-[debug] [2026-03-11T05:37:36.724Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gensanbuyandsellcars [none]
-[debug] [2026-03-11T05:37:37.489Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gensanbuyandsellcars 200
-[debug] [2026-03-11T05:37:37.490Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gensanbuyandsellcars {"projectId":"gensanbuyandsellcars","projectNumber":"104641969302","displayName":"Gensanbuyandsellcars","name":"projects/gensanbuyandsellcars","resources":{"hostingSite":"gensanbuyandsellcars"},"state":"ACTIVE","etag":"1_8e7b478d-bb8e-49ce-a5f3-06b2850dabe5"}
-[info] i  Using project gensanbuyandsellcars (Gensanbuyandsellcars) . 
-[info] 
-=== Emulators Setup
-[debug] [2026-03-11T05:38:03.264Z] ExitPromptError: User force closed the prompt with SIGINT
-    at Interface.sigint (/opt/homebrew/lib/node_modules/firebase-tools/node_modules/@inquirer/core/dist/commonjs/lib/create-prompt.js:101:37)
-    at Interface.emit (node:events:508:28)
-    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1327:18)
-    at ReadStream.onkeypress (node:internal/readline/interface:284:20)
-    at ReadStream.emit (node:events:520:35)
-    at emitKeys (node:internal/readline/utils:371:14)
-    at emitKeys.next (<anonymous>)
-    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
-    at ReadStream.emit (node:events:508:28)
-    at addChunk (node:internal/streams/readable:559:12)
-[error] 
-[error] Error: An unexpected error has occurred.
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+└────────────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500, 9150
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2026-03-12T00:36:33.604Z] Mar 12, 2026 8:36:33 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+INFO: Connected to new websocket client
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[debug] [2026-03-12T00:36:33.634Z] Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:33.634Z] Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\nMar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:33.635Z] Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:33.635Z] Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:33.825Z] Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:33 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:34.247Z] Mar 12, 2026 8:36:34 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:34 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:36:34.266Z] Mar 12, 2026 8:36:34 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:36:34 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}
+[debug] [2026-03-12T00:37:50.291Z] Mar 12, 2026 8:37:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected non-HTTP/2 connection.
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Mar 12, 2026 8:37:50 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected non-HTTP/2 connection.\n"}}

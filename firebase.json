@@ -10,5 +10,9 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "emulator": {
+    "import": ["./emulator-data"],
+    "export": "./emulator-data"
   }
 }

@@ -41,6 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 
-# firestore logs 
+# firestore /firebase logs 
 
 firestore-debug.log
+firebase-debug.log
+
+# emulator local only retention
+
+emulator-data
