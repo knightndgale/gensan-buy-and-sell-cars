@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -126,7 +124,6 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   });
 
   const isUpdating = updateStatusMutation.isPending || archiveMutation.isPending;
-
   const statusBadge = statusBadgeMap[status] ?? <Badge variant="outline">{status}</Badge>;
 
   const timelineText =
@@ -176,26 +173,27 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
           <article>
             <section className="flex flex-row items-center gap-4 justify-between w-full">
               <h3 className="font-medium">{title || "Untitled"}</h3>
-
               <div className="flex shrink-0 items-start gap-2">
                 {status === "active" && (
-                  <AlertDialog open={showSoldConfirm} onOpenChange={setShowSoldConfirm}>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Mark this car as sold?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will update the listing status to &quot;sold&quot; and remove it from
-                          active listings. You can mark it as active again later if needed.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>
-                          Mark as Sold
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <>
+                    <AlertDialog open={showSoldConfirm} onOpenChange={setShowSoldConfirm}>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Mark this car as sold?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will update the listing status to &quot;sold&quot; and remove it
+                            from active listings. You can mark it as active again later if needed.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>
+                            Mark as Sold
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </>
                 )}
 
                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
@@ -228,8 +226,7 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`/seller/listings/${id}/edit`}>
-                        <Pencil className="size-4" />
-                        Edit Listing
+                        <Pencil className="size-4" /> Edit Listing
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -238,8 +235,7 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                       disabled={isUpdating}
                       onSelect={() => setShowDeleteConfirm(true)}
                     >
-                      <Trash2 className="size-4" />
-                      Delete
+                      <Trash2 className="size-4" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -253,40 +249,39 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
             <div className="mt-1 flex flex-wrap items-center gap-4">
               {statusBadge}
               <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-                <EyeIcon className="size-4" />
-                {displayViews} views
+                <EyeIcon className="size-4" /> {displayViews} views
               </span>
             </div>
-
-            <div className="flex flex-col gap-2">
-              <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-                <Clock className="size-4" />
-                {formatListedAt(createdAt)}
-              </span>
-            </div>
+            <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
+              <Clock className="size-4" /> {formatListedAt(createdAt)}
+            </span>
           </article>
 
           {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </section>
       </div>
+
       <div className="flex items-center justify-between px-4 py-2">
         <p className="text-sm text-muted-foreground flex items-center gap-2">
           <Clock className="size-4" />
           {timelineText}
         </p>
-        <Link
-          href={`/seller/listings/${id}/edit`}
-          className="flex items-center gap-2 text-sm text-primary hover:underline"
-        >
-          <Pencil className="size-4" />
-          Edit
-        </Link>
+
+        {status === "active" && (
+          <Link
+            href={`/seller/listings/${id}/edit`}
+            className="flex items-center gap-2 text-sm text-primary hover:underline"
+          >
+            <Pencil className="size-4" />
+            Edit
+          </Link>
+        )}
       </div>
 
       {status === "pending" && (
         <div className="flex items-center gap-2 border-t bg-orange-50 px-4 py-2 text-sm text-orange-800 dark:bg-orange-950/30 dark:text-orange-200">
-          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" />
-          Waiting for admin approval - your listing will go live once approved
+          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" /> Waiting for admin
+          approval - your listing will go live once approved
         </div>
       )}
     </div>
