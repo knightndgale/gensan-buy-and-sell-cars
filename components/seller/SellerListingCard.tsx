@@ -218,10 +218,6 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                 {displayViews} views
               </span>
             </div>
-            <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-              <Clock className="size-4" />
-              {formatListedAt(createdAt)}
-            </span>
           </article>
           {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </section>
