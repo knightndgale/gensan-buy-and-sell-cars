@@ -743,7 +743,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Features</h2>
                 <p className="text-sm text-muted-foreground">
-                  Create or Select all features that apply
+                  Create or select all features that apply
                 </p>
                 <FormField
                   control={form.control}
