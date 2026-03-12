@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
-import { CAR_MAKES, CAR_MODELS, SEED_USERS } from "@/lib/seed/data";
+import { CAR_MAKES, CAR_MODELS, SEED_FEATURES, SEED_USERS } from "@/lib/seed/data";
 
 const MAKES_COLLECTION = "carMakes";
 const MODELS_COLLECTION = "carModels";
+const FEATURES_COLLECTION = "carFeatures";
 const DEALERS_COLLECTION = "dealers";
 const LISTINGS_COLLECTION = "listings";
 const IMAGES_COLLECTION = "listingImages";
@@ -55,6 +56,7 @@ export async function POST(request: NextRequest) {
   const seeded: Record<string, number> = {
     carMakes: 0,
     carModels: 0,
+    carFeatures: 0,
     users: 0,
     dealers: 0,
     listings: 0,
@@ -69,6 +71,7 @@ export async function POST(request: NextRequest) {
       await deleteAllInCollection(db, IMAGES_COLLECTION);
       await deleteAllInCollection(db, LISTINGS_COLLECTION);
       await deleteAllInCollection(db, DEALERS_COLLECTION);
+      await deleteAllInCollection(db, FEATURES_COLLECTION);
       await deleteAllInCollection(db, MODELS_COLLECTION);
       await deleteAllInCollection(db, MAKES_COLLECTION);
     }
@@ -90,7 +93,16 @@ export async function POST(request: NextRequest) {
       seeded.carModels++;
     }
 
-    // 3. Firebase Auth users
+    // 3. carFeatures
+    const featuresCol = db.collection(FEATURES_COLLECTION);
+    const featureNameToId = new Map<string, string>();
+    for (const name of SEED_FEATURES) {
+      const ref = await featuresCol.add({ name });
+      featureNameToId.set(name, ref.id);
+      seeded.carFeatures++;
+    }
+
+    // 4. Firebase Auth users
     const userIds: string[] = [];
     for (const u of SEED_USERS) {
       let uid: string;
@@ -110,7 +122,7 @@ export async function POST(request: NextRequest) {
       seeded.users++;
     }
 
-    // 4. dealers
+    // 5. dealers
     const dealersCol = db.collection(DEALERS_COLLECTION);
     const dealerIds: string[] = [];
     const dealerData = [
@@ -129,7 +141,7 @@ export async function POST(request: NextRequest) {
       seeded.dealers++;
     }
 
-    // 5. listings
+    // 6. listings
     const listingsCol = db.collection(LISTINGS_COLLECTION);
     const listingIds: string[] = [];
     const listingData: Array<{
@@ -163,6 +175,10 @@ export async function POST(request: NextRequest) {
       const title = make && model ? `${data.year} ${make.name} ${model.name}` : undefined;
       const isFeatured = data.status === "active" && featuredActiveCount < 2;
       if (data.status === "active") featuredActiveCount++;
+      const featureIds = data.features
+        .map((name) => featureNameToId.get(name))
+        .filter((id): id is string => id != null);
+
       const ref = await listingsCol.add({
         dealerId,
         modelId: data.modelId,
@@ -179,7 +195,7 @@ export async function POST(request: NextRequest) {
         bodyType: data.bodyType,
         engine: data.engine,
         color: data.color,
-        features: [...data.features],
+        features: featureIds,
         views: 0,
         ...(data.status === "sold" && { soldAt: FieldValue.serverTimestamp() }),
         createdAt: FieldValue.serverTimestamp(),
@@ -189,7 +205,7 @@ export async function POST(request: NextRequest) {
       seeded.listings++;
     }
 
-    // 6. listingImages
+    // 7. listingImages
     const imagesCol = db.collection(IMAGES_COLLECTION);
     const placeholderBase = "https://placehold.co/600x400/1a1a2e/eaeaea";
     for (let i = 0; i < listingIds.length; i++) {

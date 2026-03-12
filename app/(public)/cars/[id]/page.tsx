@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getListingById } from "@/lib/firestore/listings";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
+import { getCarFeaturesByIds } from "@/lib/firestore/features";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getDealerById } from "@/lib/firestore/dealers";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,10 +46,11 @@ export default async function CarDetailPage({ params }: PageProps) {
   const listing = await getListingById(id);
   if (!listing || listing.status !== "active") notFound();
 
-  const [images, models, makes] = await Promise.all([
+  const [images, models, makes, resolvedFeatures] = await Promise.all([
     getListingImages(id),
     getCarModels(),
     getCarMakes(),
+    getCarFeaturesByIds(listing.features ?? []),
   ]);
 
   const model = typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
@@ -142,18 +144,18 @@ export default async function CarDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {(listing.features?.length ?? 0) > 0 && (
+        {resolvedFeatures.length > 0 && (
           <>
             <Separator className="my-4" />
             <section>
               <h2 className="font-semibold">Features</h2>
               <div className="mt-3 flex flex-wrap gap-2">
-                {listing.features!.map((f) => (
+                {resolvedFeatures.map((f) => (
                   <span
-                    key={f}
+                    key={f.id}
                     className="rounded-full bg-primary/10 px-3 py-1.5 text-sm text-foreground"
                   >
-                    {f}
+                    {f.name}
                   </span>
                 ))}
               </div>
