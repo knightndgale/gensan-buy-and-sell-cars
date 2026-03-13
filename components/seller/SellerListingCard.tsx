@@ -1,5 +1,3 @@
-"use client";
-
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -19,7 +17,7 @@ export type CarListingDetails = {
   id: string;
   title: string;
   price: number;
-  status: string;
+  status: "active" | "sold" | "archived" | "pending";
   primaryImageUrl?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -51,7 +49,6 @@ const statusBadgeMap: Record<string, React.ReactNode> = {
       <span className="size-2 rounded-full bg-primary"></span>Sold
     </Badge>
   ),
-
   pending: (
     <Badge className="bg-[#FFEDD4] flex flex-row items-center gap-2 text-orange-500 font-medium">
       <span className="size-2 rounded-full bg-orange-500"></span>For Approval
@@ -112,7 +109,6 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   });
 
   const isUpdating = updateStatusMutation.isPending || archiveMutation.isPending;
-
   const statusBadge = statusBadgeMap[status] ?? <Badge variant="outline">{status}</Badge>;
 
   const timelineText =
@@ -127,8 +123,8 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   const displayViews = views > 0 ? views.toLocaleString() : "0";
 
   return (
-    <div className="rounded-lg border  bg-card overflow-hidden">
-      <div className="flex gap-4 p-4 border-b w-full">
+    <div className={`rounded-lg border  ${status === "pending" && "border-b-[#FFD6A8]"}  bg-card overflow-hidden`}>
+      <div className={`flex gap-4 p-4 border-b ${status === "pending" && "border-b-[#FFD6A8]"} w-full`}>
         <div className="relative h-30 w-30 shrink-0 overflow-hidden rounded-t-md rounded-b-none bg-muted">
           {primaryImageUrl && !imageError ? (
             <Image src={primaryImageUrl} alt={title} fill className="object-cover" sizes="144px" onError={() => setImageError(true)} />
@@ -147,11 +143,10 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
           )}
         </div>
 
-        <section className=" flex flex-col flex-1 h-auto justify-between">
+        <section className="flex flex-col flex-1 h-auto justify-between">
           <article>
             <section className="flex flex-row items-center gap-4 justify-between w-full">
               <h3 className="font-medium">{title || "Untitled"}</h3>
-
               <div className="flex shrink-0 items-start gap-2">
                 {status === "active" && (
                   <>
@@ -171,6 +166,7 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                     </AlertDialog>
                   </>
                 )}
+
                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -195,44 +191,50 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`/seller/listings/${id}/edit`}>
-                        <Pencil className="size-4" />
-                        Edit Listing
+                        <Pencil className="size-4" /> Edit Listing
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem variant="destructive" disabled={isUpdating} onSelect={() => setShowDeleteConfirm(true)}>
-                      <Trash2 className="size-4" />
-                      Delete
+                      <Trash2 className="size-4" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </section>
+
             <p className="text-lg font-semibold text-primary">{formatPrice(price)}</p>
           </article>
-          <article className="flex flex-row items-center gap-4 justify-between w-full  ">
+
+          <article className="flex flex-row items-center gap-4 justify-between w-full">
             <div className="mt-1 flex flex-wrap items-center gap-4">
               {statusBadge}
               <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-                <EyeIcon className="size-4" />
-                {displayViews} views
+                <EyeIcon className="size-4" /> {displayViews} views
               </span>
             </div>
-            <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-              <Clock className="size-4" />
-              {formatListedAt(createdAt)}
-            </span>
           </article>
+
           {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </section>
       </div>
+      {status !== "pending" && (
+        <div className="flex items-center justify-between px-4 py-2">
+          <p className="text-sm text-muted-foreground flex items-center gap-2">
+            <Clock className="size-4" />
+            {timelineText}
+          </p>
 
-      <p className="text-sm text-muted-foreground px-4 py-2"> {timelineText}</p>
+          <Link href={`/seller/listings/${id}/edit`} className="flex items-center gap-2 text-sm text-primary hover:underline">
+            <Pencil className="size-4" />
+            Edit
+          </Link>
+        </div>
+      )}
 
       {status === "pending" && (
         <div className="flex items-center gap-2 border-t bg-orange-50 px-4 py-2 text-sm text-orange-800 dark:bg-orange-950/30 dark:text-orange-200">
-          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" />
-          Waiting for admin approval - your listing will go live once approved
+          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" /> Waiting for admin approval - your listing will go live once approved
         </div>
       )}
     </div>
