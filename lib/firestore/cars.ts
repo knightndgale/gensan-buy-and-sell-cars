@@ -1,5 +1,5 @@
-import type { CarMake, CarModel } from "@/schema";
 import { getAdminDbSafe } from "@/lib/firebase/admin";
+import type { CarMake, CarModel } from "@/schema";
 
 const MAKES_COLLECTION = "carMakes";
 const MODELS_COLLECTION = "carModels";
@@ -36,15 +36,11 @@ export async function getCarModelById(id: number): Promise<CarModel | null> {
   return models.find((m) => m.id === id) ?? null;
 }
 
-export async function getTotalActiveListingsCount(): Promise<number> {
+export async function getTotalActiveListingsCount() {
   const db = getAdminDbSafe();
   if (!db) return 0;
 
-  const snapshot = await db.collection(LISTINGS_COLLECTION)
-    .where("status", "==", "active")
-    .get();
+  const snapshot = await db.collection(LISTINGS_COLLECTION).where("status", "==", "active").get();
 
-  console.log("Total active listings:", snapshot.size);
   return snapshot.size;
 }
-
