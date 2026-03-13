@@ -111,7 +111,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
                 </Suspense>
               </div>
               <p className="mt-3 text-sm text-muted-foreground hidden lg:block">
-                {totalCount} car{totalCount !== 1 ? "s" : ""} found in General Santos
+                {totalCount} car{totalCount !== 1 ? "s" : ""} found
               </p>
               <Suspense fallback={<div className="h-9 animate-pulse rounded-md bg-muted" />}>
                 <CarsSortSelect />
@@ -119,7 +119,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
             </div>
 
             <p className="mt-3 text-sm text-muted-foreground block lg:hidden">
-              {totalCount} car{totalCount !== 1 ? "s" : ""} found in General Santos
+              {totalCount} car{totalCount !== 1 ? "s" : ""} found
             </p>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
