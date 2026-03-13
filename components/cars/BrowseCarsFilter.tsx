@@ -115,7 +115,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
             />
           </div>
 
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide ">
+          <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none] ">
             <button
               type="button"
               onClick={() => handleBrandClick("")}

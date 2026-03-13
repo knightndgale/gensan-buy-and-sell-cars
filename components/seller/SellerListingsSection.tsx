@@ -48,6 +48,16 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
       result = result.filter((l) => (l.title || "").toLowerCase().includes(term));
     }
 
+    // When "All" tab is active, sort by status: active → pending → sold
+    if (tab === "all") {
+      const statusOrder: Record<string, number> = { active: 0, pending: 1, sold: 2 };
+      result = [...result].sort((a, b) => {
+        const aOrder = statusOrder[a.status] ?? 3;
+        const bOrder = statusOrder[b.status] ?? 3;
+        return aOrder - bOrder;
+      });
+    }
+
     return result;
   }, [listings, tab, search]);
 
@@ -64,7 +74,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
         <Button asChild className="w-full bg-primary shrink-0 h-12">
           <Link href="/seller/listings/new" className="flex items-center justify-center gap-2">
             <Plus className="size-5" />
-            List of Car for Sale
+            Add new car
           </Link>
         </Button>
       </div>
@@ -77,14 +87,14 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
         </div>
 
         <section className="flex flex-col gap-4 pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-2 p-1">
+          <div className="flex flex-nowrap gap-2 p-1 overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]">
             {TABS.map((t) => (
               <button
                 key={t.value}
                 type="button"
                 onClick={() => setTab(t.value)}
                 className={cn(
-                  " px-3 py-1 text-sm font-medium transition-colors rounded-[60px]",
+                  "shrink-0 px-3 py-1 text-sm font-medium transition-colors rounded-[60px]",
                   tab === t.value ? "bg-primary text-white border-0" : "  border border-muted-foreground text-muted-foreground hover:text-foreground]",
                 )}>
                 {t.label} ({counts[t.value]})

@@ -1,8 +1,9 @@
-import type { CarMake, CarModel } from "@/schema";
 import { getAdminDbSafe } from "@/lib/firebase/admin";
+import type { CarMake, CarModel } from "@/schema";
 
 const MAKES_COLLECTION = "carMakes";
 const MODELS_COLLECTION = "carModels";
+const LISTINGS_COLLECTION = "listings";
 
 export async function getCarMakes(): Promise<CarMake[]> {
   const db = getAdminDbSafe();
@@ -33,4 +34,13 @@ export async function getCarModels(makeId?: number): Promise<CarModel[]> {
 export async function getCarModelById(id: number): Promise<CarModel | null> {
   const models = await getCarModels();
   return models.find((m) => m.id === id) ?? null;
+}
+
+export async function getTotalActiveListingsCount() {
+  const db = getAdminDbSafe();
+  if (!db) return 0;
+
+  const snapshot = await db.collection(LISTINGS_COLLECTION).where("status", "==", "active").get();
+
+  return snapshot.size;
 }
