@@ -53,11 +53,13 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
     getCarMakes(),
   ]);
 
-  const modelMap = new Map(models.map((m) => [m.id, m]));
-  const makeMap = new Map(makes.map((m) => [m.id, m.name]));
   const allListings = await getListings({
   status: "active",
   });
+
+  const modelMap = new Map(models.map((m) => [m.id, m]));
+  const makeMap = new Map(makes.map((m) => [m.id, m.name]));
+  
   const resolved: ListingWithDetails[] = await Promise.all(
     listings.map(async (l) => {
       const modelInfo = typeof l.modelId === "number" ? modelMap.get(l.modelId) : undefined;
