@@ -1,21 +1,6 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { formatPrice } from "@/lib/format";
 import { useMutation } from "@tanstack/react-query";
@@ -32,7 +17,7 @@ export type CarListingDetails = {
   id: string;
   title: string;
   price: number;
-  status: string;
+  status: "active" | "sold" | "archived" | "pending";
   primaryImageUrl?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -138,33 +123,22 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   const displayViews = views > 0 ? views.toLocaleString() : "0";
 
   return (
-    <div className="rounded-lg border bg-card overflow-hidden">
-      <div className="flex gap-4 p-4 border-b w-full">
+    <div className={`rounded-lg border  ${status === "pending" && "border-b-[#FFD6A8]"}  bg-card overflow-hidden`}>
+      <div className={`flex gap-4 p-4 border-b ${status === "pending" && "border-b-[#FFD6A8]"} w-full`}>
         <div className="relative h-30 w-30 shrink-0 overflow-hidden rounded-t-md rounded-b-none bg-muted">
           {primaryImageUrl && !imageError ? (
-            <Image
-              src={primaryImageUrl}
-              alt={title}
-              fill
-              className="object-cover"
-              sizes="144px"
-              onError={() => setImageError(true)}
-            />
+            <Image src={primaryImageUrl} alt={title} fill className="object-cover" sizes="144px" onError={() => setImageError(true)} />
           ) : (
             <ImagePlaceholder fill className="rounded-t-md rounded-b-none border-0" />
           )}
           {status === "sold" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <span className="rounded bg-destructive/90 px-2 py-1 text-xs font-semibold text-white">
-                SOLD
-              </span>
+              <span className="rounded bg-destructive/90 px-2 py-1 text-xs font-semibold text-white">SOLD</span>
             </div>
           )}
           {status === "pending" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <span className="rounded bg-orange-500 px-2 py-1 text-xs font-semibold text-white">
-                PENDING
-              </span>
+              <span className="rounded bg-orange-500 px-2 py-1 text-xs font-semibold text-white">PENDING</span>
             </div>
           )}
         </div>
@@ -181,15 +155,12 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Mark this car as sold?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will update the listing status to &quot;sold&quot; and remove it
-                            from active listings. You can mark it as active again later if needed.
+                            This will update the listing status to &quot;sold&quot; and remove it from active listings. You can mark it as active again later if needed.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>
-                            Mark as Sold
-                          </AlertDialogAction>
+                          <AlertDialogAction onClick={() => updateStatusMutation.mutate("sold")}>Mark as Sold</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -200,17 +171,11 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Archive this listing?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will archive the listing and hide it from buyers. You can restore it to
-                        active later if needed.
-                      </AlertDialogDescription>
+                      <AlertDialogDescription>This will archive the listing and hide it from buyers. You can restore it to active later if needed.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => archiveMutation.mutate()}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      >
+                      <AlertDialogAction onClick={() => archiveMutation.mutate()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                         Archive
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -230,11 +195,7 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      variant="destructive"
-                      disabled={isUpdating}
-                      onSelect={() => setShowDeleteConfirm(true)}
-                    >
+                    <DropdownMenuItem variant="destructive" disabled={isUpdating} onSelect={() => setShowDeleteConfirm(true)}>
                       <Trash2 className="size-4" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -260,28 +221,23 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
           {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
         </section>
       </div>
+      {status !== "pending" && (
+        <div className="flex items-center justify-between px-4 py-2">
+          <p className="text-sm text-muted-foreground flex items-center gap-2">
+            <Clock className="size-4" />
+            {timelineText}
+          </p>
 
-      <div className="flex items-center justify-between px-4 py-2">
-        <p className="text-sm text-muted-foreground flex items-center gap-2">
-          <Clock className="size-4" />
-          {timelineText}
-        </p>
-
-        {status === "active" && (
-          <Link
-            href={`/seller/listings/${id}/edit`}
-            className="flex items-center gap-2 text-sm text-primary hover:underline"
-          >
+          <Link href={`/seller/listings/${id}/edit`} className="flex items-center gap-2 text-sm text-primary hover:underline">
             <Pencil className="size-4" />
             Edit
           </Link>
-        )}
-      </div>
+        </div>
+      )}
 
       {status === "pending" && (
         <div className="flex items-center gap-2 border-t bg-orange-50 px-4 py-2 text-sm text-orange-800 dark:bg-orange-950/30 dark:text-orange-200">
-          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" /> Waiting for admin
-          approval - your listing will go live once approved
+          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" /> Waiting for admin approval - your listing will go live once approved
         </div>
       )}
     </div>
