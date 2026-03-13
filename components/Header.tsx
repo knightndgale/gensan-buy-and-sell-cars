@@ -14,7 +14,7 @@ export function Header() {
     <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-3">
       <div className="flex flex-wrap items-center gap-2">
         <Link href="/" className="shrink-0">
-          <Image src="/images/logo-full.png" alt="Gensan Car Buy & Sell" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
+          <Image src="/images/logo-main.webp" alt="Gensan Car Buy & Sell" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
         </Link>
       </div>
 
@@ -41,7 +41,7 @@ export function Header() {
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex items-center gap-2">
             <Link href="/" onClick={() => setOpen(false)} className="shrink-0 py-2">
-              <Image src="/images/logo-full.png" alt="Gensan Car Buy & Sell" width={150} height={30} className="object-contain" />
+              <Image src="/images/logo-main.webp" alt="Gensan Car Buy & Sell" width={150} height={30} className="object-contain" />
             </Link>
           </div>
 

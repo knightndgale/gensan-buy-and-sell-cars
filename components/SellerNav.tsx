@@ -92,7 +92,7 @@ export function SellerNav() {
     <nav className="flex flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-3">
       <div className="flex flex-wrap items-center gap-2">
         <Link href="/" className="shrink-0">
-          <Image src="/images/logo-full.png" alt="Gensan Buy and Sell Cars" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
+          <Image src="/images/logo-main.webp" alt="Gensan Buy and Sell Cars" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
         </Link>
         <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
       </div>
@@ -115,7 +115,7 @@ export function SellerNav() {
               <SheetTitle className="sr-only">Seller menu</SheetTitle>
               <div className="flex items-center gap-2">
                 <Link href="/" onClick={() => setDrawerOpen(false)} className="shrink-0 py-2">
-                  <Image src="/images/logo-full.png" alt="Gensan Buy and Sell Cars" width={150} height={30} className="object-contain" />
+                  <Image src="/images/logo-main.webp" alt="Gensan Buy and Sell Cars" width={150} height={30} className="object-contain" />
                 </Link>
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
               </div>
