@@ -1,6 +1,6 @@
 /**
  * Seed data for dev environment.
- * Collections: carMakes, carModels, dealers, listings, listingImages
+ * Collections: carMakes, carModels, carFeatures, dealers, listings, listingImages
  */
 
 export const CAR_MAKES = [
@@ -45,6 +45,26 @@ export const CAR_MODELS = [
   { id: 26, makeId: 9, name: "Seltos" },
   { id: 27, makeId: 10, name: "Mazda3" },
   { id: 28, makeId: 10, name: "CX-5" },
+] as const;
+
+export const SEED_FEATURES = [
+  "Touchscreen Infotainment",
+  "Backup Camera",
+  "Keyless Entry",
+  "ABS Brakes",
+  "Power Windows",
+  "Apple CarPlay",
+  "Android Auto",
+  "LED Headlamps",
+  "Parking Sensors",
+  "Bluetooth Audio",
+  "USB Port",
+  "Cruise Control",
+  "Push Start",
+  "Leather Seats",
+  "Sunroof",
+  "Navigation System",
+  "Airbags",
 ] as const;
 
 export const SEED_USERS = [

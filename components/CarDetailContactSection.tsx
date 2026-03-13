@@ -30,7 +30,8 @@ export function CarDetailContactSection({
   const hasGhlForm = !!ghlFormUrl;
 
   const phone = dealer?.phone;
-  const viberUrl = dealer?.viberUrl ?? (phone ? `viber://add?number=${normalizePhoneForWa(phone)}` : null);
+  const viberUrl =
+    dealer?.viberUrl ?? (phone ? `viber://add?number=${normalizePhoneForWa(phone)}` : null);
   const whatsappUrl =
     dealer?.whatsappUrl ?? (phone ? `https://wa.me/${normalizePhoneForWa(phone)}` : null);
   const messengerUrl = dealer?.messengerUrl ?? null;
@@ -42,19 +43,19 @@ export function CarDetailContactSection({
     {
       label: "Viber",
       href: viberUrl,
-      className: "bg-gradient-to-br from-[#6E389B] to-[#8A48BC] text-white shadow-sm",
+      className: "bg-gradient-to-b from-[#8F48C8] to-[#63328B] text-white shadow-sm",
       icon: MessageCircle,
     },
     {
       label: "Whatsapp",
       href: whatsappUrl,
-      className: "bg-gradient-to-br from-[#4CAF50] to-[#5BE65A] text-white shadow-sm",
+      className: "bg-gradient-to-b from-[#57F677] to-[#00BA22] text-white shadow-sm",
       icon: MessageCircle,
     },
     {
       label: "FB Messenger",
       href: messengerUrl,
-      className: "bg-gradient-to-r from-[#EE679B] via-purple-500 to-[#5A59E7] text-white shadow-sm",
+      className: "bg-gradient-to-tr from-[#297FFF] via-[#A530E5] to-[#F86866] text-white shadow-sm",
       icon: MessageCircle,
     },
     {
@@ -87,7 +88,8 @@ export function CarDetailContactSection({
             return (
               <div
                 key={btn.label}
-                className={`flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 opacity-50 ${btn.className}`}
+                className={`flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 opacity-100
+                    ${btn.className}`}
               >
                 <Icon className="size-6" />
                 <span className="text-xs font-medium">{btn.label}</span>
@@ -122,11 +124,7 @@ export function CarDetailContactSection({
             <SheetTitle>Leave Your Contact Info</SheetTitle>
           </SheetHeader>
           <div className="mt-4 flex-1 overflow-auto">
-            <GHLFormEmbed
-              formUrl={ghlFormUrl}
-              listingId={listingId}
-              carName={carName}
-            />
+            <GHLFormEmbed formUrl={ghlFormUrl} listingId={listingId} carName={carName} />
           </div>
         </SheetContent>
       </Sheet>

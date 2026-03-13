@@ -1,10 +1,29 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { CarFeature } from "@/lib/firestore/features";
 import type { CarMake, CarModel } from "@/schema";
@@ -27,7 +46,9 @@ type ListingFormProps = {
   listingStatus?: "active" | "sold" | "archived" | "pending";
 };
 
-type ImageItem = { type: "new"; file: File; preview: string } | { type: "existing"; image: ListingImage };
+type ImageItem =
+  | { type: "new"; file: File; preview: string }
+  | { type: "existing"; image: ListingImage };
 
 export function ListingForm({ initialData, listingId, listingStatus }: ListingFormProps) {
   const router = useRouter();
@@ -131,8 +152,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["carFeatures"] });
       const current = form.getValues("features") ?? [];
-      if (!current.includes(data.name)) {
-        form.setValue("features", [...current, data.name]);
+      if (!current.includes(data.id)) {
+        form.setValue("features", [...current, data.id]);
       }
       setNewFeatureName("");
       setAddFeatureError(null);
@@ -272,16 +293,31 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
       <div className="flex flex-wrap gap-3">
         {imageItems.map((item, index) => (
-          <div key={index} className="relative h-30 w-30 shrink-0 overflow-hidden rounded-lg border bg-muted">
-            {item.type === "new" ? <img src={item.preview} alt="" className="h-full w-full object-cover" /> : <Image src={item.image.imageUrl} alt="" fill className="object-cover" sizes="80px" />}
+          <div
+            key={index}
+            className="relative h-30 w-30 shrink-0 overflow-hidden rounded-lg border bg-muted"
+          >
+            {item.type === "new" ? (
+              <img src={item.preview} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <Image src={item.image.imageUrl} alt="" fill className="object-cover" sizes="80px" />
+            )}
             <span
               className={`absolute bottom-1 left-1 rounded-full px-2 py-0.5 text-xs font-medium shadow-sm ${
-                primaryIndex === index ? "bg-primary text-primary-foreground" : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
+                primaryIndex === index
+                  ? "bg-primary text-primary-foreground"
+                  : "cursor-pointer bg-black/60 text-white hover:bg-black/80"
               }`}
-              onClick={() => setAsPrimary(index)}>
+              onClick={() => setAsPrimary(index)}
+            >
               {primaryIndex === index ? "Main" : "Set main"}
             </span>
-            <button type="button" onClick={() => removeItem(index)} className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80" aria-label="Remove photo">
+            <button
+              type="button"
+              onClick={() => removeItem(index)}
+              className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
+              aria-label="Remove photo"
+            >
               <X className="size-3" />
             </button>
           </div>
@@ -290,7 +326,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-30 h-30 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-white transition-colors hover:border-primary/50 hover:bg-muted/50 sm:bg-muted/30">
+            className="flex w-30 h-30 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-white transition-colors hover:border-primary/50 hover:bg-muted/50 sm:bg-muted/30"
+          >
             <span className="rounded-full bg-primary/10 p-2">
               <Camera className="size-6 text-primary" />
             </span>
@@ -313,7 +350,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
         <div>
           <h3 className="font-medium text-blue-900 dark:text-blue-100">Listing Preview</h3>
           <p className="mt-1 text-sm text-blue-800 dark:text-blue-200">
-            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer reached out, we will inform you immediately.
+            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer
+            reached out, we will inform you immediately.
           </p>
         </div>
       </div>
@@ -330,22 +368,29 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
             : listingStatus === "pending"
               ? "bg-orange-50 dark:bg-orange-950/30"
               : "bg-muted"
-      }`}>
+      }`}
+    >
       <div className="flex gap-3">
         {listingStatus === "active" ? (
           <Check className="size-5 shrink-0 text-green-600 dark:text-green-400" />
         ) : (
           <Info
             className={`size-5 shrink-0 ${
-              listingStatus === "sold" ? "text-amber-600 dark:text-amber-400" : listingStatus === "pending" ? "text-orange-600 dark:text-orange-400" : "text-muted-foreground"
+              listingStatus === "sold"
+                ? "text-amber-600 dark:text-amber-400"
+                : listingStatus === "pending"
+                  ? "text-orange-600 dark:text-orange-400"
+                  : "text-muted-foreground"
             }`}
           />
         )}
         <div>
           <p className="text-sm font-medium">
-            {listingStatus === "active" && "This listing is currently active and visible to buyers."}
+            {listingStatus === "active" &&
+              "This listing is currently active and visible to buyers."}
             {listingStatus === "sold" && "This listing has been marked as sold."}
-            {listingStatus === "pending" && "This listing is awaiting admin approval. It will go live once approved."}
+            {listingStatus === "pending" &&
+              "This listing is awaiting admin approval. It will go live once approved."}
             {listingStatus === "archived" && "This listing is archived and not visible to buyers."}
           </p>
         </div>
@@ -355,15 +400,24 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
-      <Link href="/seller" className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        href="/seller"
+        className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+      >
         ← Back to Dashboard
       </Link>
       <h1 className="text-2xl font-bold">{isCreate ? "Add New Listing" : "Edit Listing"}</h1>
-      <p className="mt-1 text-muted-foreground">{isCreate ? "Fill in the details below to list your car for sale" : "Update the details of your car listing"}</p>
+      <p className="mt-1 text-muted-foreground">
+        {isCreate
+          ? "Fill in the details below to list your car for sale"
+          : "Update the details of your car listing"}
+      </p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
-          {form.formState.errors.root?.message && <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>}
+          {form.formState.errors.root?.message && (
+            <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>
+          )}
           <div className="lg:grid lg:grid-cols-[1fr_1.5fr] lg:gap-8">
             <div className="space-y-6 lg:order-1">
               {photosSection}
@@ -383,7 +437,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         const id = parseInt(v, 10) || 0;
                         setMakeId(id);
                         form.setValue("modelId", 0);
-                      }}>
+                      }}
+                    >
                       <SelectTrigger className="w-full bg-white">
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
@@ -403,7 +458,11 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Model*</FormLabel>
-                        <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : "0"} disabled={!makeId}>
+                        <Select
+                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
+                          value={field.value ? String(field.value) : "0"}
+                          disabled={!makeId}
+                        >
                           <FormControl>
                             <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
@@ -430,7 +489,10 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Year*</FormLabel>
-                        <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : ""}>
+                        <Select
+                          onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
+                          value={field.value ? String(field.value) : ""}
+                        >
                           <FormControl>
                             <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select a Year" />
@@ -455,7 +517,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className="w-full bg-white" />
+                          <Input
+                            {...field}
+                            placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT"
+                            value={field.value ?? ""}
+                            className="w-full bg-white"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -475,7 +542,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>Price*</FormLabel>
                         <FormControl>
                           <div className="flex w-full">
-                            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">₱</span>
+                            <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+                              ₱
+                            </span>
                             <Input
                               type="text"
                               inputMode="numeric"
@@ -512,7 +581,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                                 field.onChange(raw ? parseInt(raw, 10) : 0);
                               }}
                             />
-                            <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">km</span>
+                            <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+                              km
+                            </span>
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -554,7 +625,10 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Body Type*</FormLabel>
-                        <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
+                        <Select
+                          onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
+                          value={field.value || "__none__"}
+                        >
                           <FormControl>
                             <SelectTrigger className="w-full bg-white">
                               <SelectValue placeholder="Select" />
@@ -584,7 +658,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Engine Size</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className="w-full bg-white" />
+                          <Input
+                            {...field}
+                            placeholder="e.g. 1.3L"
+                            value={field.value ?? ""}
+                            className="w-full bg-white"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -663,7 +742,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
               <section className="space-y-4">
                 <h2 className="text-lg font-semibold">Features</h2>
-                <p className="text-sm text-muted-foreground">Select all features that apply to your car</p>
+                <p className="text-sm text-muted-foreground">
+                  Create or select all features that apply
+                </p>
                 <FormField
                   control={form.control}
                   name="features"
@@ -672,8 +753,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormControl>
                         <div className="flex flex-wrap gap-2">
                           {features.map((f) => {
-                            const feature = f.name;
-                            const selected = (field.value ?? []).includes(feature);
+                            const selected = (field.value ?? []).includes(f.id);
                             return (
                               <button
                                 key={f.id}
@@ -681,16 +761,19 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                                 onClick={() => {
                                   const current = field.value ?? [];
                                   if (selected) {
-                                    field.onChange(current.filter((x) => x !== feature));
+                                    field.onChange(current.filter((x) => x !== f.id));
                                   } else {
-                                    field.onChange([...current, feature]);
+                                    field.onChange([...current, f.id]);
                                   }
                                 }}
                                 className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                                  selected ? "bg-primary text-primary-foreground" : "border border-input bg-background hover:bg-accent"
-                                }`}>
+                                  selected
+                                    ? "bg-primary text-primary-foreground"
+                                    : "border border-input bg-background hover:bg-accent"
+                                }`}
+                              >
                                 {selected && <Check className="size-4" />}
-                                {feature}
+                                {f.name}
                               </button>
                             );
                           })}
@@ -701,7 +784,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               setNewFeatureName("");
                               setAddFeatureOpen(true);
                             }}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-input bg-muted/30 px-4 py-2 text-sm font-medium transition-colors hover:border-primary/50 hover:bg-muted/50">
+                            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-input bg-muted/30 px-4 py-2 text-sm font-medium transition-colors hover:border-primary/50 hover:bg-muted/50"
+                          >
                             <Plus className="size-4" />
                             Add Feature
                           </button>
@@ -732,16 +816,28 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         }}
                         placeholder="e.g. Heated Seats"
                         className="w-full bg-white"
-                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddFeature())}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && (e.preventDefault(), handleAddFeature())
+                        }
                       />
-                      {addFeatureError && <p className="text-sm text-destructive">{addFeatureError}</p>}
+                      {addFeatureError && (
+                        <p className="text-sm text-destructive">{addFeatureError}</p>
+                      )}
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => setAddFeatureOpen(false)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setAddFeatureOpen(false)}
+                    >
                       Cancel
                     </Button>
-                    <Button type="button" onClick={handleAddFeature} disabled={addFeatureMutation.isPending}>
+                    <Button
+                      type="button"
+                      onClick={handleAddFeature}
+                      disabled={addFeatureMutation.isPending}
+                    >
                       {addFeatureMutation.isPending ? "Adding..." : "Add Feature"}
                     </Button>
                   </DialogFooter>
