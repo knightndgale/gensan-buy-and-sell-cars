@@ -10,16 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { formatPrice, formatMileage } from "@/lib/format";
 import { CarImageCarousel } from "@/components/CarImageCarousel";
 import { CarDetailContactSection } from "@/components/CarDetailContactSection";
-import {
-  MapPin,
-  Gauge,
-  Fuel,
-  Settings,
-  Calendar,
-  Car,
-  Cog,
-  Palette,
-} from "lucide-react";
+import { CarDetailMobileFloatingContactBar } from "@/components/CarDetailMobileFloatingContactBar";
+import { MapPin, Gauge, Fuel, Settings, Calendar, Car, Cog, Palette } from "lucide-react";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -53,7 +45,8 @@ export default async function CarDetailPage({ params }: PageProps) {
     getCarFeaturesByIds(listing.features ?? []),
   ]);
 
-  const model = typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
+  const model =
+    typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
   const make = model ? makes.find((m2) => m2.id === model.makeId) : undefined;
   const dealer = listing.dealerId ? await getDealerById(listing.dealerId) : null;
 
@@ -68,9 +61,7 @@ export default async function CarDetailPage({ params }: PageProps) {
     <Card className="h-fit">
       <CardContent className="pt-6">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="mt-2 text-2xl font-bold text-primary">
-          {priceLabel}
-        </p>
+        <p className="mt-2 text-2xl font-bold text-primary">{priceLabel}</p>
         <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
           <MapPin className="size-4 shrink-0" />
           {locationLabel}
@@ -87,12 +78,16 @@ export default async function CarDetailPage({ params }: PageProps) {
           <div className="flex flex-col items-center gap-1 text-center">
             <Fuel className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Fuel</span>
-            <span className="text-sm font-medium">{listing.fuelType ? formatFuelType(listing.fuelType) : "—"}</span>
+            <span className="text-sm font-medium">
+              {listing.fuelType ? formatFuelType(listing.fuelType) : "—"}
+            </span>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">
             <Settings className="size-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Transmission</span>
-            <span className="text-sm font-medium">{listing.transmission ? formatTransmission(listing.transmission) : "—"}</span>
+            <span className="text-sm font-medium">
+              {listing.transmission ? formatTransmission(listing.transmission) : "—"}
+            </span>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">
             <Calendar className="size-5 text-muted-foreground" />
@@ -138,7 +133,9 @@ export default async function CarDetailPage({ params }: PageProps) {
               <Fuel className="size-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0">
                 <span className="block text-xs text-muted-foreground">Fuel Type</span>
-                <span className="text-sm font-medium">{listing.fuelType ? formatFuelType(listing.fuelType) : "—"}</span>
+                <span className="text-sm font-medium">
+                  {listing.fuelType ? formatFuelType(listing.fuelType) : "—"}
+                </span>
               </div>
             </div>
           </div>
@@ -183,11 +180,11 @@ export default async function CarDetailPage({ params }: PageProps) {
 
         <Separator className="my-4" />
 
-        <CarDetailContactSection
-          dealer={dealer}
-          listingId={id}
-          carName={title}
-        />
+        {/* This is the main in-page contact section. On mobile, we use a floating
+            bar that hides itself when this section is visible, so they don't overlap. */}
+        <section id="car-detail-contact-section">
+          <CarDetailContactSection dealer={dealer} listingId={id} carName={title} />
+        </section>
       </CardContent>
     </Card>
   );
@@ -208,26 +205,14 @@ export default async function CarDetailPage({ params }: PageProps) {
         <div className="lg:sticky lg:top-24">{detailsContent}</div>
       </div>
 
-      {/* Floating contact bar - mobile only */}
+      {/* Floating contact bar - mobile only (hides itself when the in-page contact section is visible) */}
       {dealer && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
-          <div className="container mx-auto max-w-7xl">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-                {getInitials(dealer.dealershipName)}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{dealer.dealershipName}</p>
-                <p className="truncate text-xs text-muted-foreground">{dealer.location}</p>
-              </div>
-            </div>
-            <CarDetailContactSection
-              dealer={dealer}
-              listingId={id}
-              carName={title}
-            />
-          </div>
-        </div>
+        <CarDetailMobileFloatingContactBar
+          dealer={dealer}
+          listingId={id}
+          carName={title}
+          contactSectionId="car-detail-contact-section"
+        />
       )}
     </main>
   );
