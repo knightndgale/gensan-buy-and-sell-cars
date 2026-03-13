@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,9 +33,8 @@ function LoginForm() {
       toast.success("Login successful.");
       router.push(redirect);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Login failed";
+      const message = getAuthErrorMessage(err);
       setError(message);
-      toast.error(message);
     } finally {
       setLoading(false);
     }
