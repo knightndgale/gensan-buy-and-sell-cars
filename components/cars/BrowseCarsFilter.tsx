@@ -9,12 +9,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 type BrowseCarsFilterProps = {
   makes: CarMake[];
-  listingCount: number;
+  totalCount: number;
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
 
-export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps) {
+export function BrowseCarsFilter({ makes, totalCount }: BrowseCarsFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const makeParam = searchParams.get("make") ?? "";
@@ -95,7 +95,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
           <div className="min-w-0 flex-1">
             <h2 className="text-xl font-bold text-primary-foreground sm:text-2xl">Browse Cars</h2>
             <p className="mt-1 text-sm text-primary-foreground/85">
-              {listingCount} car listing{listingCount !== 1 ? "s" : ""} in General Santos City
+            {totalCount} car listing{totalCount !== 1 ? "s" : ""} in General Santos City
             </p>
           </div>
         </div>

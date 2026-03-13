@@ -53,10 +53,6 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
     getCarMakes(),
   ]);
 
-  const allListings = await getListings({
-  status: "active",
-  });
-
   const modelMap = new Map(models.map((m) => [m.id, m]));
   const makeMap = new Map(makes.map((m) => [m.id, m.name]));
   
@@ -72,8 +68,10 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
         primaryImageUrl: primary?.imageUrl,
       };
     }),
-  );
-
+  );  
+  
+  const allListings = await getListings({ status: "active" });
+  const totalListingsCount = allListings.length;
   let filtered = resolved;
 
   if (minMileage !== undefined && !isNaN(minMileage)) {
@@ -93,7 +91,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
         ? [...filtered].sort((a, b) => (b.price ?? Number.NEGATIVE_INFINITY) - (a.price ?? Number.NEGATIVE_INFINITY))
         : filtered;
 
-  const totalCount = allListings.length;
+  const totalCount = sorted.length;
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   return (
@@ -106,7 +104,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
           <div className="min-w-0 flex-1">
             <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
-              <BrowseCarsFilter makes={makes} listingCount={totalCount} />
+              <BrowseCarsFilter makes={makes} totalCount={totalListingsCount} />
             </Suspense>
 
             <div className="mt-6 flex flex-row  items-center justify-between gap-3">
