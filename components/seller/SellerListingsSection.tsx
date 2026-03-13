@@ -48,6 +48,16 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
       result = result.filter((l) => (l.title || "").toLowerCase().includes(term));
     }
 
+    // When "All" tab is active, sort by status: active → pending → sold
+    if (tab === "all") {
+      const statusOrder: Record<string, number> = { active: 0, pending: 1, sold: 2 };
+      result = [...result].sort((a, b) => {
+        const aOrder = statusOrder[a.status] ?? 3;
+        const bOrder = statusOrder[b.status] ?? 3;
+        return aOrder - bOrder;
+      });
+    }
+
     return result;
   }, [listings, tab, search]);
 
