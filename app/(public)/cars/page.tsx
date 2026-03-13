@@ -1,5 +1,6 @@
 import { BrowseCarsFilter } from "@/components/cars/BrowseCarsFilter";
 import { CarsFilterDrawer, CarsFilterSidebar } from "@/components/cars/CarsFilter";
+import { CarsListWithLoadMore } from "@/components/cars/CarsListWithLoadMore";
 import { CarsPagination } from "@/components/cars/CarsPagination";
 import { CarsSortSelect } from "@/components/cars/CarsSortSelect";
 import { HowItWorks } from "@/components/home/HowItWorks";
@@ -54,7 +55,9 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
   const modelMap = new Map(models.map((m) => [m.id, m]));
   const makeMap = new Map(makes.map((m) => [m.id, m.name]));
-
+  const allListings = await getListings({
+  status: "active",
+  });
   const resolved: ListingWithDetails[] = await Promise.all(
     listings.map(async (l) => {
       const modelInfo = typeof l.modelId === "number" ? modelMap.get(l.modelId) : undefined;
@@ -88,7 +91,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
         ? [...filtered].sort((a, b) => (b.price ?? Number.NEGATIVE_INFINITY) - (a.price ?? Number.NEGATIVE_INFINITY))
         : filtered;
 
-  const totalCount = sorted.length;
+  const totalCount = allListings.length;
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   return (
@@ -122,17 +125,31 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
               {totalCount} car{totalCount !== 1 ? "s" : ""} found in General Santos
             </p>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-              {paginated.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-
             {filtered.length === 0 && <p className="mt-6 text-muted-foreground">No listings match your filters.</p>}
 
+            {/* Desktop: server-rendered grid + pagination */}
             {totalCount > 0 && (
-              <div className="mt-8">
-                <CarsPagination totalCount={totalCount} pageSize={pageSize} currentPage={page} />
+              <div className="hidden lg:block">
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                  {paginated.map((listing) => (
+                    <ListingCard key={listing.id} listing={listing} />
+                  ))}
+                </div>
+                <div className="mt-8">
+                  <CarsPagination totalCount={totalCount} pageSize={pageSize} currentPage={page} />
+                </div>
+              </div>
+            )}
+
+            {/* Mobile: client component with Load More */}
+            {totalCount > 0 && (
+              <div className="lg:hidden">
+                <CarsListWithLoadMore
+                  initialListings={sorted.slice(0, pageSize)}
+                  initialHasMore={pageSize < totalCount}
+                  pageSize={pageSize}
+                  searchParams={params}
+                />
               </div>
             )}
           </div>

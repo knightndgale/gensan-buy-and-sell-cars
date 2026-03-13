@@ -19,7 +19,6 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
   const searchParams = useSearchParams();
   const makeParam = searchParams.get("make") ?? "";
   const qParam = searchParams.get("q") ?? "";
-  const [fixedCount] = useState(listingCount);
   const [searchValue, setSearchValue] = useState(qParam);
   const lastPushedQRef = useRef<string | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -96,7 +95,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
           <div className="min-w-0 flex-1">
             <h2 className="text-xl font-bold text-primary-foreground sm:text-2xl">Browse Cars</h2>
             <p className="mt-1 text-sm text-primary-foreground/85">
-              {fixedCount} car{fixedCount !== 1 ? "s" : ""} in General Santos City
+              {listingCount} car listing{listingCount !== 1 ? "s" : ""} in General Santos City
             </p>
           </div>
         </div>
