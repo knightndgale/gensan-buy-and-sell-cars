@@ -74,7 +74,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
         <Button asChild className="w-full bg-primary shrink-0 h-12">
           <Link href="/seller/listings/new" className="flex items-center justify-center gap-2">
             <Plus className="size-5" />
-            List of Car for Sale
+            Add new car
           </Link>
         </Button>
       </div>
