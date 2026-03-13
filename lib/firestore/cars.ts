@@ -3,6 +3,7 @@ import { getAdminDbSafe } from "@/lib/firebase/admin";
 
 const MAKES_COLLECTION = "carMakes";
 const MODELS_COLLECTION = "carModels";
+const LISTINGS_COLLECTION = "listings";
 
 export async function getCarMakes(): Promise<CarMake[]> {
   const db = getAdminDbSafe();
@@ -34,3 +35,16 @@ export async function getCarModelById(id: number): Promise<CarModel | null> {
   const models = await getCarModels();
   return models.find((m) => m.id === id) ?? null;
 }
+
+export async function getTotalActiveListingsCount(): Promise<number> {
+  const db = getAdminDbSafe();
+  if (!db) return 0;
+
+  const snapshot = await db.collection(LISTINGS_COLLECTION)
+    .where("status", "==", "active")
+    .get();
+
+  console.log("Total active listings:", snapshot.size);
+  return snapshot.size;
+}
+

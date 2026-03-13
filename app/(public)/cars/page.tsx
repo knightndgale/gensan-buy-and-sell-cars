@@ -5,10 +5,11 @@ import { CarsPagination } from "@/components/cars/CarsPagination";
 import { CarsSortSelect } from "@/components/cars/CarsSortSelect";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ListingCard, type ListingWithDetails } from "@/components/ListingCard";
-import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
+import { getTotalActiveListingsCount, getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListings } from "@/lib/firestore/listings";
 import { Suspense } from "react";
+
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -36,8 +37,8 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
   const sort = typeof params.sort === "string" && ["newest", "price_asc", "price_desc"].includes(params.sort) ? params.sort : "newest";
   const page = Math.max(1, parseInt(typeof params.page === "string" ? params.page : "1", 10) || 1);
   const pageSize = Math.min(24, Math.max(6, parseInt(typeof params.pageSize === "string" ? params.pageSize : "6", 10) || 6)) || DEFAULT_PAGE_SIZE;
-
-  const [listings, models, makes] = await Promise.all([
+  const totalActiveCount = await getTotalActiveListingsCount();
+  const [listings, models, makes,] = await Promise.all([
     getListings({
       status: "active",
       makeId: make ? parseInt(make, 10) : undefined,
@@ -55,7 +56,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
   const modelMap = new Map(models.map((m) => [m.id, m]));
   const makeMap = new Map(makes.map((m) => [m.id, m.name]));
-  
+
   const resolved: ListingWithDetails[] = await Promise.all(
     listings.map(async (l) => {
       const modelInfo = typeof l.modelId === "number" ? modelMap.get(l.modelId) : undefined;
@@ -68,10 +69,8 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
         primaryImageUrl: primary?.imageUrl,
       };
     }),
-  );  
+  );
   
-  const allListings = await getListings({ status: "active" });
-  const totalListingsCount = allListings.length;
   let filtered = resolved;
 
   if (minMileage !== undefined && !isNaN(minMileage)) {
@@ -90,7 +89,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
       : sort === "price_desc"
         ? [...filtered].sort((a, b) => (b.price ?? Number.NEGATIVE_INFINITY) - (a.price ?? Number.NEGATIVE_INFINITY))
         : filtered;
-
+  
   const totalCount = sorted.length;
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
 
@@ -104,7 +103,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
           <div className="min-w-0 flex-1">
             <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
-              <BrowseCarsFilter makes={makes} totalCount={totalListingsCount} />
+              <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
             </Suspense>
 
             <div className="mt-6 flex flex-row  items-center justify-between gap-3">
