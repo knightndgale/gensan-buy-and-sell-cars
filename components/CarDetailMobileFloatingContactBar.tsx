@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { Dealer } from "@/schema";
 import { CarDetailContactSection } from "@/components/CarDetailContactSection";
+import type { Dealer } from "@/schema";
+import { useEffect, useState } from "react";
 
 type CarDetailMobileFloatingContactBarProps = {
   dealer: Dealer | null;
@@ -12,12 +12,7 @@ type CarDetailMobileFloatingContactBarProps = {
   contactSectionId: string;
 };
 
-export function CarDetailMobileFloatingContactBar({
-  dealer,
-  listingId,
-  carName,
-  contactSectionId,
-}: CarDetailMobileFloatingContactBarProps) {
+export function CarDetailMobileFloatingContactBar({ dealer, listingId, carName, contactSectionId }: CarDetailMobileFloatingContactBarProps) {
   const [isContactSectionVisible, setIsContactSectionVisible] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
@@ -74,19 +69,8 @@ export function CarDetailMobileFloatingContactBar({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
       <div className="container mx-auto max-w-7xl">
-        <div className="mb-3 flex items-center gap-2">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-            {getInitials(dealer.dealershipName)}
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{dealer.dealershipName}</p>
-            <p className="truncate text-xs text-muted-foreground">{dealer.location}</p>
-          </div>
-        </div>
-
         <CarDetailContactSection dealer={dealer} listingId={listingId} carName={carName} />
       </div>
     </div>
   );
 }
-
