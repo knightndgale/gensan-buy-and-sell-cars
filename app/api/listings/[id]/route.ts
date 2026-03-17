@@ -25,14 +25,16 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: "Forbidden", detail: "Seller or admin role required" }, { status: 403 });
     }
 
-    const dealer = await getDealerByUserId(session.uid);
-    if (!dealer) {
-      return NextResponse.json({ error: "Dealer profile not found" }, { status: 403 });
+    const listing = await getListingById(id);
+    if (!listing) {
+      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
 
-    const listing = await getListingById(id);
-    if (!listing || listing.dealerId !== dealer.id) {
-      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+    if (session.role === "seller") {
+      const dealer = await getDealerByUserId(session.uid);
+      if (!dealer || listing.dealerId !== dealer.id) {
+        return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+      }
     }
 
     if (isMultipart(request)) {
@@ -74,6 +76,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const updateData = { ...parsed.data };
     if (updateData.status === "sold") {
       updateData.soldAt = new Date().toISOString();
+    } else if (updateData.status === "active") {
+      updateData.soldAt = null;
     }
 
     await updateListing(id, updateData);

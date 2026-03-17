@@ -40,7 +40,12 @@ function SpecItem({ icon: Icon, label }: { icon: React.ElementType; label: strin
   );
 }
 
-export function ListingCard({ listing }: { listing: ListingWithDetails }) {
+type ListingCardProps = {
+  listing: ListingWithDetails;
+  isAdmin?: boolean;
+};
+
+export function ListingCard({ listing, isAdmin }: ListingCardProps) {
   const [imageError, setImageError] = useState(false);
   const titleParts = [listing.year, listing.makeName, listing.modelName, listing.trim].filter(Boolean);
   const title = titleParts.length > 0 ? titleParts.join(" ") : "Car";
@@ -67,6 +72,16 @@ export function ListingCard({ listing }: { listing: ListingWithDetails }) {
               {formatTimeAgo(listing.createdAt)}
             </span>
           </div>
+          {isAdmin && listing.status === "pending" && (
+            <div className="absolute right-2 top-2 rounded-md bg-amber-500 px-2 py-1 text-xs font-medium text-white">
+              For approval
+            </div>
+          )}
+          {isAdmin && listing.status === "sold" && (
+            <div className="absolute right-2 top-2 rounded-md bg-primary/90 px-2 py-1 text-xs font-medium text-white">
+              Sold
+            </div>
+          )}
         </div>
         <CardContent className="space-y-2 pb-5">
           <h3 className="font-semibold">{title}</h3>

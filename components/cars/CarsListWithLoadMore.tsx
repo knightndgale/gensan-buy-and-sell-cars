@@ -10,6 +10,7 @@ type CarsListWithLoadMoreProps = {
   initialHasMore: boolean;
   pageSize: number;
   searchParams: Record<string, string | string[] | undefined>;
+  isAdmin?: boolean;
 };
 
 function buildBaseSearchParams(params: Record<string, string | string[] | undefined>): URLSearchParams {
@@ -24,7 +25,7 @@ function buildBaseSearchParams(params: Record<string, string | string[] | undefi
   return sp;
 }
 
-export function CarsListWithLoadMore({ initialListings, initialHasMore, pageSize, searchParams }: CarsListWithLoadMoreProps) {
+export function CarsListWithLoadMore({ initialListings, initialHasMore, pageSize, searchParams, isAdmin }: CarsListWithLoadMoreProps) {
   const [listings, setListings] = useState<ListingWithDetails[]>(initialListings);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loading, setLoading] = useState(false);
@@ -57,7 +58,7 @@ export function CarsListWithLoadMore({ initialListings, initialHasMore, pageSize
     <>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {listings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
+          <ListingCard key={listing.id} listing={listing} isAdmin={isAdmin} />
         ))}
       </div>
 

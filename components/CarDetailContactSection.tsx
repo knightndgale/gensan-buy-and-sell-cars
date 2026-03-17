@@ -1,5 +1,6 @@
 "use client";
 
+import { CarDetailAdminActions } from "@/components/CarDetailAdminActions";
 import { GHLFormEmbed } from "@/components/GHLFormEmbed";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { Dealer } from "@/schema";
@@ -12,6 +13,9 @@ type CarDetailContactSectionProps = {
   listingId: string;
   carName: string;
   hideGhlButton?: boolean;
+  /** When true, show admin action buttons instead of contact/social */
+  isAdmin?: boolean;
+  listingStatus?: "active" | "pending" | "sold";
 };
 
 function normalizePhoneForWa(phone: string): string {
@@ -21,8 +25,16 @@ function normalizePhoneForWa(phone: string): string {
   return "63" + digits;
 }
 
-export function CarDetailContactSection({ dealer, listingId, carName }: CarDetailContactSectionProps) {
+export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, listingStatus }: CarDetailContactSectionProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  if (isAdmin && listingStatus) {
+    return (
+      <div className="space-y-4">
+        <CarDetailAdminActions listingId={listingId} listingStatus={listingStatus} />
+      </div>
+    );
+  }
 
   const ghlFormUrl = dealer?.ghlFormEmbedUrl ?? process.env.NEXT_PUBLIC_GHL_FORM_EMBED_URL;
 

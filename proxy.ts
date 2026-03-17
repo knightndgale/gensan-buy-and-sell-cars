@@ -15,11 +15,14 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Protect admin routes
-  if (pathname.startsWith("/admin")) {
+  // Protect admin routes (except login)
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     const sessionCookie = request.cookies.get("session")?.value;
     if (!sessionCookie) {
-      return NextResponse.redirect(new URL("/", request.url));
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/login";
+      url.searchParams.set("redirect", "/cars");
+      return NextResponse.redirect(url);
     }
   }
 

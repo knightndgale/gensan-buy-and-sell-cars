@@ -1,3 +1,4 @@
+import { AdminStatusTabs } from "@/components/cars/AdminStatusTabs";
 import { BrowseCarsFilter } from "@/components/cars/BrowseCarsFilter";
 import { CarsFilterDrawer, CarsFilterSidebar } from "@/components/cars/CarsFilter";
 import { CarsListWithLoadMore } from "@/components/cars/CarsListWithLoadMore";
@@ -5,9 +6,11 @@ import { CarsPagination } from "@/components/cars/CarsPagination";
 import { CarsSortSelect } from "@/components/cars/CarsSortSelect";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ListingCard, type ListingWithDetails } from "@/components/ListingCard";
+import { getSessionToken } from "@/lib/auth";
 import { getTotalActiveListingsCount, getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListings } from "@/lib/firestore/listings";
+import { headers } from "next/headers";
 import { Suspense } from "react";
 
 
@@ -37,10 +40,19 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
   const sort = typeof params.sort === "string" && ["newest", "price_asc", "price_desc"].includes(params.sort) ? params.sort : "newest";
   const page = Math.max(1, parseInt(typeof params.page === "string" ? params.page : "1", 10) || 1);
   const pageSize = Math.min(24, Math.max(6, parseInt(typeof params.pageSize === "string" ? params.pageSize : "6", 10) || 6)) || DEFAULT_PAGE_SIZE;
+
+  const headersList = await headers();
+  const session = await getSessionToken(headersList.get("cookie"), headersList.get("authorization"));
+  const isAdmin = session?.role === "admin";
+  const statusParam = typeof params.status === "string" ? params.status : undefined;
+  const listingStatus = isAdmin && statusParam && ["all", "active", "pending", "sold"].includes(statusParam)
+    ? (statusParam as "all" | "active" | "pending" | "sold")
+    : "active";
+
   const totalActiveCount = await getTotalActiveListingsCount();
-  const [listings, models, makes,] = await Promise.all([
+  const [listings, models, makes] = await Promise.all([
     getListings({
-      status: "active",
+      status: listingStatus === "all" ? undefined : listingStatus,
       makeId: make ? parseInt(make, 10) : undefined,
       modelId: model ? parseInt(model, 10) : undefined,
       minPrice,
@@ -106,6 +118,12 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
               <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
             </Suspense>
 
+            {isAdmin && (
+              <Suspense fallback={null}>
+                <AdminStatusTabs currentStatus={listingStatus} />
+              </Suspense>
+            )}
+
             <div className="mt-6 flex flex-row  items-center justify-between gap-3">
               <div className="lg:hidden">
                 <Suspense fallback={<div className="h-9 w-24 animate-pulse rounded-md bg-muted" />}>
@@ -131,7 +149,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
               <div className="hidden lg:block">
                 <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                   {paginated.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} />
+                    <ListingCard key={listing.id} listing={listing} isAdmin={isAdmin} />
                   ))}
                 </div>
                 <div className="mt-8">
@@ -148,6 +166,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
                   initialHasMore={pageSize < totalCount}
                   pageSize={pageSize}
                   searchParams={params}
+                  isAdmin={isAdmin}
                 />
               </div>
             )}

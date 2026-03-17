@@ -3,6 +3,7 @@ import { CarDetailMobileFloatingContactBar } from "@/components/CarDetailMobileF
 import { CarImageCarousel } from "@/components/CarImageCarousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getSessionToken } from "@/lib/auth";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
 import { getDealerById } from "@/lib/firestore/dealers";
 import { getCarFeaturesByIds } from "@/lib/firestore/features";
@@ -11,6 +12,7 @@ import { getListingById } from "@/lib/firestore/listings";
 import { formatMileage, formatPrice } from "@/lib/format";
 import { Calendar, Car, Cog, Fuel, Gauge, MapPin, Palette, Settings } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 type PageProps = { params: Promise<{ id: string }> };
@@ -34,7 +36,14 @@ function getInitials(name: string): string {
 export default async function CarDetailPage({ params }: PageProps) {
   const { id } = await params;
   const listing = await getListingById(id);
-  if (!listing || listing.status !== "active") notFound();
+  if (!listing) notFound();
+
+  const headersList = await headers();
+  const session = await getSessionToken(headersList.get("cookie"), headersList.get("authorization"));
+  const isAdmin = session?.role === "admin";
+
+  // Non-admin users can only view active listings
+  if (!isAdmin && listing.status !== "active") notFound();
 
   const [images, models, makes, resolvedFeatures] = await Promise.all([getListingImages(id), getCarModels(), getCarMakes(), getCarFeaturesByIds(listing.features ?? [])]);
 
@@ -164,7 +173,13 @@ export default async function CarDetailPage({ params }: PageProps) {
         {/* This is the main in-page contact section. On mobile, we use a floating
             bar that hides itself when this section is visible, so they don't overlap. */}
         <section id="car-detail-contact-section">
-          <CarDetailContactSection dealer={dealer} listingId={id} carName={title} />
+          <CarDetailContactSection
+            dealer={dealer}
+            listingId={id}
+            carName={title}
+            isAdmin={isAdmin}
+            listingStatus={listing.status as "active" | "pending" | "sold"}
+          />
         </section>
       </CardContent>
     </Card>
@@ -187,7 +202,16 @@ export default async function CarDetailPage({ params }: PageProps) {
       </div>
 
       {/* Floating contact bar - mobile only (hides itself when the in-page contact section is visible) */}
-      {dealer && <CarDetailMobileFloatingContactBar dealer={dealer} listingId={id} carName={title} contactSectionId="car-detail-contact-section" />}
+      {(dealer || isAdmin) && (
+        <CarDetailMobileFloatingContactBar
+          dealer={dealer}
+          listingId={id}
+          carName={title}
+          contactSectionId="car-detail-contact-section"
+          isAdmin={isAdmin}
+          listingStatus={listing.status as "active" | "pending" | "sold"}
+        />
+      )}
     </div>
   );
 }

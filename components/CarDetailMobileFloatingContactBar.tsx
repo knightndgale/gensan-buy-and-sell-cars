@@ -10,9 +10,11 @@ type CarDetailMobileFloatingContactBarProps = {
   carName: string;
   /** The id of the in-page contact section element that this bar should avoid overlapping with. */
   contactSectionId: string;
+  isAdmin?: boolean;
+  listingStatus?: "active" | "pending" | "sold";
 };
 
-export function CarDetailMobileFloatingContactBar({ dealer, listingId, carName, contactSectionId }: CarDetailMobileFloatingContactBarProps) {
+export function CarDetailMobileFloatingContactBar({ dealer, listingId, carName, contactSectionId, isAdmin, listingStatus }: CarDetailMobileFloatingContactBarProps) {
   const [isContactSectionVisible, setIsContactSectionVisible] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
 
@@ -54,7 +56,7 @@ export function CarDetailMobileFloatingContactBar({ dealer, listingId, carName, 
     return () => observer.disconnect();
   }, [contactSectionId]);
 
-  if (!dealer) return null;
+  if (!dealer && !isAdmin) return null;
   // Hide the floating bar if the main contact section OR the page footer is visible.
   if (isContactSectionVisible || isFooterVisible) return null;
 
@@ -69,7 +71,7 @@ export function CarDetailMobileFloatingContactBar({ dealer, listingId, carName, 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
       <div className="container mx-auto max-w-7xl">
-        <CarDetailContactSection dealer={dealer} listingId={listingId} carName={carName} />
+        <CarDetailContactSection dealer={dealer} listingId={listingId} carName={carName} isAdmin={isAdmin} listingStatus={listingStatus} />
       </div>
     </div>
   );
