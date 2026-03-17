@@ -1,14 +1,28 @@
 "use client";
 
+import { useAuth } from "@/components/providers/auth-provider";
 import { publicNavItems } from "@/lib/nav";
+import { useQuery } from "@tanstack/react-query";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 export function Header() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const { user, signOut } = useAuth();
+
+  const { data: authMe } = useQuery({
+    queryKey: ["auth-me"],
+    queryFn: async () => {
+      const res = await fetch("/api/auth/me");
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json() as Promise<{ uid: string; role: string }>;
+    },
+    enabled: !!user,
+  });
+
+  const isAdmin = authMe?.role === "admin";
 
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between gap-4 border-b bg-background py-3">
@@ -29,37 +43,18 @@ export function Header() {
               {item.label}
             </Link>
           ))}
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => signOut()}
+              className="flex items-center gap-2 text-base font-medium text-muted-foreground transition-colors hover:text-primary lg:text-sm cursor-pointer"
+              aria-label="Log out">
+              <LogOut className="size-4" />
+              Log out
+            </button>
+          )}
         </nav>
       </div>
-
-      {/* Mobile hamburger - visible on lg and below */}
-      {/* <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <button type="button" className="ml-auto flex size-10 items-center justify-center rounded-md text-foreground hover:bg-muted lg:hidden" aria-label="Open menu">
-            <Menu className="size-6" />
-          </button>
-        </SheetTrigger>
-        <SheetContent side="right" className="flex w-[min(85vw,20rem)] flex-col gap-6 sm:max-w-sm bg-muted">
-          <SheetTitle className="sr-only">Menu</SheetTitle>
-          <div className="flex items-center gap-2">
-            <Link href="/" onClick={() => setOpen(false)} className="shrink-0 py-2">
-              <Image src="/images/logo-main.webp" alt="Gensan Car Buy & Sell" width={150} height={30} className="object-contain" />
-            </Link>
-          </div>
-
-          <div className="flex flex-col gap-2 bg-white px-4 pb-4">
-            {publicNavItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={pathname === item.href ? "rounded-lg px-4 py-3 text-left font-medium text-primary bg-primary/10" : "rounded-lg px-4 py-3 text-left text-muted-foreground hover:bg-muted"}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet> */}
     </header>
   );
 }
