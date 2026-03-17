@@ -164,3 +164,59 @@ Build succeeds without Firebase credentials (returns empty data). Add credential
 ### Dev seeder (only used when NODE_ENV=development)
 
 - SEED_PASSWORD=
+
+## Git Sync
+
+This project uses two remotes:
+
+| Repo                         | Type          | Remote URL                                              |
+| ---------------------------- | ------------- | ------------------------------------------------------- |
+| `gensan-car-buy-and-sell/`   | Working copy  | `git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git`   |
+| `gensan-buy-and-sell-cars.git/` | Bare mirror | `git@github.com:knightndgale/gensan-buy-and-sell-cars.git` |
+
+**GitLab** is the source of truth. **GitHub** is a mirror that must be manually synced.
+
+### Prerequisites
+
+Load your SSH key before running any git commands:
+
+```bash
+ssh-add ~/.ssh/macbook-m2
+```
+
+### How to Update & Sync
+
+1. **Pull latest from GitLab** (working copy)
+
+```bash
+git pull origin main
+```
+
+2. **Push to GitHub mirror**
+
+```bash
+git push git@github.com:knightndgale/gensan-buy-and-sell-cars.git main
+```
+
+3. **Update the local bare mirror** (if you use one)
+
+```bash
+git -C "/path/to/gensan-buy-and-sell-cars.git" fetch --all
+```
+
+> The bare mirror does not support `git pull` — use `git fetch --all` instead. The bare repo is configured with `remote.origin.mirror=true`, so fetch syncs all refs (branches, tags).
+
+### Optional: Auto-push to Both Remotes
+
+To avoid manually syncing, configure the working copy to push to both GitLab and GitHub simultaneously:
+
+```bash
+git remote set-url --add --push origin git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git
+git remote set-url --add --push origin git@github.com:knightndgale/gensan-buy-and-sell-cars.git
+```
+
+After this, a single `git push` will update both remotes.
+
+### Notes
+
+- Always load your SSH key (`ssh-add`) before performing any remote operations.
