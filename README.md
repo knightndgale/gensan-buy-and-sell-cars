@@ -118,6 +118,10 @@ npm run build
 
 Build succeeds without Firebase credentials (returns empty data). Add credentials for production.
 
+## API Testing
+
+A Postman collection is available in `postman/`. Import `Gensan-Car-Buy-And-Sell.postman_collection.json` and see `postman/README.md` for setup and auth flow.
+
 ## Routes
 
 - `/` - Home (featured listings, hero, trust links)
@@ -164,6 +168,12 @@ Build succeeds without Firebase credentials (returns empty data). Add credential
 ### Dev seeder (only used when NODE_ENV=development)
 
 - SEED_PASSWORD=
+
+### Email (Resend - for seller creation welcome emails)
+
+- RESEND_API_KEY=
+
+When creating sellers via `POST /api/seller`, a welcome email with the generated password is sent. If `RESEND_API_KEY` is not set, the seller is still created but the email is skipped (useful for emulator-only dev). For production, sign up at [resend.com](https://resend.com), verify your domain, and add the API key.
 
 ## Git Sync
 
