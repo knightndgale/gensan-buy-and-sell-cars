@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { getSessionToken } from "@/lib/auth";
 import { getCarFeatures, addCarFeature } from "@/lib/firestore/features";
+import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -13,6 +15,18 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const headersList = await headers();
+    const session = await getSessionToken(
+      headersList.get("cookie"),
+      request.headers.get("authorization")
+    );
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    if (session.role !== "seller" && session.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const body = await request.json();
     const name = typeof body?.name === "string" ? body.name : "";
     if (!name.trim()) {

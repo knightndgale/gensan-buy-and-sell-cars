@@ -80,13 +80,16 @@
           "request": {
             "auth": { "type": "noauth" },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Seed-Password", "value": "{{seedPassword}}" }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"seller@example.com\",\n  \"dealershipName\": \"Test Dealership\"\n}"
+              "raw": "{\n  \"email\": \"seller@example.com\",\n  \"dealershipName\": \"Test Dealership\",\n  \"password\": \"{{seedPassword}}\"\n}"
             },
             "url": "{{baseUrl}}/api/seller",
-            "description": "Create a new seller account (dev only). Sends welcome email with generated password. Requires NODE_ENV=development."
+            "description": "Create a new seller account (dev only). Requires SEED_PASSWORD via X-Seed-Password header or password field in body. Sends welcome email with generated password."
           }
         },
         {
@@ -172,7 +175,6 @@
         {
           "name": "Add Feature",
           "request": {
-            "auth": { "type": "noauth" },
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
@@ -180,7 +182,7 @@
               "raw": "{\n  \"name\": \"Backup Camera\"\n}"
             },
             "url": "{{baseUrl}}/api/features",
-            "description": "Add a new car feature."
+            "description": "Add a new car feature. Requires seller or admin session (Bearer token)."
           }
         }
       ]
@@ -283,7 +285,6 @@
         {
           "name": "Get GHL Analytics",
           "request": {
-            "auth": { "type": "noauth" },
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/ghl/analytics",
@@ -291,7 +292,7 @@
               "path": ["api", "ghl", "analytics"],
               "query": [{ "key": "dealerId", "value": "", "disabled": true }]
             },
-            "description": "Get GoHighLevel analytics. Optional dealerId query param. Requires GHL_API_TOKEN and GHL_DEFAULT_LOCATION_ID."
+            "description": "Get GoHighLevel analytics. Requires seller or admin session (Bearer token). Optional dealerId query param."
           }
         }
       ]

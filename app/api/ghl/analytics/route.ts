@@ -1,3 +1,5 @@
+import { getSessionToken } from "@/lib/auth";
+import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 const CACHE_MAX_AGE = 60 * 5; // 5 minutes
@@ -82,6 +84,15 @@ async function fetchGHLAnalytics(dealerId?: string): Promise<GHLAnalytics> {
 }
 
 export async function GET(request: NextRequest) {
+  const headersList = await headers();
+  const session = await getSessionToken(
+    headersList.get("cookie"),
+    request.headers.get("authorization")
+  );
+  if (!session || (session.role !== "seller" && session.role !== "admin")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const dealerId = request.nextUrl.searchParams.get("dealerId") ?? undefined;
   const analytics = await fetchGHLAnalytics(dealerId);
   return NextResponse.json(analytics, {

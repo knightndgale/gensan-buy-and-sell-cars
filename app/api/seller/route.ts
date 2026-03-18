@@ -11,11 +11,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  let body: { email?: string; dealershipName?: string } = {};
+  let body: { email?: string; dealershipName?: string; password?: string } = {};
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const seedPassword =
+    request.headers.get("X-Seed-Password") ?? body.password ?? null;
+  const expectedPassword = process.env.SEED_PASSWORD;
+  if (!expectedPassword || seedPassword !== expectedPassword) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const email = typeof body.email === "string" ? body.email.trim() : "";
