@@ -19,7 +19,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, signOut } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? "/seller";
@@ -29,7 +29,14 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email, password, false);
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (!res.ok || data.role !== "seller") {
+        await signOut(true);
+        setError("Seller access only. This account does not have seller privileges.");
+        return;
+      }
       toast.success("Login successful.");
       router.push(redirect);
     } catch (err) {
