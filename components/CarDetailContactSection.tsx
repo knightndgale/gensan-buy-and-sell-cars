@@ -41,7 +41,7 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
   const phone = "+639171338178";
   const viberUrl = dealer?.viberUrl ?? (phone ? `viber://add?number=${normalizePhoneForWa(phone)}` : null);
   const whatsappUrl = dealer?.whatsappUrl ?? (phone ? `https://wa.me/${normalizePhoneForWa(phone)}` : null);
-  const messengerUrl = dealer?.messengerUrl ?? null;
+  const messengerUrl = "https://www.facebook.com/2n2n.ras";
   const callUrl = phone ? `tel:${phone.startsWith("+") ? phone : `+${normalizePhoneForWa(phone)}`}` : null;
 
   const contactButtons = [
