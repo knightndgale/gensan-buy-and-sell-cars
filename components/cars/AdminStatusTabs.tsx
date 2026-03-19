@@ -28,7 +28,7 @@ export function AdminStatusTabs({ currentStatus }: AdminStatusTabsProps) {
   return (
     <div className="mt-4 mb-2 space-y-2">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Listing status</p>
-      <div className="flex gap-2 rounded-lg border border-border bg-card/80 p-1.5">
+      <div className="flex flex-nowrap gap-2 overflow-x-auto rounded-lg border border-border bg-card/80 p-1.5 sm:overflow-visible">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -36,7 +36,7 @@ export function AdminStatusTabs({ currentStatus }: AdminStatusTabsProps) {
               key={tab.value}
               href={buildUrl(tab.value)}
               className={cn(
-                "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                "flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors",
                 currentStatus === tab.value ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
               )}>
               <Icon className="size-4 shrink-0" />
