@@ -1,12 +1,32 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-type ButtonConfig = { label: string; status: "active" | "sold"; color: "primary" | "orange" | "green" };
+type ButtonConfig = {
+  id: "approve" | "mark-sold" | "mark-for-sale";
+  label: string;
+  status: "active" | "sold";
+  color: "primary" | "orange" | "green";
+  confirm: {
+    title: string;
+    description: string;
+    confirmLabel: string;
+  };
+};
 
 type CarDetailAdminActionsProps = {
   listingId: string;
@@ -22,6 +42,7 @@ const colorClasses: Record<ButtonConfig["color"], string> = {
 export function CarDetailAdminActions({ listingId, listingStatus }: CarDetailAdminActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [openDialogId, setOpenDialogId] = useState<ButtonConfig["id"] | null>(null);
 
   async function handleStatusUpdate(status: "active" | "sold") {
     setLoading(status);
@@ -47,25 +68,87 @@ export function CarDetailAdminActions({ listingId, listingStatus }: CarDetailAdm
   const buttons: ButtonConfig[] = [];
 
   if (listingStatus === "pending") {
-    buttons.push({ label: "Approve New Listing", status: "active", color: "primary" }, { label: "Mark as Sold", status: "sold", color: "green" });
+    buttons.push(
+      {
+        id: "approve",
+        label: "Approve New Listing",
+        status: "active",
+        color: "primary",
+        confirm: {
+          title: "Approve this listing?",
+          description: "This will approve the listing and make it visible to buyers as For Sale.",
+          confirmLabel: "Approve Listing",
+        },
+      },
+      {
+        id: "mark-sold",
+        label: "Mark as Sold",
+        status: "sold",
+        color: "green",
+        confirm: {
+          title: "Mark this listing as sold?",
+          description: "This will remove the listing from active for-sale listings and show it as sold.",
+          confirmLabel: "Mark as Sold",
+        },
+      },
+    );
   } else if (listingStatus === "active") {
-    buttons.push({ label: "Mark as Sold", status: "sold", color: "green" });
+    buttons.push({
+      id: "mark-sold",
+      label: "Mark as Sold",
+      status: "sold",
+      color: "green",
+      confirm: {
+        title: "Mark this listing as sold?",
+        description: "This will remove the listing from active for-sale listings and show it as sold.",
+        confirmLabel: "Mark as Sold",
+      },
+    });
   } else {
-    buttons.push({ label: "Mark as For Sale", status: "active", color: "orange" });
+    buttons.push({
+      id: "mark-for-sale",
+      label: "Mark as For Sale",
+      status: "active",
+      color: "orange",
+      confirm: {
+        title: "Mark this listing as for sale?",
+        description: "This will return the listing to active status and make it visible to buyers.",
+        confirmLabel: "Mark as For Sale",
+      },
+    });
   }
 
   return (
     <div className="flex flex-col gap-2">
       {buttons.map((b) => (
-        <Button
-          key={b.status}
-          variant="outline"
-          className={cn(colorClasses[b.color], "w-full justify-center gap-2")}
-          disabled={!!loading}
-          onClick={() => handleStatusUpdate(b.status)}
-        >
-          {loading === b.status ? "Updating..." : b.label}
-        </Button>
+        <AlertDialog key={b.id} open={openDialogId === b.id} onOpenChange={(open) => setOpenDialogId(open ? b.id : null)}>
+          <Button
+            variant="outline"
+            className={cn(colorClasses[b.color], "w-full justify-center gap-2")}
+            disabled={!!loading}
+            onClick={() => setOpenDialogId(b.id)}
+          >
+            {loading === b.status ? "Updating..." : b.label}
+          </Button>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{b.confirm.title}</AlertDialogTitle>
+              <AlertDialogDescription>{b.confirm.description}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={!!loading}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={!!loading}
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleStatusUpdate(b.status).finally(() => setOpenDialogId(null));
+                }}
+              >
+                {loading === b.status ? "Updating..." : b.confirm.confirmLabel}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       ))}
     </div>
   );

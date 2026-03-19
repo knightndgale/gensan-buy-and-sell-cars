@@ -38,7 +38,7 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
 
   const ghlFormUrl = dealer?.ghlFormEmbedUrl ?? process.env.NEXT_PUBLIC_GHL_FORM_EMBED_URL;
 
-  const phone = dealer?.phone;
+  const phone = "+639171338178";
   const viberUrl = dealer?.viberUrl ?? (phone ? `viber://add?number=${normalizePhoneForWa(phone)}` : null);
   const whatsappUrl = dealer?.whatsappUrl ?? (phone ? `https://wa.me/${normalizePhoneForWa(phone)}` : null);
   const messengerUrl = dealer?.messengerUrl ?? null;

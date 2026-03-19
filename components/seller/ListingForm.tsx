@@ -2,6 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogFooter,
@@ -61,6 +71,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [newFeatureName, setNewFeatureName] = useState("");
   const [addFeatureError, setAddFeatureError] = useState<string | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [pendingSubmissionData, setPendingSubmissionData] = useState<ListingFormInput | null>(null);
+  const [isSubmittingConfirmed, setIsSubmittingConfirmed] = useState(false);
 
   const form = useForm<ListingFormInput>({
     resolver: zodResolver(ListingFormInputSchema),
@@ -220,11 +233,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     setPrimaryIndex(index);
   }
 
-  async function onSubmit(data: ListingFormInput) {
-    if (!listingId && imageItems.length === 0) {
-      form.setError("root", { message: "Please add at least one photo" });
-      return;
-    }
+  async function submitListing(data: ListingFormInput) {
     const url = listingId ? `/api/listings/${listingId}` : "/api/listings";
     const method = listingId ? "PATCH" : "POST";
 
@@ -268,6 +277,29 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to save listing.");
       throw err;
+    }
+  }
+
+  function requestSubmitConfirmation(data: ListingFormInput) {
+    if (!listingId && imageItems.length === 0) {
+      form.setError("root", { message: "Please add at least one photo" });
+      return;
+    }
+
+    setPendingSubmissionData(data);
+    setConfirmDialogOpen(true);
+  }
+
+  async function handleConfirmedSubmit() {
+    if (!pendingSubmissionData || isSubmittingConfirmed) return;
+
+    setIsSubmittingConfirmed(true);
+    try {
+      await submitListing(pendingSubmissionData);
+      setConfirmDialogOpen(false);
+      setPendingSubmissionData(null);
+    } finally {
+      setIsSubmittingConfirmed(false);
     }
   }
 
@@ -414,7 +446,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       </p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
+        <form onSubmit={form.handleSubmit(requestSubmitConfirmation)} className="mt-8">
           {form.formState.errors.root?.message && (
             <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>
           )}
@@ -848,10 +880,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 <Button type="button" variant="outline" onClick={() => router.back()}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={form.formState.isSubmitting}>
-                  {form.formState.isSubmitting ? (
-                    "Saving..."
-                  ) : isCreate ? (
+                <Button type="submit" disabled={isSubmittingConfirmed}>
+                  {isCreate ? (
                     <>
                       <Plus className="size-4" />
                       Submit Listing for Approval
@@ -868,6 +898,33 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
           </div>
         </form>
       </Form>
+
+      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{isCreate ? "Create this listing?" : "Save listing updates?"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isCreate
+                ? "Your listing will be submitted for admin approval and will only become visible once approved."
+                : "Your latest listing changes will be saved and reflected in your seller dashboard."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={isSubmittingConfirmed}
+              onClick={() => {
+                setConfirmDialogOpen(false);
+                setPendingSubmissionData(null);
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmedSubmit} disabled={isSubmittingConfirmed}>
+              {isSubmittingConfirmed ? "Saving..." : isCreate ? "Confirm Create" : "Confirm Update"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
