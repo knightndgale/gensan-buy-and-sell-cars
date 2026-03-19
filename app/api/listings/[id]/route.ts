@@ -45,6 +45,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         if (!parsed.success) {
           return NextResponse.json({ error: parsed.error.message }, { status: 400 });
         }
+        if (session.role === "seller" && listing.status === "pending" && parsed.data.status === "active") {
+          return NextResponse.json({ error: "Forbidden", detail: "Only an admin can approve a pending listing" }, { status: 403 });
+        }
         await updateListing(id, parsed.data);
       }
 
@@ -71,6 +74,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const parsed = ListingInputSchema.partial().safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.message }, { status: 400 });
+    }
+
+    if (session.role === "seller" && listing.status === "pending" && parsed.data.status === "active") {
+      return NextResponse.json({ error: "Forbidden", detail: "Only an admin can approve a pending listing" }, { status: 403 });
     }
 
     const updateData = { ...parsed.data };

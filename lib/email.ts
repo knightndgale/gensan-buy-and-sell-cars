@@ -1,21 +1,22 @@
-import { Resend } from "resend";
+import { BrevoClient } from "@getbrevo/brevo";
 
-function getResendClient(): Resend | null {
-  const key = process.env.RESEND_API_KEY;
+function getBrevoClient(): BrevoClient | null {
+  const key = process.env.BREVO_API_KEY;
   if (!key) return null;
-  return new Resend(key);
+  return new BrevoClient({ apiKey: key });
 }
 
-const SENDER = "Gensan Car Buy & Sell <onboarding@resend.dev>";
+const SENDER_NAME = "Gensan Car Buy & Sell";
+const SENDER_EMAIL = "noreply@gensancars.com";
 
 export async function sendSellerWelcomeEmail(
   to: string,
   password: string,
   dealershipName: string
 ): Promise<boolean> {
-  const resend = getResendClient();
-  if (!resend) {
-    console.warn("RESEND_API_KEY not set; skipping seller welcome email");
+  const brevo = getBrevoClient();
+  if (!brevo) {
+    console.warn("BREVO_API_KEY not set; skipping seller welcome email");
     return false;
   }
 
@@ -44,16 +45,12 @@ export async function sendSellerWelcomeEmail(
 `.trim();
 
   try {
-    const { error } = await resend.emails.send({
-      from: SENDER,
-      to,
+    await brevo.transactionalEmails.sendTransacEmail({
+      sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+      to: [{ email: to }],
       subject: "Your Gensan Car Buy & Sell Seller Account",
-      html,
+      htmlContent: html,
     });
-    if (error) {
-      console.error("Resend send error:", error);
-      return false;
-    }
     return true;
   } catch (err) {
     console.error("Failed to send seller welcome email:", err);

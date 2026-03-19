@@ -73,7 +73,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       fuelType: "gasoline",
       location: "",
       description: "",
-      status: "active",
+      status: "pending",
       isFeatured: false,
       bodyType: "",
       engine: "",
