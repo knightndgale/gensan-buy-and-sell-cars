@@ -34,7 +34,7 @@ export function Header() {
           <Link href="/" className="shrink-0">
             <Image src="/images/logo-main.webp" alt="Gensan Car Buy & Sell" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
           </Link>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">{isAdmin ? "Admin" : ""}</span>
+          {isAdmin && <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Admin</span>}
         </div>
 
         <div className="ml-auto hidden items-center gap-6 sm:gap-8 md:flex lg:gap-12">
@@ -70,7 +70,7 @@ export function Header() {
               <Link href="/" onClick={() => setDrawerOpen(false)} className="shrink-0 py-2">
                 <Image src="/images/logo-main.webp" alt="Gensan Car Buy & Sell" width={100} height={10} className="object-contain" />
               </Link>
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">{isAdmin ? "Admin" : ""}</span>
+              {isAdmin && <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Admin</span>}
             </div>
 
             <div className="flex flex-col gap-2 bg-white p-4">
