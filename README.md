@@ -41,7 +41,34 @@ Fill in your Firebase and GHL credentials. 3. **Firebase setup**
 - `listings`
 - `listingImages`
 
-5. **Run development server**
+5. **Firestore composite indexes**
+
+Browse filters on `/cars` run compound Firestore queries on the `listings` collection (`lib/firestore/listings.ts`). Composite index definitions live in [`firestore.indexes.json`](firestore.indexes.json) and are referenced from [`firebase.json`](firebase.json). Keyword search, mileage, and client-side sort are applied in memory and do **not** need extra indexes.
+
+**Deploy indexes (recommended)**
+
+Uses your Firebase login (not gcloud). From the repo root:
+
+```bash
+firebase login
+firebase deploy --only firestore:indexes
+```
+
+**Create indexes via REST (alternative)**
+
+`npm run post:firestore-indexes` reads `firestore.indexes.json` and POSTs each composite index to the Firestore API. It runs `gcloud auth print-access-token` for you, so you need the [Google Cloud SDK](https://cloud.google.com/sdk) installed and an account with permission on the project:
+
+```bash
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+npm run post:firestore-indexes
+```
+
+The script is idempotent: indexes that already exist are skipped (HTTP 409 / duplicate). Optional environment variables: `GOOGLE_CLOUD_PROJECT` (or `GCLOUD_PROJECT` / `FIREBASE_PROJECT`, default `gensanbuyandsellcars`), `FIRESTORE_DATABASE_ID` (default `(default)`), `INDEX_POST_DELAY_MS` (delay between requests, default `150`).
+
+New indexes appear in the Firebase Console under Firestore → Indexes and may take several minutes to finish building.
+
+6. **Run development server**
 
 ```bash
  npm run dev
@@ -179,10 +206,10 @@ When creating sellers via `POST /api/seller`, a welcome email with the generated
 
 This project uses two remotes:
 
-| Repo                         | Type          | Remote URL                                              |
-| ---------------------------- | ------------- | ------------------------------------------------------- |
-| `gensan-car-buy-and-sell/`   | Working copy  | `git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git`   |
-| `gensan-buy-and-sell-cars.git/` | Bare mirror | `git@github.com:knightndgale/gensan-buy-and-sell-cars.git` |
+| Repo                            | Type         | Remote URL                                                 |
+| ------------------------------- | ------------ | ---------------------------------------------------------- |
+| `gensan-car-buy-and-sell/`      | Working copy | `git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git`      |
+| `gensan-buy-and-sell-cars.git/` | Bare mirror  | `git@github.com:knightndgale/gensan-buy-and-sell-cars.git` |
 
 **GitLab** is the source of truth. **GitHub** is a mirror that must be manually synced.
 

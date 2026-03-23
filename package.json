@@ -7,7 +7,8 @@
     "emulator": "npx firebase emulators:start --only auth,firestore,storage --import=./emulator-data --export-on-exit=./emulator-data",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "post:firestore-indexes": "export GOOGLE_ACCESS_TOKEN=\"$(gcloud auth print-access-token)\" && node scripts/post-firestore-indexes.mjs"
   },
   "dependencies": {
     "@getbrevo/brevo": "^5.0.1",

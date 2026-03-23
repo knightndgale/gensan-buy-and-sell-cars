@@ -84,12 +84,12 @@ export async function getListings(
     } else if (ids.length > 0) {
       q = q.where("modelId", "in", ids);
     }
-    if (filters.minPrice !== undefined) q = q.where("price", ">=", filters.minPrice);
-    if (filters.maxPrice !== undefined) q = q.where("price", "<=", filters.maxPrice);
     if (filters.location) q = q.where("location", "==", filters.location);
     if (filters.year !== undefined) q = q.where("year", "==", filters.year);
     if (filters.transmission) q = q.where("transmission", "==", filters.transmission);
     if (filters.bodyType) q = q.where("bodyType", "==", filters.bodyType);
+    if (filters.minPrice !== undefined) q = q.where("price", ">=", filters.minPrice);
+    if (filters.maxPrice !== undefined) q = q.where("price", "<=", filters.maxPrice);
     q = q.orderBy("createdAt", "desc").limit(filters.limitCount ?? 50);
     const snapshot = await q.get();
     return snapshot.docs.map((d) => toListing(d.id, d.data()));
@@ -98,12 +98,12 @@ export async function getListings(
   if (!modelIds) {
     let q: Query = db.collection(LISTINGS_COLLECTION) as Query;
     if (filters.status) q = q.where("status", "==", filters.status);
-    if (filters.minPrice !== undefined) q = q.where("price", ">=", filters.minPrice);
-    if (filters.maxPrice !== undefined) q = q.where("price", "<=", filters.maxPrice);
     if (filters.location) q = q.where("location", "==", filters.location);
     if (filters.year !== undefined) q = q.where("year", "==", filters.year);
     if (filters.transmission) q = q.where("transmission", "==", filters.transmission);
     if (filters.bodyType) q = q.where("bodyType", "==", filters.bodyType);
+    if (filters.minPrice !== undefined) q = q.where("price", ">=", filters.minPrice);
+    if (filters.maxPrice !== undefined) q = q.where("price", "<=", filters.maxPrice);
     q = q.orderBy("createdAt", "desc").limit(filters.limitCount ?? 50);
     const snapshot = await q.get();
     return snapshot.docs.map((d) => toListing(d.id, d.data()));
