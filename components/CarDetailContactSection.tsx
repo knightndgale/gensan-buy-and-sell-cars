@@ -3,6 +3,7 @@
 import { CarDetailAdminActions } from "@/components/CarDetailAdminActions";
 import { GHLFormEmbed } from "@/components/GHLFormEmbed";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { GHL_FORM_EMBED_FALLBACK_URL } from "@/lib/ghl-form";
 import type { Dealer } from "@/schema";
 import { MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
@@ -35,8 +36,6 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
       </div>
     );
   }
-
-  const ghlFormUrl = dealer?.ghlFormEmbedUrl ?? process.env.NEXT_PUBLIC_GHL_FORM_EMBED_URL;
 
   const phone = "+639171338178";
   const viberUrl = dealer?.viberUrl ?? (phone ? `viber://add?number=${normalizePhoneForWa(phone)}` : null);
@@ -74,7 +73,7 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
   const content = (
     <div className="space-y-4">
       <Link
-        href={`/cars/${listingId}/contact`}
+        href={`/cars/${listingId}/contact?car_url_interested_in=${encodeURIComponent(window.location.origin)}/cars/${listingId}`}
         className="my-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90 sm:px-4 sm:py-3 sm:text-base">
         <MessageCircle className="size-5" />
         Leave Your Contact Info
@@ -123,7 +122,7 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
             <SheetTitle>Leave Your Contact Info</SheetTitle>
           </SheetHeader>
           <div className="mt-4 flex-1 overflow-auto">
-            <GHLFormEmbed formUrl={ghlFormUrl} listingId={listingId} carName={carName} />
+            <GHLFormEmbed formUrl={GHL_FORM_EMBED_FALLBACK_URL} />
           </div>
         </SheetContent>
       </Sheet>

@@ -1,18 +1,18 @@
+import { GHLFormEmbed } from "@/components/GHLFormEmbed";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { Separator } from "@/components/ui/separator";
 import { getCarMakes, getCarModels } from "@/lib/firestore/cars";
-import { getDealerById } from "@/lib/firestore/dealers";
 import { getCarFeaturesByIds } from "@/lib/firestore/features";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListingById } from "@/lib/firestore/listings";
+
 import { formatMileage, formatPrice } from "@/lib/format";
+import { GHL_FORM_EMBED_FALLBACK_URL } from "@/lib/ghl-form";
 import { Calendar, Fuel, Gauge, MapPin, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-const GHL_FORM_FALLBACK_URL = "https://api.leadconnectorhq.com/widget/form/0xUNz4oOPRFtzJWYqTo4";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -24,13 +24,6 @@ function formatFuelType(t: string): string {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-function buildGhlFormUrl(baseUrl: string, listingId: string, carName: string): string {
-  const url = new URL(baseUrl);
-  url.searchParams.set("listing_id", listingId);
-  url.searchParams.set("car", carName);
-  return url.toString();
-}
-
 export default async function CarContactPage({ params }: PageProps) {
   const { id } = await params;
   const listing = await getListingById(id);
@@ -40,7 +33,6 @@ export default async function CarContactPage({ params }: PageProps) {
 
   const model = typeof listing.modelId === "number" ? models.find((m) => m.id === listing.modelId) : undefined;
   const make = model ? makes.find((m2) => m2.id === model.makeId) : undefined;
-  const dealer = listing.dealerId ? await getDealerById(listing.dealerId) : null;
 
   const derivedTitle = [make?.name, model?.name, listing.year].filter(Boolean).join(" ");
   const title = listing.title?.trim() || derivedTitle;
@@ -48,8 +40,6 @@ export default async function CarContactPage({ params }: PageProps) {
   const priceLabel = typeof listing.price === "number" ? formatPrice(listing.price) : "N/A";
   const mileageLabel = typeof listing.mileage === "number" ? formatMileage(listing.mileage) : "N/A";
   const yearLabel = typeof listing.year === "number" ? String(listing.year) : "—";
-
-  const iframeSrc = buildGhlFormUrl(GHL_FORM_FALLBACK_URL, id, title);
 
   return (
     <div className="container mx-auto max-w-7xl px-3 py-8 pb-32 sm:px-4 md:pb-8">
@@ -124,35 +114,10 @@ export default async function CarContactPage({ params }: PageProps) {
         <div className="lg:sticky lg:top-24 space-y-4">
           <div>
             <h2 className="text-xl font-bold">Leave Your Contact Info</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Fill in your contact details below. We will reach out to you directly.
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Fill in your contact details below. We will reach out to you directly.</p>
           </div>
-          <div className="h-[938px] rounded-lg shadow-none">
-            <iframe
-              className="shadow-none"
-              src={iframeSrc}
-              style={{
-                width: "100%",
-                height: "1000px",
-                border: "none",
-                boxShadow: "none",
-                borderRadius: "3px",
-              }}
-              id="inline-0xUNz4oOPRFtzJWYqTo4"
-              data-layout='{"id":"INLINE"}'
-              data-trigger-type="alwaysShow"
-              data-trigger-value=""
-              data-activation-type="alwaysActivated"
-              data-activation-value=""
-              data-deactivation-type="neverDeactivate"
-              data-deactivation-value=""
-              data-form-name="Form 0"
-              data-height="938"
-              data-layout-iframe-id="inline-0xUNz4oOPRFtzJWYqTo4"
-              data-form-id="0xUNz4oOPRFtzJWYqTo4"
-              title="Leave Your Contact Info"
-            />
+          <div className="rounded-lg shadow-none">
+            <GHLFormEmbed formUrl={GHL_FORM_EMBED_FALLBACK_URL} />
           </div>
         </div>
       </div>
