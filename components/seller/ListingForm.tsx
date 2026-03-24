@@ -37,15 +37,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { CarFeature } from "@/lib/firestore/features";
 import type { CarMake, CarModel } from "@/schema";
+import { useUnsavedListingNavigation } from "@/components/seller/unsaved-listing-navigation";
 import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, Check, FileText, Info, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
@@ -62,6 +62,8 @@ type ImageItem =
 
 export function ListingForm({ initialData, listingId, listingStatus }: ListingFormProps) {
   const router = useRouter();
+  const { setHasUnsavedChanges, confirmIfUnsaved, requestNavigate, beginUnsavedBypass } =
+    useUnsavedListingNavigation();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageItems, setImageItems] = useState<ImageItem[]>([]);
@@ -75,6 +77,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingSubmissionData, setPendingSubmissionData] = useState<ListingFormInput | null>(null);
   const [isSubmittingConfirmed, setIsSubmittingConfirmed] = useState(false);
+  const [initialPrimaryIndex, setInitialPrimaryIndex] = useState<number | null>(null);
 
   const form = useForm<ListingFormInput>({
     resolver: zodResolver(ListingFormInputSchema),
@@ -97,6 +100,36 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       features: Array.isArray(initialData?.features) ? initialData.features : [],
     },
   });
+
+  const { isDirty } = useFormState({ control: form.control });
+
+  const initialMakeId = initialData?.makeId ?? 0;
+  const makeDirty = makeId !== initialMakeId;
+
+  const imagesDirty = useMemo(() => {
+    if (!listingId) return imageItems.length > 0;
+    if (removedImageIds.length > 0) return true;
+    if (imageItems.some((i) => i.type === "new")) return true;
+    if (initialPrimaryIndex !== null && primaryIndex !== initialPrimaryIndex) return true;
+    return false;
+  }, [listingId, imageItems, removedImageIds, primaryIndex, initialPrimaryIndex]);
+
+  const hasUnsavedChanges = isDirty || makeDirty || imagesDirty;
+
+  useEffect(() => {
+    setHasUnsavedChanges(hasUnsavedChanges);
+    return () => setHasUnsavedChanges(false);
+  }, [hasUnsavedChanges, setHasUnsavedChanges]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const { data: makes = [] } = useQuery({
     queryKey: ["carMakes"],
@@ -201,7 +234,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     const items: ImageItem[] = kept.map((img) => ({ type: "existing", image: img }));
     setImageItems(items);
     const primaryIdx = kept.findIndex((i) => i.isPrimary);
-    setPrimaryIndex(primaryIdx >= 0 ? primaryIdx : 0);
+    const p = primaryIdx >= 0 ? primaryIdx : 0;
+    setPrimaryIndex(p);
+    setInitialPrimaryIndex(p);
   }, [listingId, existingImages, removedImageIds]);
 
   function addFiles(files: FileList | null) {
@@ -273,6 +308,8 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
         throw new Error(err.error ?? "Failed to save");
       }
       toast.success("Listing saved successfully.");
+      beginUnsavedBypass();
+      setHasUnsavedChanges(false);
       router.push("/seller");
       router.refresh();
     } catch (err) {
@@ -442,12 +479,13 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
-      <Link
-        href="/seller"
+      <button
+        type="button"
         className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+        onClick={() => requestNavigate("/seller")}
       >
         ← Back to Dashboard
-      </Link>
+      </button>
       <h1 className="text-2xl font-bold">{isCreate ? "Add New Listing" : "Edit Listing"}</h1>
       <p className="mt-1 text-muted-foreground">
         {isCreate
@@ -889,7 +927,11 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               </Dialog>
 
               <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
-                <Button type="button" variant="outline" onClick={() => router.back()}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => confirmIfUnsaved(() => router.back())}
+                >
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSubmittingConfirmed}>

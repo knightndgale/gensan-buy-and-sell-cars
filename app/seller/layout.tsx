@@ -1,4 +1,4 @@
-import { SellerNavWrapper } from "@/components/SellerNavWrapper";
+import { SellerLayoutShell } from "@/components/seller/SellerLayoutShell";
 import { getSessionToken } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -15,8 +15,7 @@ export default async function SellerLayout({ children }: { children: React.React
 
   return (
     <div className="min-h-screen bg-muted">
-      <SellerNavWrapper />
-      {children}
+      <SellerLayoutShell>{children}</SellerLayoutShell>
     </div>
   );
 }
