@@ -4,7 +4,7 @@ import { SellerListingCard, type CarListingDetails } from "@/components/seller/S
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Plus, Search } from "lucide-react";
+import { Car, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -28,6 +28,21 @@ function getCountByStatus(listings: ListingForSection[]) {
   const pending = listings.filter((l) => l.status === "pending").length;
   const sold = listings.filter((l) => l.status === "sold").length;
   return { all: listings.length, active, pending, sold };
+}
+
+function SellerListingsEmptyState() {
+  const title = "No listings in this category";
+  const description = "Try switching to a different tab";
+
+  return (
+    <div role="status" className="flex flex-col items-center rounded-2xl border border-border bg-card px-6 py-12 text-center sm:px-10 sm:py-16">
+      <div className="mb-4 flex size-16 shrink-0 items-center justify-center rounded-full bg-muted sm:mb-5 sm:size-20">
+        <Car className="size-8 text-muted-foreground sm:size-10" strokeWidth={1.5} />
+      </div>
+      <h3 className="text-base font-bold text-foreground sm:text-lg">{title}</h3>
+      <p className="mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground sm:text-base">{description}</p>
+    </div>
+  );
 }
 
 export function SellerListingsSection({ listings }: SellerListingsSectionProps) {
@@ -80,7 +95,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
       </div>
       <section className="rounded-md bg-transparent pb-4 lg:bg-white">
         <div className="mb-4 flex flex-row items-center justify-between gap-2">
-          <h2 className="text-md font-semibold uppercase tracking-wide text-primary sm:text-2xl">My Listings</h2>
+          <h2 className="text-md font-bold tracking-wide  sm:text-2xl">My Listings</h2>
           <p className="hidden text-xs text-muted-foreground sm:block sm:text-base">
             {filtered.length} listing{filtered.length !== 1 ? "s" : ""}
           </p>
@@ -103,13 +118,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
           </div>
           <div className="relative w-full min-w-0 sm:w-40 md:w-64 lg:w-96">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground sm:size-5" />
-            <Input
-              type="search"
-              placeholder="Search your listings..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-10 border bg-white pl-9 text-xs sm:h-11 sm:text-base"
-            />
+            <Input type="search" placeholder="Search your listings..." value={search} onChange={(e) => setSearch(e.target.value)} className="h-10 border bg-white pl-9 text-xs sm:h-11 sm:text-base" />
           </div>
         </section>
 
@@ -119,11 +128,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
           ))}
         </div>
 
-        {filtered.length === 0 && (
-          <p className="py-12 text-center text-xs text-muted-foreground sm:text-base">
-            {listings.length === 0 ? "No listings yet. Add your first one!" : "No listings match your filters."}
-          </p>
-        )}
+        {filtered.length === 0 && <SellerListingsEmptyState />}
       </section>
     </div>
   );

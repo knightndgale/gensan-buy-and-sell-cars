@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Camera, CheckCircle2, Cloud, Eye, FileText, Info } from "lucide-react";
+import { ArrowRight, Camera, Car, CheckCircle2, Eye, FileText, Info } from "lucide-react";
 import Link from "next/link";
 
 type ListingCounts = {
@@ -49,7 +49,7 @@ export function SellerDashboardSidebar({ dealerName, counts }: SellerDashboardSi
         </Card>
       </Link>
 
-      <div className="rounded-lg bg-white px-0 py-0 sm:p-4">
+      <div className="rounded-lg bg-white px-0 py-0 sm:p-4 border">
         <h2 className="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:block">Overview</h2>
         <div className="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3">
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
@@ -68,7 +68,7 @@ export function SellerDashboardSidebar({ dealerName, counts }: SellerDashboardSi
               <p className="text-xs text-muted-foreground">Active</p>
             </div>
             <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              <Cloud className="size-5" />
+              <Car className="size-5" />
             </div>
           </section>
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
@@ -92,12 +92,12 @@ export function SellerDashboardSidebar({ dealerName, counts }: SellerDashboardSi
         </div>
       </div>
 
-      <div className="w-full min-w-0 max-w-full rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
+      <div className="w-full min-w-0 max-w-full rounded-lg border border-blue-200 bg-[#2B44E41A]/5 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
         <div className="flex gap-3">
           <Info className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
           <div className="min-w-0 flex-1">
-            <h3 className="font-medium text-blue-900 dark:text-blue-100">How GBSC works for sellers</h3>
-            <p className="mt-1 text-sm leading-relaxed text-blue-800 dark:text-blue-200">
+            <h3 className="font-medium  dark:text-blue-100">How GBSC works for sellers</h3>
+            <p className="mt-1 text-sm leading-relaxed  dark:text-blue-200">
               You list your car here. When a buyer is interested, our team will contact you directly with the buyer&apos;s details. You don&apos;t need to worry about inquiries, we handle that for
               you.
             </p>

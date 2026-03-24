@@ -48,7 +48,7 @@ export default async function SellerDashboardPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 ">
+    <div className="container mx-auto px-4 py-8">
       <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
         <aside className="space-y-6">
           <SellerDashboardSidebar dealerName={dealer?.dealershipName ?? "Seller"} counts={counts} />
