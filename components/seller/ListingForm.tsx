@@ -71,6 +71,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const [addFeatureOpen, setAddFeatureOpen] = useState(false);
   const [newFeatureName, setNewFeatureName] = useState("");
   const [addFeatureError, setAddFeatureError] = useState<string | null>(null);
+  const [makeError, setMakeError] = useState<string | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingSubmissionData, setPendingSubmissionData] = useState<ListingFormInput | null>(null);
   const [isSubmittingConfirmed, setIsSubmittingConfirmed] = useState(false);
@@ -281,10 +282,19 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   }
 
   function requestSubmitConfirmation(data: ListingFormInput) {
+    let hasError = false;
+
+    if (!makeId) {
+      setMakeError("Please select a make");
+      hasError = true;
+    }
+
     if (!listingId && imageItems.length === 0) {
       form.setError("root", { message: "Please add at least one photo" });
-      return;
+      hasError = true;
     }
+
+    if (hasError) return;
 
     setPendingSubmissionData(data);
     setConfirmDialogOpen(true);
@@ -308,7 +318,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
   const photosSection = (
     <section className="space-y-6  sm:p-4 sm:bg-white rounded-lg sm:border sm:shadow">
       <div className="flex items-center justify-between">
-        <FormLabel className="text-base font-medium">Photos*</FormLabel>
+        <FormLabel className="text-base font-medium">Photos <span className="text-red-500">*</span></FormLabel>
         <span className="text-sm text-muted-foreground">{imageItems.length}/6</span>
       </div>
       <input
@@ -462,12 +472,13 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 <h2 className="text-lg font-semibold">Basic Information</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <FormLabel>Make*</FormLabel>
+                    <FormLabel>Make <span className="text-red-500">*</span></FormLabel>
                     <Select
                       value={makeId ? String(makeId) : "0"}
                       onValueChange={(v) => {
                         const id = parseInt(v, 10) || 0;
                         setMakeId(id);
+                        if (id > 0) setMakeError(null);
                         form.setValue("modelId", 0);
                       }}
                     >
@@ -483,13 +494,14 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-destructive text-sm min-h-5">{makeError}</p>
                   </div>
                   <FormField
                     control={form.control}
                     name="modelId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Model*</FormLabel>
+                        <FormLabel>Model <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
                           value={field.value ? String(field.value) : "0"}
@@ -520,7 +532,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="year"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Year*</FormLabel>
+                        <FormLabel>Year <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)}
                           value={field.value ? String(field.value) : ""}
@@ -571,7 +583,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="price"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Price*</FormLabel>
+                        <FormLabel>Price <span className="text-red-500">*</span></FormLabel>
                         <FormControl>
                           <div className="flex w-full">
                             <span className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
@@ -599,7 +611,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="mileage"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Mileage*</FormLabel>
+                        <FormLabel>Mileage <span className="text-red-500">*</span></FormLabel>
                         <FormControl>
                           <div className="flex w-full">
                             <Input
@@ -633,7 +645,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="transmission"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Transmission*</FormLabel>
+                        <FormLabel>Transmission <span className="text-red-500">*</span></FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger className="w-full bg-white">
@@ -656,7 +668,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="bodyType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Body Type*</FormLabel>
+                        <FormLabel>Body Type <span className="text-red-500">*</span></FormLabel>
                         <Select
                           onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)}
                           value={field.value || "__none__"}
@@ -706,7 +718,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     name="fuelType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Fuel Type*</FormLabel>
+                        <FormLabel>Fuel Type <span className="text-red-500">*</span></FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger className="w-full bg-white">
@@ -756,7 +768,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Where is it located? *</FormLabel>
+                      <FormLabel>Where is it located? <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
                         <Input
                           {...field}
