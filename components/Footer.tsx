@@ -82,20 +82,19 @@ export async function Footer() {
       </div>
 
       {/* Copyright bar */}
-      <div className="bg-primary py-4 text-center text-sm text-primary-foreground">
-        <p>
-          © 2026 GCBNS. <span className="font-bold">All rights reserved.</span>
-        </p>
-        <p className="mt-2">
-          <Link href="/privacy" className="hover:underline">
-            Privacy Policy
-          </Link>
-          <span className="mx-4">|</span>
-          <Link href="/terms" className="hover:underline">
-            Terms of Service
-          </Link>
-        </p>
-      </div>
+       <div className="bg-primary border-t border-primary px-[120px] py-[32px] flex justify-between text-sm text-primary-foreground">
+   <div className="container mx-auto max-w-7xl px-3 sm:px-4 flex items-center justify-between">
+     <p className="w-[232px] h-[16px] font-['Open_Sans'] font-normal text-[14px] leading-[16px] tracking-[0px] text-center">
+     © 2026 GCBNS.{" "}
+     <span className="font-semibold">All rights reserved.</span>
+     </p>
+     <div className="flex items-center gap-3">
+       <Link href="/privacy" className="hover:underline w-[88px] h-[16px] font-['Open_Sans'] font-normal text-[14px] leading-[16px] tracking-[0px]">Privacy Policy</Link>
+       <hr className="w-[21px] border-t border-primary-foreground rotate-[-90deg]" />
+       <Link href="/terms" className="hover:underline w-[108px] h-[16px] font-['Open_Sans'] font-normal text-[14px] leading-[16px] tracking-[0px]">Terms of Service</Link>
+     </div>
+   </div>
+ </div>
     </footer>
   );
 }

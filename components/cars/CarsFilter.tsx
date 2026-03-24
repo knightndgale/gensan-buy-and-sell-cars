@@ -70,13 +70,13 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
       {/* WHAT CAR? */}
       <div className="space-y-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">What Car?</h3>
-        <div className="space-y-2">
+        <div className="space-y-5">
           <Select value={makeParam || "__any__"} onValueChange={setParam("make")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a Make" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__any__">Any Make</SelectItem>
+              <SelectItem value="__any__">Select a Make</SelectItem>
               {makes.map((make) => (
                 <SelectItem key={make.id} value={String(make.id)}>
                   {make.name}
@@ -89,7 +89,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
               <SelectValue placeholder="Select a Model" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__any__">Any Model</SelectItem>
+              <SelectItem value="__any__">Select a Model</SelectItem>
               {models.map((model) => (
                 <SelectItem key={model.id} value={String(model.id)}>
                   {model.name}
@@ -109,7 +109,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
               <SelectValue placeholder="Select a Min. Price" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__any__">Any Min. Price</SelectItem>
+              <SelectItem value="__any__">Select a Min. Price</SelectItem>
               {PRICE_BRACKETS.map((p) => (
                 <SelectItem key={p} value={String(p)}>
                   {formatPriceOption(p)}+
@@ -122,7 +122,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
               <SelectValue placeholder="Select a Max. Price" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__any__">Any Max. Price</SelectItem>
+              <SelectItem value="__any__">Select a Max. Price</SelectItem>
               {PRICE_BRACKETS.filter((p) => p > 0).map((p) => (
                 <SelectItem key={p} value={String(p)}>
                   Up to {formatPriceOption(p)}
@@ -141,7 +141,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
             <SelectValue placeholder="Select a Year" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__any__">Any Year</SelectItem>
+            <SelectItem value="__any__">Select a Year</SelectItem>
             {YEARS.map((y) => (
               <SelectItem key={y} value={String(y)}>
                 {y}
@@ -171,7 +171,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
                 <SelectValue placeholder="Select a Min. Mileage" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__any__">Any Min. Mileage</SelectItem>
+                <SelectItem value="__any__">Select a Min. Mileage</SelectItem>
                 {MILEAGE_BRACKETS.map((m) => (
                   <SelectItem key={m} value={String(m)}>
                     {formatMileageOption(m)}+
@@ -184,7 +184,7 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
                 <SelectValue placeholder="Select a Max. Mileage" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__any__">Any Max. Mileage</SelectItem>
+                <SelectItem value="__any__">Select a Max. Mileage</SelectItem>
                 {MILEAGE_BRACKETS.filter((m) => m > 0).map((m) => (
                   <SelectItem key={m} value={String(m)}>
                     Up to {formatMileageOption(m)}
@@ -233,14 +233,14 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex max-md:flex-row flex-col gap-2">
-        <Button onClick={handleReset} variant="outline" className="flex-1 gap-2">
-          <RotateCcw className="size-4" />
-          Reset
-        </Button>
+      <div className="flex max-md:flex-row flex-col gap-3">
         <Button onClick={onSearchClick} className="flex-1 gap-2">
-          <Search className="size-4" />
+          <Search className="size-7" />
           Search Car
+        </Button>
+        <Button onClick={handleReset} variant="outline" className="flex-1 gap-2">
+          <RotateCcw className="size-7" />
+          Reset Filters
         </Button>
       </div>
     </div>
@@ -252,7 +252,7 @@ type CarsFilterSidebarProps = CarsFilterFormProps;
 export function CarsFilterSidebar({ makes, models }: CarsFilterSidebarProps) {
   return (
     <aside className="hidden w-64 shrink-0 lg:block">
-      <div className="sticky top-4 space-y-4 rounded-lg border bg-card p-4">
+      <div className="sticky top-4 space-y-4 rounded-lg bg-card p-4">
         <h2 className="text-lg font-semibold">Filters</h2>
         <CarsFilterForm makes={makes} models={models} />
       </div>
