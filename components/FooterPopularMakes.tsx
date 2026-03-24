@@ -33,8 +33,8 @@ export function FooterPopularMakes({ makes }: FooterPopularMakesProps) {
 
   return (
     <div>
-      <h3 className="mb-3 font-semibold uppercase text-foreground">Popular Makes</h3>
-      <ul className="flex flex-col gap-x-3 gap-y-3 sm:flex-col sm:gap-x-0 sm:gap-y-3">
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground sm:text-base">Popular Makes</h3>
+      <ul className="flex flex-col gap-x-3 gap-y-3 text-xs text-foreground sm:flex-col sm:gap-x-0 sm:gap-y-3 sm:text-base">
         {displayMakes.map((make) => (
           <li key={make.id}>
             <Link href={`/cars?make=${make.id}`} className="hover:text-primary hover:underline">
@@ -46,22 +46,29 @@ export function FooterPopularMakes({ makes }: FooterPopularMakesProps) {
           <li>
             <Sheet open={open} onOpenChange={handleOpenChange}>
               <SheetTrigger asChild>
-                <button type="button" className=" text-primary hover:underline">
+                <button type="button" className="text-primary hover:underline">
                   See more
                 </button>
               </SheetTrigger>
               <SheetContent side="bottom" className="h-[70vh] flex flex-col px-3 " showCloseButton>
                 <SheetHeader className="px-0 pb-0">
-                  <SheetTitle>All Car Makes</SheetTitle>
+                  <SheetTitle className="text-sm sm:text-base">All Car Makes</SheetTitle>
                 </SheetHeader>
-                <div className="relative flex-1 min-h-0 flex flex-col gap-4 mb-[50px]">
+                <div className="relative mb-[50px] flex min-h-0 flex-1 flex-col gap-4 text-xs sm:text-base">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input type="search" placeholder="Search makes..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" autoFocus />
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground sm:size-5" />
+                    <Input
+                      type="search"
+                      placeholder="Search makes..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="pl-9 text-xs sm:text-base"
+                      autoFocus
+                    />
                   </div>
                   <ul className="flex-1 overflow-y-auto space-y-2 pr-2 ">
                     {filteredMakes.length === 0 ? (
-                      <li className="py-4">No makes found.</li>
+                      <li className="py-4 text-muted-foreground">No makes found.</li>
                     ) : (
                       filteredMakes.map((make) => (
                         <li key={make.id}>

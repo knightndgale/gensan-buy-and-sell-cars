@@ -29,25 +29,25 @@ export async function FeaturedListings() {
   if (resolved.length === 0) {
     return (
       <section className="py-12">
-        <h2 className="mb-6 text-2xl font-bold">Featured Cars</h2>
-        <p className="text-muted-foreground">No featured listings at the moment.</p>
+        <h2 className="mb-6 text-md font-semibold uppercase tracking-wide text-primary sm:text-2xl">Featured Cars</h2>
+        <p className="text-xs text-muted-foreground sm:text-base">No featured listings at the moment.</p>
       </section>
     );
   }
 
   return (
     <section className="py-12">
-      <h2 className="mb-6 text-2xl font-bold">Featured Cars</h2>
+      <h2 className="mb-6 text-md font-semibold uppercase tracking-wide text-primary sm:text-2xl">Featured Cars</h2>
       <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {resolved.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
       <div className="mt-8 flex justify-center">
-        <Button asChild size="lg">
+        <Button asChild size="lg" className="text-sm sm:text-base">
           <Link href="/cars">
             View All Cars
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4 sm:size-5" />
           </Link>
         </Button>
       </div>

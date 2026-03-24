@@ -21,25 +21,27 @@ export async function Footer() {
       {/* Main content area */}
       <div className="bg-muted">
         <div className="container mx-auto max-w-7xl px-3 py-10 sm:px-4">
-          <div className="grid gap-8 sm:grid-cols-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
             {/* Brand section */}
             <div className="space-y-3">
               <div className="flex justify-start">
                 <Link href="/" className="block">
-                  <Image src="/images/logo-upscale.png" alt="Gensan Buy and Sell Cars" width={340} height={130} className="w-auto object-contain" />
+                  <Image src="/images/logo-full-vectorized.webp" alt="Gensan Buy and Sell Cars" width={220} height={71} className="object-contain" />
                 </Link>
               </div>
-              <p>General Santos City&apos;s trusted platform for buying and selling cars, verified sellers, no scams.</p>
+              <p className="text-xs leading-relaxed text-muted-foreground sm:text-base">
+                General Santos City&apos;s trusted platform for buying and selling cars, verified sellers, no scams.
+              </p>
             </div>
 
             {/* Quick Links + Popular Makes: 2 columns on mobile, separate columns on sm+ */}
-            <div className="grid grid-cols-2 gap-8 sm:contents">
+            <div className="grid grid-cols-2 gap-6 sm:contents">
               <div>
-                <h3 className="mb-3 font-semibold uppercase text-foreground">Quick Links</h3>
-                <ul className="space-y-3">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground sm:text-base">Quick Links</h3>
+                <ul className="space-y-3 text-xs text-foreground sm:text-base">
                   {NAV_LINKS.map(({ label, href }) => (
                     <li key={href}>
-                      <Link href={href} className=" hover:text-primary hover:underline">
+                      <Link href={href} className="hover:text-primary hover:underline">
                         {label}
                       </Link>
                     </li>
@@ -51,26 +53,26 @@ export async function Footer() {
 
             {/* Contact Us */}
             <div>
-              <h3 className="mb-3 font-semibold uppercase text-foreground">Contact Us</h3>
-              <ul className="space-y-4">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground sm:text-base">Contact Us</h3>
+              <ul className="space-y-4 text-xs text-foreground sm:text-base">
                 <li className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-primary sm:size-5" />
                   <span>General Santos City, South Cotabato, Philippines</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Phone className="mt-0.5 size-5 shrink-0 text-primary" />
-                  <a href="tel:+63835550123" className="   hover:text-primary hover:underline">
+                  <Phone className="mt-0.5 size-4 shrink-0 text-primary sm:size-5" />
+                  <a href="tel:+63835550123" className="hover:text-primary hover:underline">
                     (083) 555-0123
                   </a>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Mail className="mt-0.5 size-5 shrink-0 text-primary" />
-                  <a href="mailto:hello@gbsc.ph" className=" hover:text-primary hover:underline">
+                  <Mail className="mt-0.5 size-4 shrink-0 text-primary sm:size-5" />
+                  <a href="mailto:hello@gbsc.ph" className="hover:text-primary hover:underline">
                     hello@gbsc.ph
                   </a>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Facebook className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <Facebook className="mt-0.5 size-4 shrink-0 text-primary sm:size-5" />
                   <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">
                     GBSC Official
                   </a>
@@ -82,7 +84,7 @@ export async function Footer() {
       </div>
 
       {/* Copyright bar */}
-      <div className="bg-primary py-4 text-center text-sm text-primary-foreground">
+      <div className="bg-primary py-4 text-center text-xs text-primary-foreground sm:text-base">
         <p>
           © 2026 GCBNS. <span className="font-bold">All rights reserved.</span>
         </p>

@@ -63,7 +63,15 @@ function LoginForm() {
                 <Label htmlFor="email">Email</Label>
                 <div className="relative mt-3">
                   <Mail className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email" required className="pl-10" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    className="pl-10 bg-muted border-0 py-[22px] shadow-none"
+                  />
                 </div>
               </div>
               <div>
@@ -77,19 +85,19 @@ function LoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
-                    className="pl-10 pr-10"
+                    className="px-10 py-[22px] bg-muted border-0"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((p) => !p)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     aria-label={showPassword ? "Hide password" : "Show password"}>
-                    {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full py-[22px] rounded-[14px]" disabled={loading}>
                 {loading ? "Signing in..." : "Log In"}
                 {!loading && <ArrowRight className="size-5" />}
               </Button>
@@ -99,9 +107,9 @@ function LoginForm() {
       </main>
 
       {/* Footer */}
-      <footer className="flex flex-col items-center gap-2 px-4 py-6 ">
+      <footer className="flex flex-col items-center gap-4 px-4 py-6 ">
         <Link href="/" className="block">
-          <Image src="/images/logo-upscale.png" alt="Gensan Buy and Sell Cars" width={340} height={130} className="h-30 w-auto object-contain sm:h-40" />
+          <Image src="/images/logo-full-vectorized.webp" alt="Gensan Buy and Sell Cars" width={220} height={71} className="object-contain" />
         </Link>
 
         <p className="flex items-center gap-1  text-muted-foreground">
