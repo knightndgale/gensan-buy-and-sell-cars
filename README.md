@@ -118,7 +118,15 @@ Or use `npm run emulator` if it runs the same. 4. **Start the app** (in a separa
 ```
 
 5. **Optional: seed data**
-   The dev seed API (`POST /api/dev/seed`) works with emulators. Requires `SEED_PASSWORD` in `.env.local`:
+   The dev seed API (`POST /api/dev/seed`) works with emulators. Requires `SEED_PASSWORD` in `.env.local`. With `npm run dev` already running, from another terminal:
+
+```bash
+npm run seed
+```
+
+Tear down existing seed collections before re-seeding: `npm run seed -- --tear-down`.
+
+Alternatively, using curl:
 
 ```bash
 curl -X POST http://localhost:3000/api/dev/seed -H "Content-Type: application/json" -d '{"password":"YOUR_SEED_PASSWORD","tearDown":true}'

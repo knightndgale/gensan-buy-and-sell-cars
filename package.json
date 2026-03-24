@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "post:firestore-indexes": "export GOOGLE_ACCESS_TOKEN=\"$(gcloud auth print-access-token)\" && node scripts/post-firestore-indexes.mjs"
+    "post:firestore-indexes": "export GOOGLE_ACCESS_TOKEN=\"$(gcloud auth print-access-token)\" && node scripts/post-firestore-indexes.mjs",
+    "seed": "node --env-file=.env.local scripts/call-dev-seed.mjs"
   },
   "dependencies": {
     "@getbrevo/brevo": "^5.0.1",
