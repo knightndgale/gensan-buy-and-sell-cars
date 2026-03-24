@@ -40,18 +40,21 @@ function formatListedAt(createdAt?: string): string {
 
 const statusBadgeMap: Record<string, React.ReactNode> = {
   active: (
-    <Badge className="bg-[#DCFCE7] flex flex-row items-center gap-2 text-green-500 font-medium">
-      <span className="size-2 rounded-full bg-green-500"></span>Active
+    <Badge className="flex flex-row items-center gap-1.5 bg-[#DCFCE7] text-xs font-medium text-green-500 sm:gap-2 sm:text-sm">
+      <span className="size-2 shrink-0 rounded-full bg-green-500" />
+      Active
     </Badge>
   ),
   sold: (
-    <Badge className="bg-[#DBEAFE] flex flex-row items-center gap-2 text-primary font-medium">
-      <span className="size-2 rounded-full bg-primary"></span>Sold
+    <Badge className="flex flex-row items-center gap-1.5 bg-[#DBEAFE] text-xs font-medium text-primary sm:gap-2 sm:text-sm">
+      <span className="size-2 shrink-0 rounded-full bg-primary" />
+      Sold
     </Badge>
   ),
   pending: (
-    <Badge className="bg-[#FFEDD4] flex flex-row items-center gap-2 text-orange-500 font-medium">
-      <span className="size-2 rounded-full bg-orange-500"></span>For Approval
+    <Badge className="flex flex-row items-center gap-1.5 bg-[#FFEDD4] text-xs font-medium text-orange-500 sm:gap-2 sm:text-sm">
+      <span className="size-2 shrink-0 rounded-full bg-orange-500" />
+      For Approval
     </Badge>
   ),
 };
@@ -123,11 +126,11 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
   const displayViews = views > 0 ? views.toLocaleString() : "0";
 
   return (
-    <div className={`rounded-lg border  ${status === "pending" && "border-b-[#FFD6A8]"}  bg-card overflow-hidden`}>
-      <div className={`flex gap-4 p-4 border-b ${status === "pending" && "border-b-[#FFD6A8]"} w-full`}>
-        <div className="relative h-30 w-30 shrink-0 overflow-hidden rounded-t-md rounded-b-none bg-muted">
+    <div className={`overflow-hidden rounded-lg border bg-card ${status === "pending" && "border-b-[#FFD6A8]"}`}>
+      <div className={`flex w-full gap-2 border-b p-3 sm:gap-4 sm:p-4 ${status === "pending" && "border-b-[#FFD6A8]"}`}>
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-t-md rounded-b-none bg-muted sm:h-30 sm:w-30">
           {primaryImageUrl && !imageError ? (
-            <Image src={primaryImageUrl} alt={title} fill className="object-cover" sizes="144px" onError={() => setImageError(true)} />
+            <Image src={primaryImageUrl} alt={title} fill className="object-cover" sizes="(max-width: 640px) 96px, 120px" onError={() => setImageError(true)} />
           ) : (
             <ImagePlaceholder fill className="rounded-t-md rounded-b-none border-0" />
           )}
@@ -143,11 +146,11 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
           )}
         </div>
 
-        <section className="flex flex-col flex-1 h-auto justify-between">
-          <article>
-            <section className="flex flex-row items-center gap-4 justify-between w-full">
-              <h3 className="font-medium">{title || "Untitled"}</h3>
-              <div className="flex shrink-0 items-start gap-2">
+        <section className="flex h-auto min-w-0 flex-1 flex-col justify-between">
+          <article className="min-w-0">
+            <section className="flex w-full flex-row items-start justify-between gap-2">
+              <h3 className="min-w-0 flex-1 text-sm font-medium leading-snug sm:text-base">{title || "Untitled"}</h3>
+              <div className="flex shrink-0 items-start gap-1 sm:gap-2">
                 {status === "active" && (
                   <>
                     <AlertDialog open={showSoldConfirm} onOpenChange={setShowSoldConfirm}>
@@ -185,7 +188,7 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon-sm" aria-label="More options">
-                      <MoreVertical className="size-4" />
+                      <MoreVertical className="size-4 sm:size-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -203,38 +206,39 @@ export function SellerListingCard({ car }: SellerListingCardProps) {
               </div>
             </section>
 
-            <p className="text-lg font-semibold text-primary">{formatPrice(price)}</p>
+            <p className="text-base font-semibold text-primary sm:text-lg">{formatPrice(price)}</p>
           </article>
 
-          <article className="flex flex-row items-center gap-4 justify-between w-full">
-            <div className="mt-1 flex flex-wrap items-center gap-4">
+          <article className="flex w-full flex-row items-center justify-between gap-2">
+            <div className="mt-1 flex flex-wrap items-center gap-2 sm:gap-4">
               {statusBadge}
-              <span className="text-sm text-muted-foreground flex flex-row items-center gap-2">
-                <EyeIcon className="size-4" /> {displayViews} views
+              <span className="flex flex-row items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
+                <EyeIcon className="size-4 shrink-0 sm:size-5" /> {displayViews} views
               </span>
             </div>
           </article>
 
-          {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+          {error && <p className="mt-1 text-xs text-destructive sm:text-sm">{error}</p>}
         </section>
       </div>
       {status !== "pending" && (
-        <div className="flex items-center justify-between px-4 py-2">
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Clock className="size-4" />
-            {timelineText}
+        <div className="flex items-center justify-between gap-2 px-3 py-2 sm:px-4">
+          <p className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
+            <Clock className="size-4 shrink-0 sm:size-5" />
+            <span className="leading-snug">{timelineText}</span>
           </p>
 
-          <Link href={`/seller/listings/${id}/edit`} className="flex items-center gap-2 text-sm text-primary hover:underline">
-            <Pencil className="size-4" />
+          <Link href={`/seller/listings/${id}/edit`} className="flex shrink-0 items-center gap-1.5 text-xs text-primary hover:underline sm:gap-2 sm:text-sm">
+            <Pencil className="size-4 sm:size-5" />
             Edit
           </Link>
         </div>
       )}
 
       {status === "pending" && (
-        <div className="flex items-center gap-2 border-t bg-orange-50 px-4 py-2 text-sm text-orange-800 dark:bg-orange-950/30 dark:text-orange-200">
-          <Hourglass className="size-4 text-orange-600 dark:text-orange-400" /> Waiting for admin approval - your listing will go live once approved
+        <div className="flex items-start gap-2 border-t bg-orange-50 px-3 py-2 text-xs leading-snug text-orange-800 dark:bg-orange-950/30 dark:text-orange-200 sm:items-center sm:px-4 sm:text-sm">
+          <Hourglass className="mt-0.5 size-4 shrink-0 text-orange-600 sm:mt-0 sm:size-5 dark:text-orange-400" />
+          <span>Waiting for admin approval - your listing will go live once approved</span>
         </div>
       )}
     </div>
