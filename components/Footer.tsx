@@ -21,7 +21,7 @@ export async function Footer() {
       {/* Main content area */}
       <div className="bg-muted">
         <div className="container mx-auto max-w-7xl px-3 py-10 sm:px-4">
-          <div className="grid gap-8 sm:grid-cols-4 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
             {/* Brand section */}
             <div className="space-y-3">
               <div className="flex justify-start">
@@ -35,7 +35,7 @@ export async function Footer() {
             </div>
 
             {/* Quick Links + Popular Makes: 2 columns on mobile, separate columns on sm+ */}
-            <div className="grid grid-cols-2 gap-8 sm:contents">
+            <div className="grid grid-cols-2 gap-6 sm:contents">
               <div>
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground sm:text-base">Quick Links</h3>
                 <ul className="space-y-3 text-xs text-foreground sm:text-base">
