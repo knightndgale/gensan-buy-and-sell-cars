@@ -62,7 +62,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
   }, [listings, tab, search]);
 
   return (
-    <div className="flex flex-col gap-6 pb-20 sm:pb-0">
+    <div className="flex flex-col gap-6 pb-10 sm:pb-0">
       <div className="hidden flex-col gap-4 sm:flex-row sm:items-center sm:justify-end md:flex">
         <Button asChild className="bg-primary shrink-0">
           <Link href="/seller/listings/new">+ Add New Listing</Link>
@@ -78,7 +78,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
           </Link>
         </Button>
       </div>
-      <section className="bg-transparent lg:bg-white rounded-md p-4 ">
+      <section className="bg-transparent lg:bg-white rounded-md pb-4">
         <div className="flex flex-row justify-between items-center gap-2 mb-4">
           <h2 className="text-xl font-bold">My Listings</h2>
           <p className="text-sm text-muted-foreground hidden sm:block">
