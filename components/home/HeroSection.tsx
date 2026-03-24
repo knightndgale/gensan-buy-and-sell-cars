@@ -88,15 +88,15 @@ export function HeroSection() {
           {/* Left column: copy + search */}
           <div className="flex h-full flex-col gap-6 sm:order-first order-last justify-start">
             <div className="shrink-0 pt-0 sm:pt-6 md:pt-2 lg:pt-0">
-              <h2 className="mb-4 text-5xl font-bold text-white sm:text-3xl sm:font-extrabold lg:text-4xl">Buy & Sell Cars in General Santos City</h2>
-              <p className="w-full text-base text-white/90 sm:text-lg leading-5">
+              <h2 className="mb-4 text-3xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-3xl font-extrabold text-white leading-tight">Buy &amp; Sell Cars in General Santos City</h2>
+              <p className="w-full text-xs leading-relaxed text-white/90 sm:text-base">
                 Discover quality cars from trusted sellers in General Santos City and nearby areas such as South Cotabato, Sarangani, and Davao City. Our platform helps buyers easily connect with
                 reliable listings—so finding the right car feels simple and secure.{" "}
               </p>
             </div>
 
-            <div className="min-h-0 flex-1 rounded-xl bg-white p-6 shadow-lg">
-              <h2 className="mb-4 text-lg  text-foreground">What car are you looking for?</h2>
+            <div className="min-h-0 flex-1 rounded-xl bg-white p-4 sm:p-6 shadow-lg">
+              <h2 className="mb-4 text-sm font-bold text-foreground sm:text-lg">What car are you looking for?</h2>
               <div className="grid grid-cols-2 gap-3">
                 <Select
                   value={makeId || "all"}
@@ -104,7 +104,7 @@ export function HeroSection() {
                     setMakeId(v === "all" ? "" : v);
                     setModelId("");
                   }}>
-                  <SelectTrigger className="w-full px-4 py-[14px]">
+                  <SelectTrigger className="w-full px-4 py-[14px] text-xs sm:text-base">
                     <SelectValue placeholder="Select a Make" />
                   </SelectTrigger>
                   <SelectContent>
@@ -117,7 +117,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={modelId || "all"} onValueChange={(v) => setModelId(v === "all" ? "" : v)}>
-                  <SelectTrigger className="w-full px-4 py-[14px]">
+                  <SelectTrigger className="w-full px-4 py-[14px] text-xs sm:text-base">
                     <SelectValue placeholder="Select a Model" />
                   </SelectTrigger>
                   <SelectContent>
@@ -130,7 +130,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={year || "all"} onValueChange={(v) => setYear(v === "all" ? "" : v)}>
-                  <SelectTrigger className="w-full px-4 py-[14px]">
+                  <SelectTrigger className="w-full px-4 py-[14px] text-xs sm:text-base">
                     <SelectValue placeholder="Select a Year" />
                   </SelectTrigger>
                   <SelectContent>
@@ -143,7 +143,7 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
                 <Select value={priceRange || "Select a Budget"} onValueChange={(v) => setPriceRange(v === "Select a Budget" ? "" : v)}>
-                  <SelectTrigger className="w-full px-4 py-[14px]">
+                  <SelectTrigger className="w-full px-4 py-[14px] text-xs sm:text-base">
                     <SelectValue placeholder="Select a Budget" />
                   </SelectTrigger>
                   <SelectContent>
@@ -155,8 +155,8 @@ export function HeroSection() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button onClick={handleSearch} className="mt-4 w-full text-base" size="lg">
-                <Search className="size-5" />
+              <Button onClick={handleSearch} className="mt-4 w-full text-sm sm:text-base" size="lg">
+                <Search className="size-4 sm:size-5" />
                 Search Cars
               </Button>
             </div>

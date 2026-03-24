@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Heart, MapPin, Search, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -91,6 +92,7 @@ export default function AboutPage() {
               Find your car now
             </Link>
           </Button>
+          <Separator />
         </div>
       </section>
     </main>
