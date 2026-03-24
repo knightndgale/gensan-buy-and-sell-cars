@@ -94,7 +94,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
                 type="button"
                 onClick={() => setTab(t.value)}
                 className={cn(
-                  "shrink-0 px-3 py-1 text-sm font-medium transition-colors rounded-[60px]",
+                  "shrink-0 px-[16px] py-1 text-sm font-medium transition-colors rounded-[60px]",
                   tab === t.value ? "bg-primary text-white border-0" : "  border border-muted-foreground text-muted-foreground hover:text-foreground]",
                 )}>
                 {t.label} ({counts[t.value]})
