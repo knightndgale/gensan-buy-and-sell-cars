@@ -78,12 +78,6 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
 
   return (
     <div className="flex flex-col gap-6 pb-10 sm:pb-0">
-      <div className="hidden flex-col gap-4 sm:flex-row sm:items-center sm:justify-end md:flex">
-        <Button asChild className="shrink-0 bg-primary text-sm sm:text-base">
-          <Link href="/seller/listings/new">+ Add New Listing</Link>
-        </Button>
-      </div>
-
       {/* Floating mobile CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 p-4 shadow-lg sm:hidden">
         <Button asChild className="h-12 w-full shrink-0 bg-primary text-sm">
@@ -93,7 +87,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
           </Link>
         </Button>
       </div>
-      <section className="rounded-md bg-transparent pb-4 lg:bg-white">
+      <section className="rounded-md bg-transparent pb-4 ">
         <div className="mb-4 flex flex-row items-center justify-between gap-2">
           <h2 className="text-md font-bold tracking-wide  sm:text-2xl">My Listings</h2>
           <p className="hidden text-xs text-muted-foreground sm:block sm:text-base">

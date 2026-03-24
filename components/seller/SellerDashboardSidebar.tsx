@@ -12,7 +12,6 @@ type ListingCounts = {
 };
 
 type SellerDashboardSidebarProps = {
-  dealerName: string;
   counts: ListingCounts;
 };
 
@@ -22,16 +21,19 @@ function getGreetingName(dealershipName: string): string {
   return firstWord.replace(/'s$/, "") || "Seller";
 }
 
-export function SellerDashboardSidebar({ dealerName, counts }: SellerDashboardSidebarProps) {
+export function SellerDashboardGreeting({ dealerName }: { dealerName: string }) {
   const name = getGreetingName(dealerName);
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Hi, {name}!</h1>
+      <p className="mt-1 text-muted-foreground">Manage your car listings below.</p>
+    </div>
+  );
+}
 
+export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) {
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Hi, {name}!</h1>
-        <p className="text-muted-foreground mt-1">Manage your car listings below.</p>
-      </div>
-
       <Link href="/seller/listings/new" className="hidden sm:block">
         <Card className="border-primary bg-primary text-primary-foreground overflow-hidden transition-colors hover:bg-primary/90">
           <CardContent className="flex items-center gap-4 p-4">
@@ -92,7 +94,7 @@ export function SellerDashboardSidebar({ dealerName, counts }: SellerDashboardSi
         </div>
       </div>
 
-      <div className="w-full min-w-0 max-w-full rounded-lg border border-blue-200 bg-[#2B44E41A]/5 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
+      <div className="w-full min-w-0 max-w-full rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
         <div className="flex gap-3">
           <Info className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
           <div className="min-w-0 flex-1">
