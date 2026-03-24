@@ -41,7 +41,34 @@ Fill in your Firebase and GHL credentials. 3. **Firebase setup**
 - `listings`
 - `listingImages`
 
-5. **Run development server**
+5. **Firestore composite indexes**
+
+Browse filters on `/cars` run compound Firestore queries on the `listings` collection (`lib/firestore/listings.ts`). Composite index definitions live in [`firestore.indexes.json`](firestore.indexes.json) and are referenced from [`firebase.json`](firebase.json). Keyword search, mileage, and client-side sort are applied in memory and do **not** need extra indexes.
+
+**Deploy indexes (recommended)**
+
+Uses your Firebase login (not gcloud). From the repo root:
+
+```bash
+firebase login
+firebase deploy --only firestore:indexes
+```
+
+**Create indexes via REST (alternative)**
+
+`npm run post:firestore-indexes` reads `firestore.indexes.json` and POSTs each composite index to the Firestore API. It runs `gcloud auth print-access-token` for you, so you need the [Google Cloud SDK](https://cloud.google.com/sdk) installed and an account with permission on the project:
+
+```bash
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+npm run post:firestore-indexes
+```
+
+The script is idempotent: indexes that already exist are skipped (HTTP 409 / duplicate). Optional environment variables: `GOOGLE_CLOUD_PROJECT` (or `GCLOUD_PROJECT` / `FIREBASE_PROJECT`, default `gensanbuyandsellcars`), `FIRESTORE_DATABASE_ID` (default `(default)`), `INDEX_POST_DELAY_MS` (delay between requests, default `150`).
+
+New indexes appear in the Firebase Console under Firestore → Indexes and may take several minutes to finish building.
+
+6. **Run development server**
 
 ```bash
  npm run dev
@@ -91,7 +118,15 @@ Or use `npm run emulator` if it runs the same. 4. **Start the app** (in a separa
 ```
 
 5. **Optional: seed data**
-   The dev seed API (`POST /api/dev/seed`) works with emulators. Requires `SEED_PASSWORD` in `.env.local`:
+   The dev seed API (`POST /api/dev/seed`) works with emulators. Requires `SEED_PASSWORD` in `.env.local`. With `npm run dev` already running, from another terminal:
+
+```bash
+npm run seed
+```
+
+Tear down existing seed collections before re-seeding: `npm run seed -- --tear-down`.
+
+Alternatively, using curl:
 
 ```bash
 curl -X POST http://localhost:3000/api/dev/seed -H "Content-Type: application/json" -d '{"password":"YOUR_SEED_PASSWORD","tearDown":true}'
@@ -117,6 +152,10 @@ npm run build
 ```
 
 Build succeeds without Firebase credentials (returns empty data). Add credentials for production.
+
+## API Testing
+
+A Postman collection is available in `postman/`. Import `Gensan-Car-Buy-And-Sell.postman_collection.json` and see `postman/README.md` for setup and auth flow.
 
 ## Routes
 
@@ -164,3 +203,65 @@ Build succeeds without Firebase credentials (returns empty data). Add credential
 ### Dev seeder (only used when NODE_ENV=development)
 
 - SEED_PASSWORD=
+
+### Email (Resend - for seller creation welcome emails)
+
+- RESEND_API_KEY=
+
+When creating sellers via `POST /api/seller`, a welcome email with the generated password is sent. If `RESEND_API_KEY` is not set, the seller is still created but the email is skipped (useful for emulator-only dev). For production, sign up at [resend.com](https://resend.com), verify your domain, and add the API key.
+
+## Git Sync
+
+This project uses two remotes:
+
+| Repo                            | Type         | Remote URL                                                 |
+| ------------------------------- | ------------ | ---------------------------------------------------------- |
+| `gensan-car-buy-and-sell/`      | Working copy | `git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git`      |
+| `gensan-buy-and-sell-cars.git/` | Bare mirror  | `git@github.com:knightndgale/gensan-buy-and-sell-cars.git` |
+
+**GitLab** is the source of truth. **GitHub** is a mirror that must be manually synced.
+
+### Prerequisites
+
+Load your SSH key before running any git commands:
+
+```bash
+ssh-add ~/.ssh/macbook-m2
+```
+
+### How to Update & Sync
+
+1. **Pull latest from GitLab** (working copy)
+
+```bash
+git pull origin main
+```
+
+2. **Push to GitHub mirror**
+
+```bash
+git push git@github.com:knightndgale/gensan-buy-and-sell-cars.git main
+```
+
+3. **Update the local bare mirror** (if you use one)
+
+```bash
+git -C "/path/to/gensan-buy-and-sell-cars.git" fetch --all
+```
+
+> The bare mirror does not support `git pull` — use `git fetch --all` instead. The bare repo is configured with `remote.origin.mirror=true`, so fetch syncs all refs (branches, tags).
+
+### Optional: Auto-push to Both Remotes
+
+To avoid manually syncing, configure the working copy to push to both GitLab and GitHub simultaneously:
+
+```bash
+git remote set-url --add --push origin git@gitlab.com:boxtypd/gensan-buy-and-sell-cars.git
+git remote set-url --add --push origin git@github.com:knightndgale/gensan-buy-and-sell-cars.git
+```
+
+After this, a single `git push` will update both remotes.
+
+### Notes
+
+- Always load your SSH key (`ssh-add`) before performing any remote operations.

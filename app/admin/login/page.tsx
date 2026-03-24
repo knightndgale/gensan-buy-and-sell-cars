@@ -9,7 +9,7 @@ import { getAuthErrorMessage } from "@/lib/auth-errors";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,8 +21,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const { signIn, signOut } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") ?? "/seller";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,13 +30,13 @@ function LoginForm() {
       await signIn(email, password, false);
       const res = await fetch("/api/auth/me");
       const data = await res.json();
-      if (!res.ok || data.role !== "seller") {
+      if (!res.ok || data.role !== "admin") {
         await signOut(true);
-        setError("Seller access only. This account does not have seller privileges.");
+        setError("Admin access only. This account does not have admin privileges.");
         return;
       }
       toast.success("Login successful.");
-      router.push(redirect);
+      router.push("/cars");
     } catch (err) {
       const message = getAuthErrorMessage(err);
       setError(message);
@@ -49,11 +47,10 @@ function LoginForm() {
 
   return (
     <div className="flex min-h-screen flex-col bg-muted">
-      {/* Main content */}
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-foreground">Sellers Portal</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Manage your car listings on GBSC</p>
+          <h1 className="text-2xl font-bold text-foreground">Admin Portal</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Sign in to manage listings on GBSC</p>
         </div>
 
         <Card className="w-full max-w-md">
@@ -98,13 +95,11 @@ function LoginForm() {
         </Card>
       </main>
 
-      {/* Footer */}
-      <footer className="flex flex-col items-center gap-2 px-4 py-6 ">
+      <footer className="flex flex-col items-center gap-2 px-4 py-6">
         <Link href="/" className="block">
           <Image src="/images/logo-upscale.png" alt="Gensan Buy and Sell Cars" width={340} height={130} className="h-30 w-auto object-contain sm:h-40" />
         </Link>
-
-        <p className="flex items-center gap-1  text-muted-foreground">
+        <p className="flex items-center gap-1 text-muted-foreground">
           <ShieldCheck className="size-4 shrink-0" />
           Your data is safe and encrypted
         </p>
@@ -113,7 +108,7 @@ function LoginForm() {
   );
 }
 
-export default function SellerLoginPage() {
+export default function AdminLoginPage() {
   return (
     <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-muted">Loading...</div>}>
       <LoginForm />

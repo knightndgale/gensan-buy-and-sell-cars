@@ -1,9 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { getSessionToken } from "@/lib/auth";
 import { getBrowseListingsPage } from "@/lib/cars/browse";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+
+    const statusParam = searchParams.get("status") ?? undefined;
+    const session = await getSessionToken(request.headers.get("cookie"), request.headers.get("authorization"));
+    const isAdmin = session?.role === "admin";
+    const status =
+      isAdmin && statusParam && ["all", "active", "pending", "sold"].includes(statusParam)
+        ? (statusParam as "all" | "active" | "pending" | "sold")
+        : "active";
 
     const make = searchParams.get("make") ?? undefined;
     const model = searchParams.get("model") ?? undefined;
@@ -53,6 +62,7 @@ export async function GET(request: NextRequest) {
       sort,
       page,
       pageSize,
+      status,
     });
 
     return NextResponse.json({ listings, hasMore });

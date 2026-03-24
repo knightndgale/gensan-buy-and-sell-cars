@@ -1,8 +1,9 @@
+import { sendSellerWelcomeEmail } from "@/lib/email";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
+import { generateSecurePassword } from "@/lib/password";
 import { FieldValue } from "firebase-admin/firestore";
 import { NextRequest, NextResponse } from "next/server";
 
-const DEFAULT_PASSWORD = "dev-seller-123";
 const DEALERS_COLLECTION = "dealers";
 
 export async function POST(request: NextRequest) {
@@ -10,11 +11,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  let body: { email?: string; dealershipName?: string } = {};
+  let body: { email?: string; dealershipName?: string; password?: string } = {};
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const seedPassword =
+    request.headers.get("X-Seed-Password") ?? body.password ?? null;
+  const expectedPassword = process.env.SEED_PASSWORD;
+  if (!expectedPassword || seedPassword !== expectedPassword) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const email = typeof body.email === "string" ? body.email.trim() : "";
@@ -30,6 +38,7 @@ export async function POST(request: NextRequest) {
   const db = getAdminDb();
 
   try {
+    const password = generateSecurePassword();
     let uid: string;
     try {
       await auth.getUserByEmail(email);
@@ -37,7 +46,7 @@ export async function POST(request: NextRequest) {
     } catch {
       const user = await auth.createUser({
         email,
-        password: DEFAULT_PASSWORD,
+        password,
       });
       uid = user.uid;
     }
@@ -52,7 +61,12 @@ export async function POST(request: NextRequest) {
       updatedAt: FieldValue.serverTimestamp(),
     });
 
-    return NextResponse.json({ uid, email }, { status: 201 });
+    const emailSent = await sendSellerWelcomeEmail(email, password, dealershipName);
+    if (!emailSent) {
+      console.warn("Seller created but welcome email was not sent");
+    }
+
+    return NextResponse.json({ uid, email, emailSent }, { status: 201 });
   } catch (error) {
     console.error("Create seller error:", error);
     return NextResponse.json({ error: "Failed to create seller" }, { status: 500 });

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
-import { CAR_MAKES, CAR_MODELS, SEED_FEATURES, SEED_USERS } from "@/lib/seed/data";
+import { CAR_MAKES, CAR_MODELS, SEED_ADMIN_USERS, SEED_FEATURES, SEED_USERS } from "@/lib/seed/data";
 
 const MAKES_COLLECTION = "carMakes";
 const MODELS_COLLECTION = "carModels";
@@ -119,6 +119,23 @@ export async function POST(request: NextRequest) {
       }
       await auth.setCustomUserClaims(uid, { role: "seller" });
       userIds.push(uid);
+      seeded.users++;
+    }
+
+    for (const u of SEED_ADMIN_USERS) {
+      let uid: string;
+      try {
+        const existing = await auth.getUserByEmail(u.email);
+        uid = existing.uid;
+      } catch {
+        const user = await auth.createUser({
+          email: u.email,
+          password: u.password,
+          displayName: u.displayName,
+        });
+        uid = user.uid;
+      }
+      await auth.setCustomUserClaims(uid, { role: "admin" });
       seeded.users++;
     }
 

@@ -1,0 +1,323 @@
+{
+  "info": {
+    "name": "Gensan Car Buy & Sell",
+    "description": "API collection for Gensan Car Buy & Sell - Next.js car marketplace with Firebase backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "idToken", "value": "", "type": "string" },
+    { "key": "sessionToken", "value": "", "type": "string" },
+    { "key": "listingId", "value": "", "type": "string" },
+    { "key": "imageId", "value": "", "type": "string" },
+    { "key": "seedPassword", "value": "", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{sessionToken}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Create Session (Login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const session = pm.cookies.get('session');",
+                  "if (session) {",
+                  "  pm.collectionVariables.set('sessionToken', session);",
+                  "  pm.test('Session created and stored', () => pm.response.code === 200);",
+                  "} else {",
+                  "  pm.test('Session created (cookie set)', () => pm.response.code === 200);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"{{idToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/session",
+            "description": "Create a session using Firebase ID token. Get idToken by signing in via the web app (Firebase Auth) or Firebase REST API. After success, session cookie is set and sessionToken variable is populated for Bearer auth."
+          }
+        },
+        {
+          "name": "Delete Session (Logout)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/auth/session",
+            "description": "Clear the session cookie."
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/me",
+            "description": "Get current authenticated user (uid, role). Requires session cookie or Authorization: Bearer {{sessionToken}}."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seller",
+      "item": [
+        {
+          "name": "Create Seller",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Seed-Password", "value": "{{seedPassword}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"seller@example.com\",\n  \"dealershipName\": \"Test Dealership\",\n  \"password\": \"{{seedPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/seller",
+            "description": "Create a new seller account (dev only). Requires SEED_PASSWORD via X-Seed-Password header or password field in body. Sends welcome email with generated password."
+          }
+        },
+        {
+          "name": "Get Seller Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/seller/me",
+            "description": "Get current seller's profile (dealershipName, email). Requires seller session."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cars",
+      "item": [
+        {
+          "name": "Get Car Makes",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/cars/makes",
+            "description": "Get all car makes."
+          }
+        },
+        {
+          "name": "Get Car Models",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/models?makeId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "models"],
+              "query": [{ "key": "makeId", "value": "1", "description": "Optional make ID to filter models" }]
+            },
+            "description": "Get car models, optionally filtered by makeId."
+          }
+        },
+        {
+          "name": "Browse Listings",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/cars/browse?page=1&pageSize=6&sort=newest",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cars", "browse"],
+              "query": [
+                { "key": "make", "value": "", "disabled": true },
+                { "key": "model", "value": "", "disabled": true },
+                { "key": "q", "value": "", "disabled": true, "description": "Search query" },
+                { "key": "minPrice", "value": "", "disabled": true },
+                { "key": "maxPrice", "value": "", "disabled": true },
+                { "key": "year", "value": "", "disabled": true },
+                { "key": "minMileage", "value": "", "disabled": true },
+                { "key": "maxMileage", "value": "", "disabled": true },
+                { "key": "transmission", "value": "", "disabled": true },
+                { "key": "bodyType", "value": "", "disabled": true },
+                { "key": "location", "value": "", "disabled": true },
+                { "key": "sort", "value": "newest", "description": "newest | price_asc | price_desc" },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "6", "description": "6-24" },
+                { "key": "status", "value": "", "disabled": true, "description": "Admin only: all | active | pending | sold" }
+              ]
+            },
+            "description": "Browse car listings with filters. Admins can pass status=all|active|pending|sold."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Features",
+      "item": [
+        {
+          "name": "Get Features",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/features",
+            "description": "Get all car features."
+          }
+        },
+        {
+          "name": "Add Feature",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Backup Camera\"\n}"
+            },
+            "url": "{{baseUrl}}/api/features",
+            "description": "Add a new car feature. Requires seller or admin session (Bearer token)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listings",
+      "item": [
+        {
+          "name": "Create Listing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.id) {",
+                  "    pm.collectionVariables.set('listingId', json.id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelId\": 1,\n  \"year\": 2022,\n  \"price\": 850000,\n  \"mileage\": 15000,\n  \"transmission\": \"automatic\",\n  \"fuelType\": \"gasoline\",\n  \"location\": \"General Santos City\",\n  \"description\": \"Well-maintained sedan\",\n  \"status\": \"active\",\n  \"bodyType\": \"Sedan\",\n  \"engine\": \"1.5L\",\n  \"color\": \"White\",\n  \"features\": [\"Backup Camera\", \"Touchscreen\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/listings",
+            "description": "Create a new listing. Requires seller or admin session. For multipart with images, use form-data: listing (JSON string), images (files), primaryImageIndex (number)."
+          }
+        },
+        {
+          "name": "Update Listing",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 800000,\n  \"status\": \"active\"\n}"
+            },
+            "url": "{{baseUrl}}/api/listings/{{listingId}}",
+            "description": "Update a listing. Partial body allowed. Requires seller (own listing) or admin."
+          }
+        },
+        {
+          "name": "Get Listing Images",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const images = pm.response.json();",
+                  "  if (Array.isArray(images) && images.length > 0 && images[0].id) {",
+                  "    pm.collectionVariables.set('imageId', images[0].id);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/listings/{{listingId}}/images",
+            "description": "Get images for a listing. Requires seller (own listing) or admin."
+          }
+        },
+        {
+          "name": "Set Primary Image",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPrimary\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/listings/{{listingId}}/images/{{imageId}}",
+            "description": "Set an image as primary. Requires seller or admin."
+          }
+        },
+        {
+          "name": "Delete Listing Image",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/listings/{{listingId}}/images/{{imageId}}",
+            "description": "Delete an image from a listing. Requires seller or admin."
+          }
+        }
+      ]
+    },
+    {
+      "name": "GHL Analytics",
+      "item": [
+        {
+          "name": "Get GHL Analytics",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ghl/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ghl", "analytics"],
+              "query": [{ "key": "dealerId", "value": "", "disabled": true }]
+            },
+            "description": "Get GoHighLevel analytics. Requires seller or admin session (Bearer token). Optional dealerId query param."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dev",
+      "item": [
+        {
+          "name": "Seed Data",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Seed-Password", "value": "{{seedPassword}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{seedPassword}}\",\n  \"tearDown\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/dev/seed",
+            "description": "Seed or tear down dev data (dev only). Set SEED_PASSWORD in .env.local. tearDown: true clears collections before seeding."
+          }
+        }
+      ]
+    }
+  ]
+}

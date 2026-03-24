@@ -89,72 +89,74 @@ export function SellerNav() {
   const avatarLetter = (displayName?.[0] ?? email?.[0] ?? "?").toUpperCase();
 
   return (
-    <nav className="flex flex-wrap items-center justify-between gap-4 border-b bg-background px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <Link href="/" className="shrink-0">
-          <Image src="/images/logo-full.png" alt="Gensan Buy and Sell Cars" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
-        </Link>
-        <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
-      </div>
+    <nav className="flex flex-wrap items-center justify-between gap-4 border-b bg-background py-3">
+      <div className="container mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-3 sm:px-4">
+        <div className="flex flex-wrap items-center gap-2 ml-4">
+          <Link href="/" className="shrink-0">
+            <Image src="/images/logo-main.webp" alt="Gensan Buy and Sell Cars" width={180} height={60} className="h-10 w-auto object-contain sm:h-12" priority />
+          </Link>
+          <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
+        </div>
 
-      {!isLoginPage && (
-        <>
-          {/* Desktop: horizontal nav - hidden on mobile */}
-          <div className="ml-auto hidden items-center gap-4 md:flex">
-            <NavLinksAndUser pathname={pathname} displayName={displayName} email={email} avatarLetter={avatarLetter} isLoadingSeller={isLoadingSeller} onSignOut={signOut} />
-          </div>
+        {!isLoginPage && (
+          <>
+            {/* Desktop: horizontal nav - hidden on mobile */}
+            <div className="ml-auto hidden items-center gap-4 md:flex">
+              <NavLinksAndUser pathname={pathname} displayName={displayName} email={email} avatarLetter={avatarLetter} isLoadingSeller={isLoadingSeller} onSignOut={signOut} />
+            </div>
 
-          {/* Mobile: hamburger + drawer */}
-          <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <SheetTrigger asChild>
-              <button type="button" className="ml-auto flex size-10 items-center justify-center rounded-md text-foreground hover:bg-muted md:hidden" aria-label="Open menu">
-                <Menu className="size-6" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="flex w-[min(85vw,20rem)] flex-col gap-6 sm:max-w-sm bg-muted">
-              <SheetTitle className="sr-only">Seller menu</SheetTitle>
-              <div className="flex items-center gap-2">
-                <Link href="/" onClick={() => setDrawerOpen(false)} className="shrink-0 py-2">
-                  <Image src="/images/logo-full.png" alt="Gensan Buy and Sell Cars" width={150} height={30} className="object-contain" />
-                </Link>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
-              </div>
-
-              {/* Nav links: Dashboard, Add Car, Log Out - stacked with horizontal padding */}
-              <div className="flex flex-col bg-white px-4 pb-4 gap-2">
-                <div className="flex items-center py-4 ">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden>
-                    {avatarLetter}
-                  </div>
-                  <div className="flex min-w-0 flex-col pl-2">
-                    {isLoadingSeller ? <div className="h-4 w-28 animate-pulse rounded bg-muted" aria-hidden /> : <span className="font-medium text-foreground">{displayName}</span>}
-                    <span className="text-sm text-muted-foreground">{email}</span>
-                  </div>
+            {/* Mobile: hamburger + drawer */}
+            <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
+              <SheetTrigger asChild>
+                <button type="button" className="ml-auto flex size-10 items-center justify-center rounded-md text-foreground hover:bg-muted md:hidden" aria-label="Open menu">
+                  <Menu className="size-6" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="flex w-[min(85vw,20rem)] flex-col gap-6 sm:max-w-sm bg-muted">
+                <SheetTitle className="sr-only">Seller menu</SheetTitle>
+                <div className="flex items-center gap-2 ml-4">
+                  <Link href="/" onClick={() => setDrawerOpen(false)} className="shrink-0 py-2">
+                    <Image src="/images/logo-main.webp" alt="Gensan Buy and Sell Cars" width={100} height={10} className="object-contain" />
+                  </Link>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
                 </div>
 
-                {links.map(({ href, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={() => setDrawerOpen(false)}
-                    className={pathname === href ? "rounded-lg font-medium bg-primary/10 px-4 py-3 text-left text-primary" : "rounded-lg px-4 py-3 text-left  text-muted-foreground hover:bg-muted"}>
-                    {label}
-                  </Link>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    signOut();
-                    setDrawerOpen(false);
-                  }}
-                  className="rounded-lg px-4 py-3 text-left text-destructive hover:bg-destructive/10">
-                  Log Out
-                </button>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </>
-      )}
+                {/* Nav links: Dashboard, Add Car, Log Out - stacked with horizontal padding */}
+                <div className="flex flex-col bg-white px-4 pb-4 gap-2">
+                  <div className="flex items-center py-4 ">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden>
+                      {avatarLetter}
+                    </div>
+                    <div className="flex min-w-0 flex-col pl-2">
+                      {isLoadingSeller ? <div className="h-4 w-28 animate-pulse rounded bg-muted" aria-hidden /> : <span className="font-medium text-foreground">{displayName}</span>}
+                      <span className="text-sm text-muted-foreground">{email}</span>
+                    </div>
+                  </div>
+
+                  {links.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setDrawerOpen(false)}
+                      className={pathname === href ? "rounded-lg font-medium bg-primary/10 px-4 py-3 text-left text-primary" : "rounded-lg px-4 py-3 text-left  text-muted-foreground hover:bg-muted"}>
+                      {label}
+                    </Link>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      signOut();
+                      setDrawerOpen(false);
+                    }}
+                    className="rounded-lg px-4 py-3 text-left text-destructive hover:bg-destructive/10">
+                    Log Out
+                  </button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

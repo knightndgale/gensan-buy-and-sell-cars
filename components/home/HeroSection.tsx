@@ -88,9 +88,10 @@ export function HeroSection() {
           {/* Left column: copy + search */}
           <div className="flex h-full flex-col gap-6 sm:order-first order-last justify-start">
             <div className="shrink-0 pt-0 sm:pt-6 md:pt-2 lg:pt-0">
-              <h2 className="mb-4 text-5xl font-bold text-white sm:text-3xl sm:font-extrabold lg:text-4xl">Buy & Sell Cars in General Santos</h2>
+              <h2 className="mb-4 text-5xl font-bold text-white sm:text-3xl sm:font-extrabold lg:text-4xl">Buy & Sell Cars in General Santos City</h2>
               <p className="w-full text-base text-white/90 sm:text-lg leading-5">
-                We connect you with verified local owners in General Santos City, so you can find, view, and buy a car without scams or endless Facebook haggling.
+                Discover quality cars from trusted sellers in General Santos City and nearby areas such as South Cotabato, Sarangani, and Davao City. Our platform helps buyers easily connect with
+                reliable listings—so finding the right car feels simple and secure.{" "}
               </p>
             </div>
 

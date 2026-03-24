@@ -15,8 +15,10 @@ type AuthUser = { uid: string; email: string | null } | null;
 const AuthContext = createContext<{
   user: AuthUser;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
+  /** @param redirect - Where to go after sign-in. Pass false to skip redirect (e.g. for role verification). Defaults to /seller. */
+  signIn: (email: string, password: string, redirect?: string | false) => Promise<void>;
+  /** @param skipRedirect - When true, clear session but stay on page (e.g. to show error). Defaults to false. */
+  signOut: (skipRedirect?: boolean) => Promise<void>;
 } | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -35,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, redirect?: string | false) => {
     if (!auth) throw new Error("Auth not initialized");
     const cred = await signInWithEmailAndPassword(auth, email, password);
     const token = await cred.user.getIdToken();
@@ -44,13 +46,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idToken: token }),
     });
-    window.location.href = "/seller";
+    if (redirect !== false) {
+      window.location.href = redirect ?? "/seller";
+    }
   };
 
-  const signOut = async () => {
+  const signOut = async (skipRedirect?: boolean) => {
     await fetch("/api/auth/session", { method: "DELETE" });
     if (auth) await firebaseSignOut(auth);
-    window.location.href = "/";
+    if (!skipRedirect) {
+      window.location.href = "/";
+    }
   };
 
   return (

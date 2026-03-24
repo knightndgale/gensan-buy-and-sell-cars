@@ -40,6 +40,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: parsed.error.message }, { status: 400 });
       }
 
+      if (session.role === "seller") {
+        parsed.data.status = "pending";
+      }
+
       const id = await createListing(parsed.data);
 
       for (let i = 0; i < images.length; i++) {
@@ -61,6 +65,10 @@ export async function POST(request: NextRequest) {
 
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.message }, { status: 400 });
+    }
+
+    if (session.role === "seller") {
+      parsed.data.status = "pending";
     }
 
     const id = await createListing(parsed.data);

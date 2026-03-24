@@ -71,3 +71,5 @@ export const SEED_USERS = [
   { email: "seller1@dev.local", password: "dev-seller-123", displayName: "Demo Seller 1" },
   { email: "seller2@dev.local", password: "dev-seller-123", displayName: "Demo Seller 2" },
 ] as const;
+
+export const SEED_ADMIN_USERS = [{ email: "admin@dev.local", password: "dev-admin-123", displayName: "Demo Admin" }] as const;

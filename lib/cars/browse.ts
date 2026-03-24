@@ -18,6 +18,7 @@ export type BrowseParams = {
   sort?: "newest" | "price_asc" | "price_desc";
   page?: number;
   pageSize?: number;
+  status?: "all" | "active" | "pending" | "sold";
 };
 
 function matchesKeyword(listing: ListingWithDetails, q: string): boolean {
@@ -37,9 +38,11 @@ export async function getBrowseListingsPage(params: BrowseParams): Promise<{
   const makeId = params.make ? parseInt(params.make, 10) : undefined;
   const modelId = params.model ? parseInt(params.model, 10) : undefined;
 
+  const statusFilter = params.status === "all" ? undefined : (params.status ?? "active");
+
   const [listings, models, makes] = await Promise.all([
     getListings({
-      status: "active",
+      status: statusFilter,
       makeId,
       modelId,
       minPrice: params.minPrice,
