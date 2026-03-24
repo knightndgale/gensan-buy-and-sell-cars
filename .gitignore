@@ -49,3 +49,7 @@ firebase-debug.log
 # emulator local only retention
 
 emulator-data
+
+# cursor
+
+.cursor
