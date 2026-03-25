@@ -35,7 +35,9 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
   return (
     <div className="flex flex-col gap-6">
       <Link href="/seller/listings/new" className="hidden sm:block">
-        <Card className="border-primary bg-primary text-primary-foreground overflow-hidden transition-colors hover:bg-primary/90">
+        <Card className="relative overflow-hidden border-primary bg-linear-to-b from-[color-mix(in_srgb,var(--primary)_82%,white)] to-primary text-primary-foreground transition-[filter] hover:brightness-[0.97]">
+          <div className="absolute top-[-30px] right-[-45px] bg-white/10 w-[150px] h-[150px] rounded-full" />
+          <div className="absolute top-[112px] right-[-20px] bg-white/5 w-[80px] h-[80px] rounded-full" />
           <CardContent className="flex items-center gap-4 p-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/20">
               <Camera className="size-6" />
