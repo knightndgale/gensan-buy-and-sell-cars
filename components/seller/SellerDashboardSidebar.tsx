@@ -58,39 +58,39 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
         <div className="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3">
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.total}</p>
+              <p className="text-xl font-bold">{counts.total}</p>
               <p className="text-xs text-muted-foreground">Total</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-              <FileText className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+              <FileText className="size-4" />
             </div>
           </section>
 
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.active}</p>
+              <p className="text-xl font-bold">{counts.active}</p>
               <p className="text-xs text-muted-foreground">Active</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              <Car className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <Car className="size-4" />
             </div>
           </section>
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.sold}</p>
+              <p className="text-xl font-bold">{counts.sold}</p>
               <p className="text-xs text-muted-foreground">Sold</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
-              <CheckCircle2 className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+              <CheckCircle2 className="size-4" />
             </div>
           </section>
           <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">—</p>
+              <p className="text-xl font-bold">—</p>
               <p className="text-xs text-muted-foreground">Views</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              <Eye className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <Eye className="size-4" />
             </div>
           </section>
         </div>
