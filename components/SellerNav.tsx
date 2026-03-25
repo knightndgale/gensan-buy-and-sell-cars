@@ -1,7 +1,7 @@
 "use client";
 
-import { useUnsavedListingNavigation } from "@/components/seller/unsaved-listing-navigation";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useUnsavedListingNavigation } from "@/components/seller/unsaved-listing-navigation";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { LogOut, Menu } from "lucide-react";
@@ -57,11 +57,7 @@ function NavLinksAndUser({
           {isLoadingSeller ? <div className="h-4 w-24 animate-pulse rounded bg-muted" aria-hidden /> : <span className="truncate text-sm font-medium text-foreground">{displayName}</span>}
           <span className="truncate text-xs text-muted-foreground">{email}</span>
         </div>
-        <button
-          type="button"
-          onClick={onSignOut}
-          className="shrink-0 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          aria-label="Sign out">
+        <button type="button" onClick={onSignOut} className="shrink-0 rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" aria-label="Sign out">
           <LogOut className="size-5" />
         </button>
       </div>
@@ -141,18 +137,18 @@ export function SellerNav() {
                     className="shrink-0 py-2">
                     <Image src="/images/logo-main.webp" alt="Gensan Buy and Sell Cars" width={100} height={10} className="object-contain" />
                   </Link>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">Seller</span>
+                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">Seller</span>
                 </div>
 
                 {/* Nav links: Dashboard, Add Car, Log Out - stacked with horizontal padding */}
-                <div className="flex flex-col bg-white px-4 pb-4 gap-2">
-                  <div className="flex items-center py-4 ">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary" aria-hidden>
+                <div className="flex flex-col bg-white pl-4 pr-6 pb-4 gap-2 text-sm">
+                  <div className="flex items-center py-3 pr-0">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary" aria-hidden>
                       {avatarLetter}
                     </div>
                     <div className="flex min-w-0 flex-col pl-2">
-                      {isLoadingSeller ? <div className="h-4 w-28 animate-pulse rounded bg-muted" aria-hidden /> : <span className="font-medium text-foreground">{displayName}</span>}
-                      <span className="text-sm text-muted-foreground">{email}</span>
+                      {isLoadingSeller ? <div className="h-3.5 w-24 animate-pulse rounded bg-muted" aria-hidden /> : <span className="text-sm font-medium text-foreground">{displayName}</span>}
+                      <span className="text-xs text-muted-foreground">{email}</span>
                     </div>
                   </div>
 
@@ -165,7 +161,11 @@ export function SellerNav() {
                         requestNavigate(href);
                         setDrawerOpen(false);
                       }}
-                      className={pathname === href ? "rounded-lg font-medium bg-primary/10 px-4 py-3 text-left text-primary" : "rounded-lg px-4 py-3 text-left  text-muted-foreground hover:bg-muted"}>
+                      className={
+                        pathname === href
+                          ? "rounded-lg py-2.5 pl-4 pr-15 text-left text-sm font-medium text-primary bg-primary/10"
+                          : "rounded-lg py-2.5 pl-4 pr-15 text-left text-sm text-muted-foreground hover:bg-muted"
+                      }>
                       {label}
                     </Link>
                   ))}
@@ -177,7 +177,7 @@ export function SellerNav() {
                         setDrawerOpen(false);
                       })
                     }
-                    className="rounded-lg px-4 py-3 text-left text-destructive hover:bg-destructive/10">
+                    className="rounded-lg py-2.5 pl-4 pr-15 text-left text-sm text-destructive hover:bg-destructive/10">
                     Log Out
                   </button>
                 </div>
