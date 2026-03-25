@@ -446,11 +446,11 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
             </div>
 
             <div className="mt-6 space-y-6 rounded-md border-0 bg-transparent p-0 sm:mt-8 sm:space-y-8 sm:bg-white sm:p-6 sm:shadow lg:order-2 lg:mt-0">
-              <section className="space-y-4 rounded ">
+              <section className="space-y-2">
                 <h2 className="text-base font-semibold sm:text-lg">Basic Information</h2>
-                <Separator />
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
+                <Separator className="mb-4 mt-2" />
+                <div className="grid gap-4 sm:grid-cols-2 mb-4">
+                  <div className="space-y-2 sm:grid sm:gap-2 sm:space-y-0">
                     <FormLabel>
                       Make <span className="text-red-500">*</span>
                     </FormLabel>
@@ -474,12 +474,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-destructive text-sm min-h-5">{makeError}</p>
+                    {makeError && <p className="text-destructive text-sm min-h-5">{makeError}</p>}
                   </div>
                   <FormField
                     control={form.control}
                     name="modelId"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Model <span className="text-red-500">*</span>
@@ -499,7 +499,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
@@ -508,7 +508,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                   <FormField
                     control={form.control}
                     name="year"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Year <span className="text-red-500">*</span>
@@ -527,20 +527,20 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="title"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className={inputFieldClass} />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
@@ -549,12 +549,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
               <section className="space-y-4">
                 <h2 className="text-base font-semibold sm:text-lg">Pricing & Condition</h2>
-                <Separator />
-                <div className="grid gap-4 sm:grid-cols-2">
+                <Separator className="mb-4 mt-2" />
+                <div className="grid gap-4 sm:grid-cols-2 mb-4">
                   <FormField
                     control={form.control}
                     name="price"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Price <span className="text-red-500">*</span>
@@ -575,14 +575,14 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             />
                           </div>
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="mileage"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Mileage <span className="text-red-500">*</span>
@@ -603,7 +603,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             <span className="flex items-center rounded-r-md border border-l-0 border-input bg-muted px-3 text-sm text-muted-foreground">km</span>
                           </div>
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
@@ -612,12 +612,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
               <section className="space-y-4">
                 <h2 className="text-base font-semibold sm:text-lg">Specifications</h2>
-                <Separator />
-                <div className="grid gap-4 sm:grid-cols-2">
+                <Separator className="mb-4 mt-2" />
+                <div className="grid gap-4 sm:grid-cols-2 mb-4">
                   <FormField
                     control={form.control}
                     name="transmission"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Transmission <span className="text-red-500">*</span>
@@ -635,14 +635,14 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             <SelectItem value="dct">DCT</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="bodyType"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Body Type <span className="text-red-500">*</span>
@@ -666,27 +666,27 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             <SelectItem value="Other">Other</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="engine"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>Engine Size</FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className={inputFieldClass} />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
                   <FormField
                     control={form.control}
                     name="fuelType"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel>
                           Fuel Type <span className="text-red-500">*</span>
@@ -704,7 +704,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                             <SelectItem value="electric">Electric</SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        {fieldState.error?.message && <FormMessage />}
                       </FormItem>
                     )}
                   />
@@ -716,7 +716,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 <FormField
                   control={form.control}
                   name="description"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>Tell buyers about your car</FormLabel>
                       <FormControl>
@@ -728,7 +728,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           className={inputFieldClass}
                         />
                       </FormControl>
-                      <FormMessage />
+                      {fieldState.error?.message && <FormMessage />}
                     </FormItem>
                   )}
                 />
@@ -738,7 +738,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 <FormField
                   control={form.control}
                   name="location"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>
                         Where is it located? <span className="text-red-500">*</span>
@@ -746,7 +746,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormControl>
                         <Input {...field} type="text" placeholder="e.g. Brgy. Fatima, General Santos City" value={field.value ?? ""} className={inputFieldClass} />
                       </FormControl>
-                      <FormMessage />
+                      {fieldState.error?.message && <FormMessage />}
                     </FormItem>
                   )}
                 />
@@ -754,12 +754,12 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
               <section className="space-y-4">
                 <h2 className="text-base font-semibold sm:text-lg">Features</h2>
-                <Separator />
+                <Separator className="mb-4 mt-2" />
                 <p className="text-xs text-muted-foreground sm:text-sm">Create or select all features that apply</p>
                 <FormField
                   control={form.control}
                   name="features"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormControl>
                         <div className="flex flex-wrap gap-2">
@@ -798,7 +798,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           </button>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      {fieldState.error?.message && <FormMessage />}
                     </FormItem>
                   )}
                 />
@@ -839,7 +839,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 </DialogContent>
               </Dialog>
 
-              <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:justify-end">
+              <div className="flex flex-col gap-3 pt-4  sm:flex-row-reverse sm:justify-start">
                 <Button type="submit" disabled={isSubmittingConfirmed} className="font-semibold py-6">
                   {isCreate ? (
                     <>
