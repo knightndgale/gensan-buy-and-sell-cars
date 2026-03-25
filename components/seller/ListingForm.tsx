@@ -22,6 +22,8 @@ import { toast } from "sonner";
 import { Separator } from "../ui/separator";
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
+const fieldSizingClass = "px-4 py-[14px] text-xs sm:text-base";
+const inputFieldClass = `w-full bg-white ${fieldSizingClass} placeholder:text-xs sm:placeholder:text-base`;
 
 type ListingFormProps = {
   initialData?: Partial<ListingFormInput> & { makeId?: number };
@@ -434,9 +436,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
       <p className="mt-1 text-sm text-muted-foreground sm:text-base">{isCreate ? "Fill in the details below to list your car for sale" : "Update the details of your car listing"}</p>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(requestSubmitConfirmation)}
-          className="mt-6 sm:mt-8 [&_input]:text-sm [&_input]:placeholder:text-xs sm:[&_input]:placeholder:text-sm [&_textarea]:text-sm [&_textarea]:placeholder:text-xs sm:[&_textarea]:placeholder:text-sm [&_label]:text-xs sm:[&_label]:text-sm">
+        <form onSubmit={form.handleSubmit(requestSubmitConfirmation)} className="mt-6 sm:mt-8">
           {form.formState.errors.root?.message && <p className="mb-4 text-sm text-destructive">{form.formState.errors.root.message}</p>}
           <div className="lg:grid lg:grid-cols-[1fr_1.5fr] lg:gap-8">
             <div className="space-y-6 lg:order-1">
@@ -462,7 +462,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         if (id > 0) setMakeError(null);
                         form.setValue("modelId", 0);
                       }}>
-                      <SelectTrigger className="w-full bg-white">
+                      <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
                       <SelectContent>
@@ -486,7 +486,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         </FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : "0"} disabled={!makeId}>
                           <FormControl>
-                            <SelectTrigger className="w-full bg-white">
+                            <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                               <SelectValue placeholder="e.g. Vios, Civic, Mirage" />
                             </SelectTrigger>
                           </FormControl>
@@ -515,7 +515,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         </FormLabel>
                         <Select onValueChange={(v) => field.onChange(parseInt(v, 10) || 0)} value={field.value ? String(field.value) : ""}>
                           <FormControl>
-                            <SelectTrigger className="w-full bg-white">
+                            <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                               <SelectValue placeholder="Select a Year" />
                             </SelectTrigger>
                           </FormControl>
@@ -538,7 +538,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Listing Title</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className="w-full bg-white" />
+                          <Input {...field} placeholder="e.g. 2020 Toyota Vios 1.3 XE CVT" value={field.value ?? ""} className={inputFieldClass} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -566,7 +566,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               type="text"
                               inputMode="numeric"
                               placeholder="e.g. 620000"
-                              className="rounded-l-none bg-white"
+                              className={`rounded-l-none bg-white ${fieldSizingClass} placeholder:text-xs sm:placeholder:text-base`}
                               value={field.value ? field.value.toLocaleString() : ""}
                               onChange={(e) => {
                                 const raw = e.target.value.replace(/\D/g, "");
@@ -593,7 +593,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                               type="text"
                               inputMode="numeric"
                               placeholder="e.g. 35000"
-                              className="rounded-r-none bg-white"
+                              className={`rounded-r-none bg-white ${fieldSizingClass} placeholder:text-xs sm:placeholder:text-base`}
                               value={field.value ? field.value : ""}
                               onChange={(e) => {
                                 const raw = e.target.value.replace(/\D/g, "");
@@ -624,7 +624,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         </FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full bg-white">
+                            <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -649,7 +649,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         </FormLabel>
                         <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
                           <FormControl>
-                            <SelectTrigger className="w-full bg-white">
+                            <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -677,7 +677,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       <FormItem>
                         <FormLabel>Engine Size</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className="w-full bg-white" />
+                          <Input {...field} placeholder="e.g. 1.3L" value={field.value ?? ""} className={inputFieldClass} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -693,7 +693,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         </FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full bg-white">
+                            <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
                               <SelectValue placeholder="Select" />
                             </SelectTrigger>
                           </FormControl>
@@ -725,7 +725,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           rows={4}
                           placeholder="Describe the condition, maintenance history, reasons for selling, negotiability, etc."
                           value={field.value ?? ""}
-                          className="w-full bg-white"
+                          className={inputFieldClass}
                         />
                       </FormControl>
                       <FormMessage />
@@ -744,7 +744,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         Where is it located? <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} type="text" placeholder="e.g. Brgy. Fatima, General Santos City" value={field.value ?? ""} className="w-full bg-white" />
+                        <Input {...field} type="text" placeholder="e.g. Brgy. Fatima, General Santos City" value={field.value ?? ""} className={inputFieldClass} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -822,7 +822,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                           setAddFeatureError(null);
                         }}
                         placeholder="e.g. Heated Seats"
-                        className="w-full bg-white"
+                        className={inputFieldClass}
                         onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddFeature())}
                       />
                       {addFeatureError && <p className="text-sm text-destructive">{addFeatureError}</p>}
