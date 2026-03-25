@@ -83,7 +83,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
         <Button asChild className="h-12 w-full shrink-0 bg-primary text-sm shadow-xl">
           <Link href="/seller/listings/new" className="flex items-center justify-center gap-2">
             <Plus className="size-4" />
-            Add new car
+            List a Car for Sale
           </Link>
         </Button>
       </div>
@@ -103,8 +103,8 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
                 type="button"
                 onClick={() => setTab(t.value)}
                 className={cn(
-                  "bg-white sm:bg-transparent shrink-0 rounded-[60px] px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:py-1 sm:text-sm",
-                  tab === t.value ? "border-0 bg-primary text-white" : "border border-muted-foreground text-muted-foreground hover:text-foreground",
+                  "shrink-0 rounded-[60px] px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:py-1 sm:text-sm",
+                  tab === t.value ? "border-0 bg-primary text-white" : "border border-muted-foreground bg-white text-muted-foreground hover:text-foreground sm:bg-transparent",
                 )}>
                 {t.label} ({counts[t.value]})
               </button>

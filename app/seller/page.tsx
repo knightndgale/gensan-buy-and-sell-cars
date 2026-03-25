@@ -54,13 +54,10 @@ export default async function SellerDashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[340px_1fr] lg:gap-x-8 lg:gap-y-6">
-        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+        <div className="col-span-full flex items-center justify-between gap-4">
           <SellerDashboardGreeting dealerName={dealerName} />
-        </div>
-
-        <div className="hidden min-w-0 items-center justify-end lg:col-start-2 lg:row-start-1 lg:flex">
-          <Button asChild className="shrink-0 bg-primary ">
-            <Link href="/seller/listings/new">+ Add New Listing</Link>
+          <Button asChild className="hidden shrink-0 bg-primary sm:inline-flex">
+            <Link href="/seller/listings/new">+ List a Car for Sale</Link>
           </Button>
         </div>
 
