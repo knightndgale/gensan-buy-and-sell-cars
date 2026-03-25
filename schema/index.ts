@@ -128,6 +128,10 @@ export type ListingInput = z.infer<typeof ListingInputSchema>;
 export const ListingFormInputSchema = ListingInputSchema.omit({ dealerId: true })
   .extend({
     dealerId: z.string().optional(),
+    price: z.number().min(1, "Price is required"),
+    mileage: z.number().min(1, "Mileage is required"),
+    location: z.string().min(1, "Location is required"),
+    bodyType: z.string().min(1, "Body type is required"),
   })
   .refine((d) => d.modelId > 0, { message: "Please select a model", path: ["modelId"] });
 export type ListingFormInput = z.infer<typeof ListingFormInputSchema>;
