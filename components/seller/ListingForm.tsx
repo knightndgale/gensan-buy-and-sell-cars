@@ -455,9 +455,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                       Make <span className="text-red-500">*</span>
                     </FormLabel>
                     <Select
-                      value={makeId ? String(makeId) : "0"}
+                      value={makeId ? String(makeId) : undefined}
                       onValueChange={(v) => {
-                        const id = parseInt(v, 10) || 0;
+                        const id = v === "__none__" ? 0 : parseInt(v, 10) || 0;
                         setMakeId(id);
                         if (id > 0) setMakeError(null);
                         form.setValue("modelId", 0);
@@ -466,7 +466,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <SelectValue placeholder="Select a Make" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="0">Select a Make</SelectItem>
+                        <SelectItem value="__none__">Select a Make</SelectItem>
                         {makes.map((m) => (
                           <SelectItem key={m.id} value={String(m.id)}>
                             {m.name}
@@ -647,14 +647,14 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                         <FormLabel>
                           Body Type <span className="text-red-500">*</span>
                         </FormLabel>
-                        <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || "__none__"}>
+                        <Select onValueChange={(v) => field.onChange(v === "__none__" ? "" : v)} value={field.value || undefined}>
                           <FormControl>
                             <SelectTrigger className={`w-full bg-white ${fieldSizingClass}`}>
-                              <SelectValue placeholder="Select" />
+                              <SelectValue placeholder="Select a Body Type" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="__none__">—</SelectItem>
+                            <SelectItem value="__none__">Select a Body Type</SelectItem>
                             <SelectItem value="Sedan">Sedan</SelectItem>
                             <SelectItem value="SUV">SUV</SelectItem>
                             <SelectItem value="Hatchback">Hatchback</SelectItem>
