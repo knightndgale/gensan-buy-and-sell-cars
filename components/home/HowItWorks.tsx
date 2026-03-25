@@ -21,7 +21,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <div className="container mx-auto max-w-7xl px-3 sm:px-4">
+    <div className="mx-auto max-w-[1800px] px-4">
       <div className="mb-8 flex items-center gap-2">
         <Check className="size-4 sm:size-5 text-primary" />
         <h2 className="text-md sm:text-2xl font-semibold uppercase tracking-wide text-primary">How It Works</h2>
@@ -31,13 +31,13 @@ export function HowItWorks() {
         Making the buying process fast, easy, and predictable for buyers.
       </p>
 
-      <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {STEPS.map((step, i) => (
           <div key={step.title} className="flex flex-col items-center rounded-xl bg-white p-6 text-center shadow-sm">
-            <div className="mb-4 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground sm:text-lg">
+            <div className="mb-2 flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground sm:text-lg">
               {i + 1}
             </div>
-            <h3 className="mb-2 text-xs font-semibold text-foreground">{step.title}</h3>
+            <h3 className="mb-2 text-sm font-semibold text-foreground">{step.title}</h3>
             <p className="text-xs text-muted-foreground">{step.description}</p>
           </div>
         ))}

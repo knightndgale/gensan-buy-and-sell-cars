@@ -31,7 +31,7 @@ export function CarsSortSelect() {
 
   return (
     <Select value={value} onValueChange={handleChange}>
-      <SelectTrigger className=" min-w-[160px]">
+      <SelectTrigger className="mt-4 min-w-[160px]">
         <SelectValue placeholder="Newest First" />
       </SelectTrigger>
       <SelectContent>

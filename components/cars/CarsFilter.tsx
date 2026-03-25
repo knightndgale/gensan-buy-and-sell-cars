@@ -8,6 +8,7 @@ import type { CarMake, CarModel } from "@/schema";
 import { ChevronUp, Filter, RotateCcw, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
+import { SlidersHorizontal } from "lucide-react";
 
 type CarsFilterFormProps = {
   makes: CarMake[];
@@ -277,8 +278,8 @@ export function CarsFilterDrawer({ makes, models, listingCount }: CarsFilterDraw
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="default" size="sm" className="gap-2">
-          <Filter className="size-4" />
+        <Button variant="default" size="sm" className="gap-2 mt-4">
+          <SlidersHorizontal className="size-4" />
           Filters
         </Button>
       </SheetTrigger>

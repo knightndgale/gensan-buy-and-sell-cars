@@ -125,7 +125,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
               </Suspense>
             )}
 
-            <div className="mt-6 flex flex-row  items-center justify-between gap-3">
+            <div className="-mt-4 flex flex-row  items-center justify-between gap-3">
               <div className="lg:hidden">
                 <Suspense fallback={<div className="h-9 w-24 animate-pulse rounded-md bg-muted" />}>
                   <CarsFilterDrawer makes={makes} models={models} listingCount={totalCount} />
