@@ -13,7 +13,7 @@ import type { CarMake, CarModel } from "@/schema";
 import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, Check, FileText, Info, Plus, Save, X } from "lucide-react";
+import { Camera, Check, ImageIcon, Info, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -380,20 +380,6 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
     </section>
   );
 
-  const listingPreview = isCreate && (
-    <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/30 hidden md:block">
-      <div className="flex gap-3">
-        <FileText className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
-        <div>
-          <h3 className="font-medium text-blue-900 dark:text-blue-100">Listing Preview</h3>
-          <p className="mt-1 text-sm text-blue-800 dark:text-blue-200">
-            Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer reached out, we will inform you immediately.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
   const listingStatusBanner = !isCreate && listingStatus && (
     <div
       className={`rounded-lg p-4 ${
@@ -441,7 +427,19 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
           <div className="lg:grid lg:grid-cols-[1fr_1.5fr] lg:gap-8">
             <div className="space-y-6 lg:order-1">
               {photosSection}
-              {listingPreview}
+              {isCreate && (
+                <section className="hidden sm:block w-full min-w-0 max-w-full rounded-lg  bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
+                  <div className="flex gap-3">
+                    <ImageIcon className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-medium  dark:text-blue-100">Listing Preview</h3>
+                      <p className="mt-1 text-sm leading-relaxed  dark:text-blue-200">
+                        Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer reached out, we will inform you immediately.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              )}
               {listingStatusBanner}
             </div>
 
@@ -804,6 +802,18 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                 />
               </section>
 
+              <section className="block sm:hidden w-full min-w-0 max-w-full rounded-lg  bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
+                <div className="flex gap-3">
+                  <ImageIcon className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-medium  dark:text-blue-100">Listing Preview</h3>
+                    <p className="mt-1 text-sm leading-relaxed  dark:text-blue-200">
+                      Your listing will appear to buyers exactly as you see other listings on GBSC. If a buyer reached out, we will inform you immediately.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
               <Dialog open={addFeatureOpen} onOpenChange={setAddFeatureOpen}>
                 <DialogContent>
                   <DialogHeader>
@@ -840,7 +850,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
               </Dialog>
 
               <div className="flex flex-col gap-3 pt-4  sm:flex-row-reverse sm:justify-start">
-                <Button type="submit" disabled={isSubmittingConfirmed} className="font-semibold py-6">
+                <Button type="submit" disabled={isSubmittingConfirmed} className="font-semibold py-4 flex-1">
                   {isCreate ? (
                     <>
                       <Plus className="size-4" />
@@ -853,7 +863,7 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
                     </>
                   )}
                 </Button>
-                <Button className="bg-transparent text-muted-foreground py-6" type="button" variant="outline" onClick={() => confirmIfUnsaved(() => router.back())}>
+                <Button className="bg-transparent text-muted-foreground py-4" type="button" variant="outline" onClick={() => confirmIfUnsaved(() => router.back())}>
                   Cancel
                 </Button>
               </div>
