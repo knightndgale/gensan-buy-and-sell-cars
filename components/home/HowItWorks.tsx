@@ -37,8 +37,8 @@ export function HowItWorks() {
             <div className="mb-4 flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground sm:text-lg">
               {i + 1}
             </div>
-            <h3 className="mb-2 text-sm font-semibold text-foreground sm:text-base">{step.title}</h3>
-            <p className="text-xs sm:text-base text-muted-foreground">{step.description}</p>
+            <h3 className="mb-2 text-xs font-semibold text-foreground">{step.title}</h3>
+            <p className="text-xs text-muted-foreground">{step.description}</p>
           </div>
         ))}
       </div>
