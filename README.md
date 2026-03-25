@@ -105,13 +105,21 @@ FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
 FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199
 ```
 
-> **Important:** `FIREBASE_AUTH_EMULATOR_HOST` must be `host:port` only (e.g. `localhost:9099`). Do **not** include `http://`—the SDK adds the protocol. Using `http://localhost:9099` causes `getaddrinfo ENOTFOUND http`. 3. **Start the emulators**
+> **Important:** `FIREBASE_AUTH_EMULATOR_HOST` must be `host:port` only (e.g. `localhost:9099`). Do **not** include `http://`—the SDK adds the protocol. Using `http://localhost:9099` causes `getaddrinfo ENOTFOUND http`.
+
+3. **Start the emulators**
 
 ```bash
-npx firebase emulators:start --only auth,firestore,storage
+npm run emulator
 ```
 
-Or use `npm run emulator` if it runs the same. 4. **Start the app** (in a separate terminal)
+This runs [`scripts/kill-firebase-emulator-ports.sh`](scripts/kill-firebase-emulator-ports.sh) first, then starts the emulators with `./emulator-data` import and export-on-exit (see `package.json`). To start Firebase only, without freeing ports:
+
+```bash
+npx firebase emulators:start --only auth,firestore,storage --import=./emulator-data --export-on-exit=./emulator-data
+```
+
+4. **Start the app** (in a separate terminal)
 
 ```bash
  npm run dev
@@ -134,12 +142,15 @@ curl -X POST http://localhost:3000/api/dev/seed -H "Content-Type: application/js
 
 ### Emulator ports
 
-| Emulator    | Port | Purpose                                                     |
-| ----------- | ---- | ----------------------------------------------------------- |
-| Auth        | 9099 | Firebase Authentication                                     |
-| Firestore   | 8080 | Firestore database                                          |
-| Storage     | 9199 | Cloud Storage (listing images)                              |
-| Emulator UI | 4000 | View data at [http://127.0.0.1:4000](http://127.0.0.1:4000) |
+| Emulator     | Port | Purpose                                                     |
+| ------------ | ---- | ----------------------------------------------------------- |
+| Auth         | 9099 | Firebase Authentication                                     |
+| Firestore    | 8080 | Firestore database                                          |
+| Storage      | 9199 | Cloud Storage (listing images)                              |
+| Emulator UI  | 4000 | View data at [http://127.0.0.1:4000](http://127.0.0.1:4000) |
+| Emulator hub | 4400 | Internal coordination (Firebase Emulator Suite)           |
+
+**Port conflicts:** If you see errors like “Could not start Firestore Emulator, port taken” (often **8080**), use `npm run emulator` so the kill script runs first. It sends `SIGKILL` to any process listening on **8080**, **9099**, **9199**, **4000**, or **4400**—not only leftover Firebase processes—so avoid running it while you intentionally need another service on those ports.
 
 ### With real Firebase (seniors)
 
