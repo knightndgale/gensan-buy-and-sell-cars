@@ -28,7 +28,7 @@ export function AdminStatusTabs({ currentStatus }: AdminStatusTabsProps) {
   return (
     <div className="mt-4 mb-2 space-y-2">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Listing status</p>
-      <div className="flex flex-nowrap gap-2 overflow-x-auto rounded-lg border border-border bg-card/80 p-1.5 sm:overflow-visible">
+      <div className="flex flex-nowrap gap-2 overflow-x-auto rounded-lg border border-border bg-card/80 p-1.5 sm:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (

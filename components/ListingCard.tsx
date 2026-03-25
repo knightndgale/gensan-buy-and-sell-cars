@@ -33,7 +33,7 @@ function formatTimeAgo(createdAt?: string): string {
 
 function SpecItem({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+    <span className="flex items-start gap-1.5 text-sm text-muted-foreground">
       <Icon className="size-4 shrink-0" />
       {label}
     </span>

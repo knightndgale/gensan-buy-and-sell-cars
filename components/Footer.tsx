@@ -84,20 +84,25 @@ export async function Footer() {
       </div>
 
       {/* Copyright bar */}
-      <div className="bg-primary py-4 text-center text-xs text-primary-foreground sm:text-base">
-        <p>
-          © 2026 GCBNS. <span className="font-bold">All rights reserved.</span>
-        </p>
-        <p className="mt-2">
-          <Link href="/privacy" className="hover:underline">
-            Privacy Policy
-          </Link>
-          <span className="mx-4">|</span>
-          <Link href="/terms" className="hover:underline">
-            Terms of Service
-          </Link>
-        </p>
-      </div>
+       <div className="bg-primary border-t border-primary px-4 py-4 sm:px-[120px] sm:py-[32px]">
+  <div className="container mx-auto max-w-7xl flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
+    {/* Copyright */}
+    <p className="text-xs sm:text-sm text-primary-foreground text-center sm:text-left">
+      © 2026 GCBNS. <span className="font-semibold">All rights reserved.</span>
+    </p>
+
+    {/* Links */}
+    <div className="flex flex-row items-center gap-2 text-xs sm:text-sm">
+      <Link href="/privacy" className="hover:underline text-primary-foreground">
+        Privacy Policy
+      </Link>
+      <span className="text-primary-foreground">|</span>
+      <Link href="/terms" className="hover:underline text-primary-foreground">
+        Terms of Service
+      </Link>
+    </div>
+  </div>
+</div>
     </footer>
   );
 }
