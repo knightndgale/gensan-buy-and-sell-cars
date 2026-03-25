@@ -53,10 +53,10 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
         </Card>
       </Link>
 
-      <div className="rounded-lg bg-white px-0 py-0 sm:p-4 border">
+      <div className="rounded-lg bg-transparent px-0 py-0 sm:p-4 border-0 sm:border sm:bg-white">
         <h2 className="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:block">Overview</h2>
         <div className="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3">
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
               <p className="text-xl font-bold">{counts.total}</p>
               <p className="text-xs text-muted-foreground">Total</p>
@@ -66,7 +66,7 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
             </div>
           </section>
 
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
               <p className="text-xl font-bold">{counts.active}</p>
               <p className="text-xs text-muted-foreground">Active</p>
@@ -75,7 +75,7 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
               <Car className="size-4" />
             </div>
           </section>
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
               <p className="text-xl font-bold">{counts.sold}</p>
               <p className="text-xs text-muted-foreground">Sold</p>
@@ -84,7 +84,7 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
               <CheckCircle2 className="size-4" />
             </div>
           </section>
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
               <p className="text-xl font-bold">—</p>
               <p className="text-xs text-muted-foreground">Views</p>
