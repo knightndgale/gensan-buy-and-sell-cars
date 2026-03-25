@@ -3,19 +3,19 @@ import { Check } from "lucide-react";
 const STEPS = [
   {
     title: "Browse Cars",
-    description: "Search through verified listings from local sellers. Filter by make, model, price, and more.",
+    description: "Search with advanced filters for brand, model, price, airbags, and fuel economy.  ",
   },
   {
     title: "Contact Seller",
-    description: "Reach out directly to sellers. No middlemen, no hidden fees—just clear communication.",
+    description: "Leave your contact info, or contact us directly for a fast and reliable transaction.",
   },
   {
     title: "Test Drive",
-    description: "Schedule a test drive at your convenience. See the car in person before you decide.",
+    description: "Schedule a test drive at SM Gensan or any convenient GenSan location.",
   },
   {
     title: "Own the Car",
-    description: "Complete the deal with confidence. We help make the process fast, easy, and predictable.",
+    description: "Check the documents, complete the transaction and drive your new car home with ease.",
   },
 ];
 

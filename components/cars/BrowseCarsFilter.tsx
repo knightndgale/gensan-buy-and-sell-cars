@@ -87,7 +87,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
   };
 
   return (
-    <section className="rounded-xl bg-primary/95 bg-linear-to-br from-primary to-primary/80 px-4 py-6 sm:px-6 lg:px-8">
+    <section className="bg-gradient-to-br from-[#1A2FA0] to-[#2B44E4] px-4 pt-6 pb-10 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/10">
@@ -110,7 +110,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={handleSearchKeyDown}
-              className="search-cancel-primary-foreground h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
+              className="w-250 h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
               aria-label="Search cars"
             />
           </div>

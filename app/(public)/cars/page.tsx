@@ -107,6 +107,10 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
 
   return (
     <main>
+      <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
+      <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
+      </Suspense>
+
       <section className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
         <div className="flex gap-8">
           <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
@@ -114,10 +118,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
           </Suspense>
 
           <div className="min-w-0 flex-1">
-            <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
-              <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
-            </Suspense>
-
+            
             {isAdmin && (
               <Suspense fallback={null}>
                 <AdminStatusTabs currentStatus={listingStatus} />

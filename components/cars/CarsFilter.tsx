@@ -233,16 +233,24 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex max-md:flex-row flex-col gap-3">
-        <Button onClick={onSearchClick} className="flex-1 gap-2">
-          <Search className="size-7" />
-          Search Car
-        </Button>
-        <Button onClick={handleReset} variant="outline" className="flex-1 gap-2">
-          <RotateCcw className="size-7" />
-          Reset Filters
-        </Button>
-      </div>
+     <div className="flex max-md:flex-row flex-col gap-3">
+  <Button
+    onClick={onSearchClick}
+    className="flex-1 flex items-center justify-center gap-2 px-6 py-4"
+  >
+    <Search className="w-4 h-4" /> 
+    <span className="text-sm">Search Car</span> 
+  </Button>
+
+  <Button
+    onClick={handleReset}
+    variant="outline"
+    className="flex-1 flex items-center justify-center gap-2 px-6 py-4"
+  >
+    <RotateCcw className="w-4 h-4" />
+    <span className="text-sm">Reset Filters</span>
+  </Button>
+</div>
     </div>
   );
 }
@@ -252,7 +260,7 @@ type CarsFilterSidebarProps = CarsFilterFormProps;
 export function CarsFilterSidebar({ makes, models }: CarsFilterSidebarProps) {
   return (
     <aside className="hidden w-64 shrink-0 lg:block">
-      <div className="sticky top-4 space-y-4 rounded-lg bg-card p-4">
+      <div className="sticky top-4 space-y-5 rounded-lg bg-card p-4">
         <h2 className="text-lg font-semibold">Filters</h2>
         <CarsFilterForm makes={makes} models={models} />
       </div>
@@ -278,7 +286,7 @@ export function CarsFilterDrawer({ makes, models, listingCount }: CarsFilterDraw
         <SheetHeader>
           <SheetTitle>Filters</SheetTitle>
         </SheetHeader>
-        <div className="mt-4 px-4 mb-[50px]">
+        <div className="mt-2 px-4 mb-[50px]">
           <p className="mb-4 text-sm text-muted-foreground">
             {listingCount} car{listingCount !== 1 ? "s" : ""} found
           </p>
