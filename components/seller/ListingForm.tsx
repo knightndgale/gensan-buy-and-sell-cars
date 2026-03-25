@@ -13,7 +13,7 @@ import type { CarMake, CarModel } from "@/schema";
 import { ListingFormInputSchema, type ListingFormInput, type ListingImage } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, Check, ImageIcon, Info, Plus, Save, X } from "lucide-react";
+import { ArrowLeft, Camera, Check, ImageIcon, Info, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -415,8 +415,9 @@ export function ListingForm({ initialData, listingId, listingStatus }: ListingFo
 
   return (
     <div className="container mx-auto max-w-6xl px-3 py-6 sm:px-4 sm:py-8">
-      <button type="button" className="mb-5 inline-flex items-center text-xs text-muted-foreground hover:text-foreground sm:mb-6 sm:text-sm" onClick={() => requestNavigate("/seller")}>
-        ← Back to Dashboard
+      <button type="button" className="mb-5 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground sm:mb-6 sm:text-sm" onClick={() => requestNavigate("/seller")}>
+        <ArrowLeft className="size-4" aria-hidden />
+        <span>Back to Dashboard</span>
       </button>
       <h1 className="text-xl font-bold sm:text-2xl">{isCreate ? "Add New Listing" : "Edit Listing"}</h1>
       <p className="mt-1 text-sm text-muted-foreground sm:text-base">{isCreate ? "Fill in the details below to list your car for sale" : "Update the details of your car listing"}</p>

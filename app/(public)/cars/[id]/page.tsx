@@ -10,7 +10,7 @@ import { getCarFeaturesByIds } from "@/lib/firestore/features";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListingById } from "@/lib/firestore/listings";
 import { formatMileage, formatPrice } from "@/lib/format";
-import { Calendar, Car, Cog, Fuel, Gauge, MapPin, Palette, Settings } from "lucide-react";
+import { ArrowLeft, Calendar, Car, Cog, Fuel, Gauge, MapPin, Palette, Settings } from "lucide-react";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
@@ -188,8 +188,9 @@ export default async function CarDetailPage({ params }: PageProps) {
   return (
     <div className="container mx-auto max-w-7xl px-3 py-8 pb-32 sm:px-4 md:pb-8">
       <section className="mb-4">
-        <Link href="/cars" className="text-sm text-primary hover:underline">
-          ← Back to listings
+        <Link href="/cars" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
+          <ArrowLeft className="size-4" aria-hidden />
+          <span>Back to listings</span>
         </Link>
       </section>
 
