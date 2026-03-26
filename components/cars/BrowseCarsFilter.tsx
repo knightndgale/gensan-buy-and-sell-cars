@@ -110,7 +110,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={handleSearchKeyDown}
-              className="w-250 h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
+              className="w-full lg:w-250 h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
               aria-label="Search cars"
             />
           </div>

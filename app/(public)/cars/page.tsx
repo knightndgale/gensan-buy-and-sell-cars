@@ -7,12 +7,11 @@ import { CarsSortSelect } from "@/components/cars/CarsSortSelect";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ListingCard, type ListingWithDetails } from "@/components/ListingCard";
 import { getSessionToken } from "@/lib/auth";
-import { getTotalActiveListingsCount, getCarMakes, getCarModels } from "@/lib/firestore/cars";
+import { getCarMakes, getCarModels, getTotalActiveListingsCount } from "@/lib/firestore/cars";
 import { getListingImages } from "@/lib/firestore/listing-images";
 import { getListings } from "@/lib/firestore/listings";
 import { headers } from "next/headers";
 import { Suspense } from "react";
-
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -45,9 +44,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
   const session = await getSessionToken(headersList.get("cookie"), headersList.get("authorization"));
   const isAdmin = session?.role === "admin";
   const statusParam = typeof params.status === "string" ? params.status : undefined;
-  const listingStatus = isAdmin && statusParam && ["all", "active", "pending", "sold"].includes(statusParam)
-    ? (statusParam as "all" | "active" | "pending" | "sold")
-    : "active";
+  const listingStatus = isAdmin && statusParam && ["all", "active", "pending", "sold"].includes(statusParam) ? (statusParam as "all" | "active" | "pending" | "sold") : "active";
 
   const totalActiveCount = await getTotalActiveListingsCount();
   const [listings, models, makes] = await Promise.all([
@@ -82,7 +79,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
       };
     }),
   );
-  
+
   let filtered = resolved;
 
   if (minMileage !== undefined && !isNaN(minMileage)) {
@@ -101,14 +98,14 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
       : sort === "price_desc"
         ? [...filtered].sort((a, b) => (b.price ?? Number.NEGATIVE_INFINITY) - (a.price ?? Number.NEGATIVE_INFINITY))
         : filtered;
-  
+
   const totalCount = sorted.length;
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <main>
       <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
-      <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
+        <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
       </Suspense>
 
       <section className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
@@ -118,7 +115,6 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
           </Suspense>
 
           <div className="min-w-0 flex-1">
-            
             {isAdmin && (
               <Suspense fallback={null}>
                 <AdminStatusTabs currentStatus={listingStatus} />
@@ -162,13 +158,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
             {/* Mobile: client component with Load More */}
             {totalCount > 0 && (
               <div className="lg:hidden">
-                <CarsListWithLoadMore
-                  initialListings={sorted.slice(0, pageSize)}
-                  initialHasMore={pageSize < totalCount}
-                  pageSize={pageSize}
-                  searchParams={params}
-                  isAdmin={isAdmin}
-                />
+                <CarsListWithLoadMore initialListings={sorted.slice(0, pageSize)} initialHasMore={pageSize < totalCount} pageSize={pageSize} searchParams={params} isAdmin={isAdmin} />
               </div>
             )}
           </div>
