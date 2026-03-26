@@ -5,10 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { BODY_TYPE_OPTIONS, MILEAGE_BRACKETS, PRICE_BRACKETS, TRANSMISSION_OPTIONS, YEARS } from "@/lib/filters";
 import type { CarMake, CarModel } from "@/schema";
-import { ChevronUp, Filter, RotateCcw, Search } from "lucide-react";
+import { ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
-import { SlidersHorizontal } from "lucide-react";
 
 type CarsFilterFormProps = {
   makes: CarMake[];
@@ -234,24 +233,17 @@ function CarsFilterForm({ makes, models, onSearchClick }: CarsFilterFormProps) {
       </div>
 
       {/* Actions */}
-     <div className="flex max-md:flex-row flex-col gap-3">
-  <Button
-    onClick={onSearchClick}
-    className="flex-1 flex items-center justify-center gap-2 px-6 py-4"
-  >
-    <Search className="w-4 h-4" /> 
-    <span className="text-sm">Search Car</span> 
-  </Button>
+      <div className="flex max-md:flex-row flex-col gap-3">
+        <Button onClick={onSearchClick} className="flex-1 flex items-center justify-center gap-2 px-6 py-4">
+          <Search className="w-4 h-4" />
+          <span className="text-sm">Search Car</span>
+        </Button>
 
-  <Button
-    onClick={handleReset}
-    variant="outline"
-    className="flex-1 flex items-center justify-center gap-2 px-6 py-4"
-  >
-    <RotateCcw className="w-4 h-4" />
-    <span className="text-sm">Reset Filters</span>
-  </Button>
-</div>
+        <Button onClick={handleReset} variant="outline" className="flex-1 flex items-center justify-center gap-2 px-6 py-4">
+          <RotateCcw className="w-4 h-4" />
+          <span className="text-sm">Reset Filters</span>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -260,8 +252,8 @@ type CarsFilterSidebarProps = CarsFilterFormProps;
 
 export function CarsFilterSidebar({ makes, models }: CarsFilterSidebarProps) {
   return (
-    <aside className="hidden w-64 shrink-0 lg:block">
-      <div className="sticky top-4 space-y-5 rounded-lg bg-card p-4">
+    <aside className="hidden  shrink-0 lg:block">
+      <div className="sticky top-4 space-y-5 rounded-lg bg-card ">
         <h2 className="text-lg font-semibold">Filters</h2>
         <CarsFilterForm makes={makes} models={models} />
       </div>

@@ -108,7 +108,7 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
         <BrowseCarsFilter makes={makes} listingCount={totalActiveCount} />
       </Suspense>
 
-      <section className="container mx-auto max-w-7xl px-3 py-8 sm:px-4">
+      <section className="container mx-auto max-w-7xl  py-8 px-4 xl:px-0">
         <div className="flex gap-8">
           <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-muted" />}>
             <CarsFilterSidebar makes={makes} models={models} />

@@ -94,7 +94,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
             <Car className="size-5 mt-0 text-primary-foreground" />
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-xl font-bold text-primary-foreground sm:text-2xl">Browse Cars</h2>
+            <h2 className="textF-xl font-bold text-primary-foreground sm:text-2xl">Browse Cars</h2>
             <p className="mt-1 text-sm text-primary-foreground/85">
               {listingCount} car listing{listingCount !== 1 ? "s" : ""} in General Santos City
             </p>
@@ -110,7 +110,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={handleSearchKeyDown}
-              className="w-full lg:w-250 h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
+              className="w-full  lg:w-230 xl:w-full h-11 rounded-lg border-0 bg-primary-foreground/10 pl-10 pr-10 text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
               aria-label="Search cars"
             />
           </div>
