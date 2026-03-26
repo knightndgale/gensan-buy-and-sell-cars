@@ -21,7 +21,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <div className="mx-auto max-w-[1800px] px-4">
+    <div className="container mx-auto max-w-7xl px-3 sm:px-4">
       <div className="mb-8 flex items-center gap-2">
         <Check className="size-4 sm:size-5 text-primary" />
         <h2 className="text-md sm:text-2xl font-semibold uppercase tracking-wide text-primary">How It Works</h2>
