@@ -35,7 +35,9 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
   return (
     <div className="flex flex-col gap-6">
       <Link href="/seller/listings/new" className="hidden sm:block">
-        <Card className="border-primary bg-primary text-primary-foreground overflow-hidden transition-colors hover:bg-primary/90">
+        <Card className="relative overflow-hidden border-primary bg-linear-to-b from-[color-mix(in_srgb,var(--primary)_82%,white)] to-primary text-primary-foreground transition-[filter] hover:brightness-[0.97]">
+          <div className="absolute top-[-30px] right-[-45px] bg-white/10 w-[150px] h-[150px] rounded-full" />
+          <div className="absolute top-[112px] right-[-20px] bg-white/5 w-[80px] h-[80px] rounded-full" />
           <CardContent className="flex items-center gap-4 p-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/20">
               <Camera className="size-6" />
@@ -51,44 +53,44 @@ export function SellerDashboardSidebar({ counts }: SellerDashboardSidebarProps) 
         </Card>
       </Link>
 
-      <div className="rounded-lg bg-white px-0 py-0 sm:p-4 border">
+      <div className="rounded-lg bg-transparent px-0 py-0 sm:p-4 border-0 sm:border sm:bg-white">
         <h2 className="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:block">Overview</h2>
         <div className="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3">
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.total}</p>
+              <p className="text-xl font-bold">{counts.total}</p>
               <p className="text-xs text-muted-foreground">Total</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-              <FileText className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+              <FileText className="size-4" />
             </div>
           </section>
 
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.active}</p>
+              <p className="text-xl font-bold">{counts.active}</p>
               <p className="text-xs text-muted-foreground">Active</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              <Car className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <Car className="size-4" />
             </div>
           </section>
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">{counts.sold}</p>
+              <p className="text-xl font-bold">{counts.sold}</p>
               <p className="text-xs text-muted-foreground">Sold</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
-              <CheckCircle2 className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+              <CheckCircle2 className="size-4" />
             </div>
           </section>
-          <section className="flex min-w-0 items-center justify-between gap-2 border border-muted-foreground rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
+          <section className="flex min-w-0 items-center justify-between gap-2 border-2 bg-white sm:bg-transparent border-black/10 rounded-lg px-3 py-3 sm:gap-3 sm:px-4">
             <div className="min-w-0">
-              <p className="text-2xl font-bold">—</p>
+              <p className="text-xl font-bold">—</p>
               <p className="text-xs text-muted-foreground">Views</p>
             </div>
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-              <Eye className="size-5" />
+            <div className="flex size-7 shrink-0 items-center self-start justify-center rounded bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+              <Eye className="size-4" />
             </div>
           </section>
         </div>

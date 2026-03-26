@@ -9,7 +9,7 @@ import { getListingById } from "@/lib/firestore/listings";
 
 import { formatMileage, formatPrice } from "@/lib/format";
 import { GHL_FORM_EMBED_FALLBACK_URL } from "@/lib/ghl-form";
-import { Calendar, Fuel, Gauge, MapPin, Settings } from "lucide-react";
+import { ArrowLeft, Calendar, Fuel, Gauge, MapPin, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,8 +44,9 @@ export default async function CarContactPage({ params }: PageProps) {
   return (
     <div className="container mx-auto max-w-7xl px-3 py-8 pb-32 sm:px-4 md:pb-8">
       <div className="mb-4">
-        <Link href={`/cars/${id}`} className="text-sm text-primary hover:underline">
-          ← Back to listing
+        <Link href={`/cars/${id}`} className="text-sm text-primary items-center gap-2 inline-flex hover:underline">
+          <ArrowLeft className="size-4" aria-hidden />
+          <span>Back to listing</span>
         </Link>
       </div>
 

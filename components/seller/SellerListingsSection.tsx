@@ -79,11 +79,11 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
   return (
     <div className="flex flex-col gap-6 pb-10 sm:pb-0">
       {/* Floating mobile CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 shadow-lg sm:hidden">
-        <Button asChild className="h-12 w-full shrink-0 bg-primary text-sm">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 shadow-lg sm:hidden bg-white">
+        <Button asChild className="h-12 w-full shrink-0 bg-primary text-sm shadow-xl">
           <Link href="/seller/listings/new" className="flex items-center justify-center gap-2">
             <Plus className="size-4" />
-            Add new car
+            List a Car for Sale
           </Link>
         </Button>
       </div>
@@ -104,7 +104,7 @@ export function SellerListingsSection({ listings }: SellerListingsSectionProps) 
                 onClick={() => setTab(t.value)}
                 className={cn(
                   "shrink-0 rounded-[60px] px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:py-1 sm:text-sm",
-                  tab === t.value ? "border-0 bg-primary text-white" : "border border-muted-foreground text-muted-foreground hover:text-foreground",
+                  tab === t.value ? "border-0 bg-primary text-white" : "border border-muted-foreground bg-white text-muted-foreground hover:text-foreground sm:bg-transparent",
                 )}>
                 {t.label} ({counts[t.value]})
               </button>
