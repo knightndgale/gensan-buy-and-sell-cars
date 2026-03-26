@@ -104,9 +104,9 @@ export default async function CarContactPage({ params }: PageProps) {
         </Link>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_2fr] lg:items-start lg:gap-8">
+      <div className="grid gap-6 lg:grid-cols-[1fr_2fr] lg:items-start lg:gap-8 ">
         {/* Car summary: mobile = horizontal thumb + text; desktop = stacked hero + full details */}
-        <Card className="h-fit overflow-hidden  bg-muted p-0 lg:bg-card shadow-none border-0">
+        <Card className="h-fit overflow-hidden  bg-muted p-0 lg:bg-card shadow-none ">
           <div className="flex gap-3 p-3 lg:flex-col lg:gap-0 lg:p-0">
             <div className="relative size-22 shrink-0 overflow-hidden rounded-lg bg-muted lg:aspect-video lg:size-auto lg:rounded-none">
               {coverImage ? (
@@ -164,7 +164,7 @@ export default async function CarContactPage({ params }: PageProps) {
         </Card>
 
         {/* Form column */}
-        <div className="space-y-4 lg:sticky lg:top-24">
+        <div className="space-y-4 lg:sticky lg:top-24 md:border md:rounded-xl md:p-4">
           <div className="hidden lg:block">
             <h2 className="text-xl font-bold">Leave Your Contact Info</h2>
             <p className="mt-1 text-sm text-muted-foreground">Fill in your contact details below. We will reach out to you directly.</p>
