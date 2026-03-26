@@ -4,8 +4,9 @@ import { CarDetailAdminActions } from "@/components/CarDetailAdminActions";
 import { GHLFormEmbed } from "@/components/GHLFormEmbed";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { GHL_FORM_EMBED_FALLBACK_URL } from "@/lib/ghl-form";
+import { Icons } from "@/lib/icons";
 import type { Dealer } from "@/schema";
-import { MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -48,25 +49,26 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
       label: "Viber",
       href: viberUrl,
       className: "bg-gradient-to-b from-[#8F48C8] to-[#63328B] text-white shadow-sm",
-      icon: MessageCircle,
+      Icon: () => <Icons.viber className="h-6 w-6 text-blue-500" />,
     },
     {
       label: "Whatsapp",
       href: whatsappUrl,
       className: "bg-gradient-to-b from-[#57F677] to-[#00BA22] text-white shadow-sm",
-      icon: MessageCircle,
+      Icon: () => <Icons.whatsapp className="h-6 w-6 text-blue-500" />,
     },
     {
       label: "FB Messenger",
       href: messengerUrl,
       className: "bg-gradient-to-tr from-[#297FFF] via-[#A530E5] to-[#F86866] text-white shadow-sm",
-      icon: MessageCircle,
+
+      Icon: () => <Icons.messenger className="h-5 w-5 " />,
     },
     {
       label: "Call Us",
       href: callUrl,
       className: "bg-primary text-white shadow-sm",
-      icon: Phone,
+      Icon: () => <PhoneCall className="h-5 w-5 " />,
     },
   ];
 
@@ -80,31 +82,30 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
       </Link>
 
       <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-        {contactButtons.map((btn) => {
-          const Icon = btn.icon;
-          const isDisabled = !btn.href;
+        {contactButtons.map((Button) => {
+          const isDisabled = !Button.href;
 
           if (isDisabled) {
             return (
               <div
-                key={btn.label}
+                key={Button.label}
                 className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 opacity-100
-                    ${btn.className}`}>
-                <Icon className="size-5 sm:size-6" />
-                <span className="text-[11px] sm:text-xs font-medium leading-tight text-center">{btn.label}</span>
+                    ${Button.className}`}>
+                <Button.Icon />
+                <span className="text-[11px] sm:text-xs font-medium leading-tight text-center">{Button.label}</span>
               </div>
             );
           }
 
-          const isExternal = btn.href!.startsWith("http") || btn.href!.startsWith("viber");
+          const isExternal = Button.href!.startsWith("http") || Button.href!.startsWith("viber");
           return (
             <a
-              key={btn.label}
-              href={btn.href!}
+              key={Button.label}
+              href={Button.href!}
               {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 transition hover:opacity-90 min-w-0 ${btn.className}`}>
-              <Icon className="size-5 sm:size-6" />
-              <span className="text-[11px] sm:text-xs font-medium leading-tight text-center min-w-0 break-words">{btn.label}</span>
+              className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 transition hover:opacity-90 min-w-0 ${Button.className}`}>
+              <Button.Icon />
+              <span className="text-[11px] sm:text-xs font-medium leading-tight text-center min-w-0 break-words">{Button.label}</span>
             </a>
           );
         })}
