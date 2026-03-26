@@ -87,7 +87,7 @@ export function BrowseCarsFilter({ makes, listingCount }: BrowseCarsFilterProps)
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#1A2FA0] to-[#2B44E4] px-4 pt-6 pb-10 sm:px-6 lg:px-8">
+    <section className="bg-linear-to-b from-[color-mix(in_srgb,var(--primary)_82%,white)] to-primary px-4 pt-6 pb-10 sm:px-6 lg:px-8">
       <div className="container mx-auto max-w-7xl">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/10 self-center">
