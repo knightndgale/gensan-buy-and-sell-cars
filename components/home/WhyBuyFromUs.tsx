@@ -19,7 +19,7 @@ export function WhyBuyFromUs() {
   return (
     <div className="container mx-auto max-w-7xl px-3 sm:px-4 ">
       <div className="mb-8 flex items-center gap-2">
-        <Heart className="size-4 sm:size-5 text-primary" />
+        <Heart className="size-4 sm:size-7 text-primary" />
         <h2 className="text-md sm:text-2xl font-semibold uppercase tracking-wide text-primary">Why Buy From Us</h2>
       </div>
       <p className="mb-2 text-sm font-bold text-foreground sm:text-lg">Built for Gensan buyers like you</p>
@@ -36,7 +36,7 @@ export function WhyBuyFromUs() {
         ))}
       </div>
 
-      <div className="mt-6 rounded-xl border border-border bg-muted p-6">
+      <div className="mt-6 rounded-xl border  bg-muted p-6 w-fit">
         <p className="text-xs sm:text-base text-foreground">
           If you&apos;ve ever lost time or money on sketchy Facebook deals, this is your local alternative, safe, transparent, and built specifically for you.
         </p>
