@@ -2,16 +2,21 @@
 
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 type CarImageCarouselProps = {
   images: { imageUrl: string; isPrimary?: boolean }[];
   alt: string;
+  /** When set, shows a circular back control on small screens only (detail page). */
+  backHref?: string;
+  /** Pull carousel to viewport edges on mobile; restores inset + radius from `lg`. */
+  mobileEdgeToEdge?: boolean;
 };
 
-export function CarImageCarousel({ images, alt }: CarImageCarouselProps) {
+export function CarImageCarousel({ images, alt, backHref, mobileEdgeToEdge }: CarImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const sortedImages = [...images].sort((a, b) => {
@@ -33,48 +38,86 @@ export function CarImageCarousel({ images, alt }: CarImageCarouselProps) {
 
   if (total === 0) {
     return (
-      <div className="space-y-3">
-        <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
-          <ImagePlaceholder fill className="rounded-lg border-0" />
+      <div
+        className={cn(
+          "space-y-3",
+          mobileEdgeToEdge && "-mx-3 sm:-mx-4 lg:mx-0",
+        )}>
+        <div
+          className={cn(
+            "relative aspect-video overflow-hidden bg-muted",
+            mobileEdgeToEdge ? "rounded-none lg:rounded-lg" : "rounded-lg",
+          )}>
+          <ImagePlaceholder fill className={cn("border-0", mobileEdgeToEdge ? "rounded-none lg:rounded-lg" : "rounded-lg")} />
         </div>
       </div>
     );
   }
 
+  const circleOverlay =
+    "flex items-center justify-center rounded-full bg-black/45 text-white shadow-sm backdrop-blur-[2px] transition hover:bg-black/55 active:bg-black/60";
+
   return (
-    <div className="space-y-3">
-      <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+    <div
+      className={cn(
+        "space-y-3",
+        mobileEdgeToEdge && "-mx-3 sm:-mx-4 lg:mx-0",
+      )}>
+      <div
+        className={cn(
+          "relative aspect-video overflow-hidden bg-muted",
+          mobileEdgeToEdge ? "rounded-none lg:rounded-lg" : "rounded-lg",
+        )}>
         <Image src={sortedImages[activeIndex].imageUrl} alt={alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" priority={activeIndex === 0} />
+
+        {backHref && (
+          <Link
+            href={backHref}
+            className={cn(circleOverlay, "absolute left-3 top-3 z-10 size-9 lg:hidden")}
+            aria-label="Back to listings">
+            <ArrowLeft className="size-5 stroke-[1.75]" aria-hidden />
+          </Link>
+        )}
 
         {total > 1 && (
           <>
             <button
               type="button"
               onClick={goPrev}
-              className="absolute left-2 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white transition hover:bg-black/70"
+              className={cn(circleOverlay, "absolute left-2 top-1/2 z-10 size-8 -translate-y-1/2 lg:size-10")}
               aria-label="Previous image">
-              <ChevronLeft className="size-6" />
+              <ChevronLeft className="size-5 stroke-2 lg:size-6" />
             </button>
             <button
               type="button"
               onClick={goNext}
-              className="absolute right-2 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white transition hover:bg-black/70"
+              className={cn(circleOverlay, "absolute right-2 top-1/2 z-10 size-8 -translate-y-1/2 lg:size-10")}
               aria-label="Next image">
-              <ChevronRight className="size-6" />
+              <ChevronRight className="size-5 stroke-2 lg:size-6" />
             </button>
 
-            <div className="absolute right-2 top-2 rounded-md bg-black/60 px-2 py-1 text-xs text-white">
+            <div
+              className={cn(
+                "absolute z-10 rounded-full bg-black/45 px-2.5 py-1 text-xs font-medium tabular-nums text-white backdrop-blur-[2px]",
+                "bottom-3 right-3 lg:bottom-auto lg:right-3 lg:top-3",
+              )}>
               {current}/{total}
             </div>
 
-            <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
+            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 lg:bottom-2">
               {sortedImages.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setActiveIndex(i)}
-                  className={cn("size-2 rounded-full transition", i === activeIndex ? "bg-white" : "bg-white/50 hover:bg-white/70")}
+                  className={cn(
+                    "transition-[width,background-color]",
+                    i === activeIndex
+                      ? "h-2 w-6 shrink-0 rounded-full bg-white"
+                      : "size-2 shrink-0 rounded-full bg-white/45 hover:bg-white/65",
+                  )}
                   aria-label={`Go to image ${i + 1}`}
+                  aria-current={i === activeIndex ? "true" : undefined}
                 />
               ))}
             </div>
@@ -83,7 +126,7 @@ export function CarImageCarousel({ images, alt }: CarImageCarouselProps) {
       </div>
 
       {total > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="hidden gap-2 overflow-x-auto pb-1 lg:flex">
           {sortedImages.map((img, i) => (
             <button
               key={i}
