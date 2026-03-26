@@ -187,7 +187,7 @@ export default async function CarDetailPage({ params }: PageProps) {
   );
 
   return (
-    <div className="container mx-auto max-w-7xl px-3 py-8 pb-32 sm:px-4 md:pb-8">
+    <div className="container mx-auto max-w-7xl px-3 pt-0 pb-32 sm:px-4 md:pb-8 lg:pt-8">
       <section className="mb-4 hidden lg:block">
         <Link href="/cars" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
           <ArrowLeft className="size-4" aria-hidden />
@@ -196,7 +196,7 @@ export default async function CarDetailPage({ params }: PageProps) {
       </section>
 
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-start">
-        <div className="space-y-4">
+        <div>
           <CarImageCarousel images={images} alt={title} backHref="/cars" mobileEdgeToEdge />
         </div>
 

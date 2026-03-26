@@ -89,10 +89,10 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
             return (
               <div
                 key={Button.label}
-                className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 opacity-100
+                className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 opacity-100
                     ${Button.className}`}>
                 <Button.Icon />
-                <span className="text-[11px] sm:text-xs font-medium leading-tight text-center">{Button.label}</span>
+                <span className="text-[8px] sm:text-xs font-medium leading-tight text-center">{Button.label}</span>
               </div>
             );
           }
@@ -103,9 +103,9 @@ export function CarDetailContactSection({ dealer, listingId, carName, isAdmin, l
               key={Button.label}
               href={Button.href!}
               {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 transition hover:opacity-90 min-w-0 ${Button.className}`}>
+              className={`flex flex-col items-center justify-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-1.5 py-2 sm:px-2 sm:py-3 transition hover:opacity-90 min-w-0 ${Button.className}`}>
               <Button.Icon />
-              <span className="text-[11px] sm:text-xs font-medium leading-tight text-center min-w-0 break-words">{Button.label}</span>
+              <span className="text-[8px] sm:text-xs font-medium leading-tight text-center min-w-0 break-words">{Button.label}</span>
             </a>
           );
         })}
